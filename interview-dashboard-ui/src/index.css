@@ -1,0 +1,129 @@
+/* Modular Styles */
+@import './styles/layout.css';
+@import './styles/statGroup.css';
+@import './styles/dataTable.css';
+@import './styles/statusBadge.css';
+@import './styles/modal.css';
+@import './styles/pages.css';
+
+/* Design System inspired by Reference Dashboard */
+:root {
+  --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Brand Colors */
+  --color-primary: #5932EA;
+  --color-primary-hover: #4D28D6;
+  --color-primary-light: #F3EFFF;
+  
+  /* Backgrounds */
+  --color-bg-page: #FAFBFF;
+  --color-bg-card: #FFFFFF;
+  --color-bg-subtle: #F9FBFF;
+  --color-bg-sidebar: #FFFFFF;
+  
+  /* Text */
+  --color-text-main: #292D32;
+  --color-text-heading: #000000;
+  --color-text-muted: #9197B3;
+  --color-text-subtle: #B5B7C0;
+  --color-text-placeholder: #7E7E7E;
+  
+  /* Accents & Statuses */
+  --color-success-bg: #E7F8F5;
+  --color-success-border: #00B087;
+  --color-success-text: #008767;
+  --color-success-icon-bg: #D3FFE7;
+  --color-success-icon: #00AC4F;
+  
+  --color-danger-bg: #FFEEEE;
+  --color-danger-border: #DF0404;
+  --color-danger-text: #DF0404;
+  --color-danger-icon: #D0004B;
+  
+  --color-warning-bg: #FFF8E7;
+  --color-warning-border: #FFB800;
+  --color-warning-text: #B28000;
+  
+  --color-info-bg: #EEF4FF;
+  --color-info-border: #3B82F6;
+  --color-info-text: #1D4ED8;
+  
+  /* Borders & Shadows */
+  --color-border: #EEEEEE;
+  --color-border-light: #F5F5F7;
+  --shadow-card: 0px 10px 60px rgba(226, 236, 249, 0.5);
+  --shadow-sidebar: 0px 10px 60px rgba(226, 236, 249, 0.4);
+  --shadow-dropdown: 0px 8px 30px rgba(0, 0, 0, 0.08);
+  
+  --radius-card: 28px;
+  --radius-pill: 40px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg-page);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D8DCE6;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B5B7C0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Common form elements */
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  transition: all 0.18s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
