@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: interview-dashboard
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/interview_dashboard_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    jpa:
+      # Automatically update the database schema based on your Entities
+      hibernate:
+        ddl-auto: update
+
+      # Print SQL queries to the console for debugging
+      show-sql: true
+
+      properties:
+        hibernate:
+          # Format the printed SQL to make it readable
+          format_sql: true
+          # Explicitly specify the dialect (optional in newer Spring Boot, but good practice)
+          dialect: org.hibernate.dialect.MySQLDialect
+
+      # Disable Open Session In View to prevent performance issues and warnings
+      open-in-view: false
