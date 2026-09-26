@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/preparation-topics")
 @RequiredArgsConstructor
@@ -33,6 +35,22 @@ public class PreparationTopicController {
     })
     public ResponseEntity<PreparationTopicResponseDTO> createTopic(@RequestBody PreparationTopicRequestDTO requestDTO) {
         PreparationTopicResponseDTO response = topicService.createTopic(requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(
+            summary = "Bulk Create Nested Preparation Topics",
+            description = "Creates topics and their nested sub-topics recursively. Saves parents first, retrieves their IDs, and links children automatically."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Topics and sub-topics created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload provided")
+    })
+    public ResponseEntity<List<PreparationTopicResponseDTO>> createTopicsBulk(
+            @RequestBody List<PreparationTopicRequestDTO> requestDTOs) {
+
+        List<PreparationTopicResponseDTO> response = topicService.createTopicsBulk(requestDTOs);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

@@ -73,6 +73,7 @@ public class JobApplication {
     @JoinColumn(name = "resume_id")
     private Resume resume;
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "job_application_technology",

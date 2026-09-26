@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface TechnologyMapper {
 
@@ -17,4 +19,8 @@ public interface TechnologyMapper {
 
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(TechnologyRequestDTO dto, @MappingTarget Technology entity);
+
+    List<TechnologyResponseDTO> toDtoList(List<Technology> entities);
+
+    List<Technology> toEntityList(List<TechnologyRequestDTO> dtos);
 }

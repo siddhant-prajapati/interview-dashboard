@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/interviews")
 @RequiredArgsConstructor
@@ -35,6 +37,22 @@ public class InterviewController {
             @RequestBody InterviewRequestDTO requestDTO) {
         InterviewResponseDTO createdInterview = interviewService.createInterview(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdInterview);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(
+            summary = "Bulk Create Interviews with Nested Data",
+            description = "Creates multiple interviews along with their associated questions and required technology improvements in a single transaction."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Interviews created successfully"),
+            @ApiResponse(responseCode = "404", description = "Referenced Job Application not found")
+    })
+    public ResponseEntity<List<InterviewResponseDTO>> createInterviewsBulk(
+            @RequestBody List<InterviewRequestDTO> requestDTOs) {
+
+        List<InterviewResponseDTO> response = interviewService.createInterviewsBulk(requestDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/{id}")

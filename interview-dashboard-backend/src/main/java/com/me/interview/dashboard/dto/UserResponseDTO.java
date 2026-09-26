@@ -17,4 +17,6 @@ public class UserResponseDTO {
     private String hackerrankLink;
     private String leetcodeLink;
     private LocalDateTime createdAt;
+    private String linkedInLink;
+    private List<CompanyResponseDTO> companies;
 }

@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface JobApplicationMapper {
 
-    @Mapping(source = "company.id", target = "companyId")
-    @Mapping(source = "resume.id", target = "resumeId")
-    @Mapping(target = "technologyIds", expression = "java(mapTechnologiesToIds(entity.getTechnologies()))")
+    @Mapping(source = "company.name", target = "companyName")
+    @Mapping(source = "resume.resumeName", target = "resumeName")
+    @Mapping(target = "technologies", expression = "java(mapTechnologiesToNames(entity.getTechnologies()))")
     JobApplicationResponseDTO toDto(JobApplication entity);
 
     @Mapping(target = "id", ignore = true)
@@ -35,8 +35,11 @@ public interface JobApplicationMapper {
     @Mapping(target = "updatedAt", ignore = true)
     void updateEntityFromDto(JobApplicationRequestDTO dto, @MappingTarget JobApplication entity);
 
-    default List<Long> mapTechnologiesToIds(List<Technology> technologies) {
+    default List<String> mapTechnologiesToNames(List<Technology> technologies) {
         if (technologies == null) return null;
-        return technologies.stream().map(Technology::getId).collect(Collectors.toList());
+        return technologies.stream()
+                .filter(t -> t != null && t.getName() != null)
+                .map(Technology::getName)
+                .collect(Collectors.toList());
     }
 }

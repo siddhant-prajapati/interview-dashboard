@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/technologies")
 @RequiredArgsConstructor
@@ -35,6 +37,18 @@ public class TechnologyController {
             @RequestBody TechnologyRequestDTO requestDTO) {
         TechnologyResponseDTO createdTechnology = technologyService.createTechnology(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTechnology);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(summary = "Bulk create Technologies", description = "Inserts multiple technologies into the system in a single request.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Technologies successfully created"),
+            @ApiResponse(responseCode = "400", description = "Invalid input provided")
+    })
+    public ResponseEntity<List<TechnologyResponseDTO>> createTechnologiesBulk(
+            @RequestBody List<TechnologyRequestDTO> requestDTOs) {
+        List<TechnologyResponseDTO> createdTechnologies = technologyService.createTechnologiesBulk(requestDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTechnologies);
     }
 
     @GetMapping("/{id}")

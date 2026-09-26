@@ -18,15 +18,19 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "experience")
     private Double experience;
 
     @Builder.Default
@@ -47,5 +51,18 @@ public class User {
     @Column(name = "leetcode_link")
     private String leetcodeLink;
 
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "linkedin_link")
+    private String linkedInLink;
+
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(
+            name = "user_companies",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "company_id")
+    )
+    private List<Company> companies = new ArrayList<>();
 }

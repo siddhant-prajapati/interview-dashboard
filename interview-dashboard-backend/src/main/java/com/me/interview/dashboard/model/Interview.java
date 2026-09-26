@@ -38,7 +38,8 @@ public class Interview {
     @JoinColumn(name = "job_application_id", nullable = false)
     private JobApplication jobApplication;
 
-    @ManyToMany
+    @Builder.Default
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "interview_questions",
             joinColumns = @JoinColumn(name = "interview_id"),
@@ -46,6 +47,7 @@ public class Interview {
     )
     private List<Question> questions = new ArrayList<>();
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "interview_required_improvement",

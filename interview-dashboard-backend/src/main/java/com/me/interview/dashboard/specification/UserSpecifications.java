@@ -2,9 +2,13 @@ package com.me.interview.dashboard.specification;
 
 
 import com.me.interview.dashboard.dto.UserFilterDTO;
+import com.me.interview.dashboard.model.Company;
 import com.me.interview.dashboard.model.User;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +46,16 @@ public class UserSpecifications {
 
             if (filter.getCreatedBefore() != null) {
                 predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), filter.getCreatedBefore()));
+            }
+
+            if (StringUtils.hasText(filter.getLinkedInLink())) {
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("linkedInLink")), "%" + filter.getLinkedInLink().toLowerCase() + "%"));
+            }
+
+            // New Company Filter (Joins the Many-to-Many relationship)
+            if (filter.getCompanyId() != null) {
+                Join<User, Company> companyJoin = root.join("companies");
+                predicates.add(criteriaBuilder.equal(companyJoin.get("id"), filter.getCompanyId()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

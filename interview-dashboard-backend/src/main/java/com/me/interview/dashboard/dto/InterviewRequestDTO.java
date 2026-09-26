@@ -16,6 +16,7 @@ public class InterviewRequestDTO {
 
     // Relationship IDs
     private Long jobApplicationId;
-    private List<Long> questionIds;
-    private List<Long> requiredImprovementIds;
+    private List<QuestionRequestDTO> questionDTOs;
+
+    private List<TechnologyRequestDTO> requiredImprovements;
 }

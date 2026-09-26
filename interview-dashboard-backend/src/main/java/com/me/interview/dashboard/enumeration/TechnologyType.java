@@ -9,5 +9,6 @@ public enum TechnologyType {
     TOOL,
     CONCEPT,
     LIBRARY,
-    PROTOCOL
+    PROTOCOL,
+    SKILL
 }

@@ -4,10 +4,12 @@ package com.me.interview.dashboard.service.impl;
 import com.me.interview.dashboard.dto.UserFilterDTO;
 import com.me.interview.dashboard.dto.UserRequestDTO;
 import com.me.interview.dashboard.dto.UserResponseDTO;
+import com.me.interview.dashboard.model.Company;
 import com.me.interview.dashboard.model.User;
 import com.me.interview.dashboard.exception.InvalidDataException;
 import com.me.interview.dashboard.exception.ResourceNotFoundException;
 import com.me.interview.dashboard.mapper.UserMapper;
+import com.me.interview.dashboard.repository.CompanyRepository;
 import com.me.interview.dashboard.repository.UserRepository;
 import com.me.interview.dashboard.service.UserService;
 import com.me.interview.dashboard.specification.UserSpecifications;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final CompanyRepository companyRepository;
     private final CustomLogger logger = CustomLogger.getInstance();
 
     @Override
@@ -41,6 +45,10 @@ public class UserServiceImpl implements UserService {
 
         try {
             User user = userMapper.toEntity(requestDTO);
+            if (requestDTO.getCompanyIds() != null && !requestDTO.getCompanyIds().isEmpty()) {
+                List<Company> companies = companyRepository.findAllById(requestDTO.getCompanyIds());
+                user.setCompanies(companies);
+            }
             user.setCreatedAt(LocalDateTime.now());
 
             User savedUser = userRepository.save(user);
@@ -85,6 +93,11 @@ public class UserServiceImpl implements UserService {
 
         try {
             userMapper.updateEntityFromDto(requestDTO, existingUser);
+
+            if (requestDTO.getCompanyIds() != null) {
+                List<Company> companies = companyRepository.findAllById(requestDTO.getCompanyIds());
+                existingUser.setCompanies(companies);
+            }
             User updatedUser = userRepository.save(existingUser);
 
             logger.info("Successfully updated User with ID: " + id);

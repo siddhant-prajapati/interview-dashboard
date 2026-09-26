@@ -18,6 +18,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class PreparationTopicServiceImpl implements PreparationTopicService {
@@ -45,6 +49,60 @@ public class PreparationTopicServiceImpl implements PreparationTopicService {
             logger.error("Failed to create Preparation Topic: " + e.getMessage());
             throw e;
         }
+    }
+
+    @Override
+    @Transactional
+    public List<PreparationTopicResponseDTO> createTopicsBulk(List<PreparationTopicRequestDTO> requestDTOs) {
+        logger.info("Attempting bulk hierarchical creation of Preparation Topics. Total Root Nodes: " + requestDTOs.size());
+
+        try {
+            List<PreparationTopic> savedRootTopics = new ArrayList<>();
+
+            for (PreparationTopicRequestDTO rootDto : requestDTOs) {
+                // Pass null as the parent for the root level items
+                PreparationTopic savedRoot = saveTopicRecursive(rootDto, null);
+                savedRootTopics.add(savedRoot);
+            }
+
+            logger.info("Successfully completed bulk hierarchical creation.");
+            return savedRootTopics.stream()
+                    .map(preparationTopicMapper::toDto)
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            logger.error("Failed during bulk creation of Preparation Topics: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    private PreparationTopic saveTopicRecursive(PreparationTopicRequestDTO dto, PreparationTopic parent) {
+        // 1. Map basic fields (Manual mapping is safer here to avoid mapper cycle issues)
+        PreparationTopic topic = new PreparationTopic();
+        topic.setName(dto.getName());
+        topic.setDescription(dto.getDescription());
+        topic.setCategory(dto.getCategory());
+
+        // 2. Assign the parent (will be null for root nodes)
+        topic.setParent(parent);
+
+        // 3. Save to database to generate the ID
+        PreparationTopic savedTopic = preparationTopicRepository.save(topic);
+
+        // 4. If this topic has sub-topics, process them recursively
+        if (dto.getSubTopics() != null && !dto.getSubTopics().isEmpty()) {
+            List<PreparationTopic> savedChildren = new ArrayList<>();
+
+            for (PreparationTopicRequestDTO subDto : dto.getSubTopics()) {
+                // The newly saved topic becomes the parent for the next level down
+                savedChildren.add(saveTopicRecursive(subDto, savedTopic));
+            }
+
+            // Attach the saved children back to the parent entity
+            savedTopic.setChildren(savedChildren);
+        }
+
+        return savedTopic;
     }
 
     @Override

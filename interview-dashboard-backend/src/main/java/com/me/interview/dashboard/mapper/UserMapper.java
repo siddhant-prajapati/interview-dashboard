@@ -15,9 +15,11 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "companies", ignore = true)
     User toEntity(UserRequestDTO dto);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "companies", ignore = true)
     void updateEntityFromDto(UserRequestDTO dto, @MappingTarget User entity);
 }

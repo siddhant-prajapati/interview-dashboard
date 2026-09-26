@@ -20,13 +20,14 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false, length = 50)
     private ProjectStatus status;
 
     @Column(name = "github_url")
@@ -35,6 +36,7 @@ public class Project {
     @Column(name = "live_url")
     private String liveUrl;
 
+    @Builder.Default
     @ManyToMany
     @JoinTable(
             name = "project_technology",
@@ -43,18 +45,22 @@ public class Project {
     )
     private List<Technology> technologies = new ArrayList<>();
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "about", columnDefinition = "TEXT")
     private String about;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "created_date")
     private LocalDate createdDate;
 
+    @Column(name = "completion_date")
     private LocalDate completionDate;
 
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }
