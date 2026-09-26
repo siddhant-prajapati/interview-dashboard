@@ -26,6 +26,16 @@ public class UserSpecifications {
                         "%" + filter.getEmail().toLowerCase() + "%"));
             }
 
+            if (filter.getName() != null && !filter.getName().isEmpty()) {
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("name")),
+                        "%" + filter.getName().toLowerCase() + "%"));
+            }
+
+            if (filter.getMinExperience() != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("experience"), filter.getMinExperience()));
+            }
+
             if (filter.getCreatedAfter() != null) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), filter.getCreatedAfter()));
             }
