@@ -2,3 +2,7 @@
 .idea
 dist
 node_modules
+
+# AI Context & Map files
+PROJECT_STRUCTURE.md
+AGENTS.md

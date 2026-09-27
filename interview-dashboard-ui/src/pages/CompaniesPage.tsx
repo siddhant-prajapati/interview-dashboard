@@ -5,7 +5,7 @@ import DataTable, { Column } from '../components/common/DataTable';
 import Modal from '../components/common/Modal';
 import { companiesApi } from '../api/companiesApi';
 import { mockStore } from '../api/client';
-import { Plus, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import { Company, JobType } from '../types';
 import { AppOutletContext } from '../components/layout/AppLayout';
 
@@ -13,6 +13,7 @@ export default function CompaniesPage() {
   const { toggleMobileMenu } = useOutletContext<AppOutletContext>();
   const [companies, setCompanies] = useState<Company[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -48,19 +49,49 @@ export default function CompaniesPage() {
 
   const handleCreateCompany = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newCo: Company = {
-      id: Date.now(),
+    const payload = {
       ...formData,
       allowedJobType: ['REMOTE', 'HYBRID'] as JobType[],
     };
     try {
-      await companiesApi.create(newCo);
-    } catch (err) {
-      console.warn('Backend offline, saving locally:', err);
+      const created = await companiesApi.create(payload);
+      setCompanies((prev) => [created || { id: Date.now(), ...payload }, ...prev]);
+    } catch (err: any) {
+      console.warn('Backend create fallback:', err);
+      setCompanies((prev) => [{ id: Date.now(), ...payload }, ...prev]);
     }
-    setCompanies((prev) => [newCo, ...prev]);
+    setFormData({
+      name: '',
+      location: '',
+      workOn: '',
+      email: '',
+      contactNumber: '',
+      technologyTest: true,
+    });
     setIsModalOpen(false);
   };
+
+  const handleDelete = async (e: React.MouseEvent, id?: number) => {
+    e.stopPropagation();
+    if (!id) return;
+    if (!window.confirm('Delete this company record?')) return;
+    try {
+      await companiesApi.delete(id);
+    } catch (err) {
+      console.warn('Backend delete fallback:', err);
+    }
+    setCompanies((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const filteredCompanies = companies.filter((c) => {
+    if (!searchFilter.trim()) return true;
+    const term = searchFilter.toLowerCase();
+    return (
+      (c.name && c.name.toLowerCase().includes(term)) ||
+      (c.workOn && c.workOn.toLowerCase().includes(term)) ||
+      (c.location && c.location.toLowerCase().includes(term))
+    );
+  });
 
   const columns: Column<Company>[] = [
     {
@@ -120,6 +151,22 @@ export default function CompaniesPage() {
         </div>
       ),
     },
+    {
+      key: 'actions',
+      label: '',
+      render: (row) => (
+        <div className="table-action-btn-group">
+          <button
+            type="button"
+            onClick={(e) => handleDelete(e, row.id)}
+            className="table-action-icon-btn"
+            title="Delete Company"
+          >
+            <Trash2 size={16} color="#DF0404" />
+          </button>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -127,6 +174,8 @@ export default function CompaniesPage() {
       <Header
         greeting="Target Companies 🏢"
         placeholder="Search companies by domain, name..."
+        searchValue={searchFilter}
+        onSearchChange={setSearchFilter}
         onToggleMobileMenu={toggleMobileMenu}
         actionButton={
           <button 
@@ -142,10 +191,10 @@ export default function CompaniesPage() {
 
       <DataTable
         title="All Companies"
-        subtitle={`Catalog of ${companies.length} hiring organizations`}
+        subtitle={`Catalog of ${filteredCompanies.length} hiring organizations`}
         columns={columns}
-        data={companies}
-        totalEntries={companies.length}
+        data={filteredCompanies}
+        totalEntries={filteredCompanies.length}
       />
 
       <Modal

@@ -14,6 +14,13 @@ export const technologiesApi = {
     });
   },
 
+  async createBulk(data: any[]): Promise<Technology[]> {
+    return apiRequest<Technology[]>('/technologies/bulk', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
   async delete(id: number): Promise<void> {
     return apiRequest<void>(`/technologies/${id}`, {
       method: 'DELETE',
