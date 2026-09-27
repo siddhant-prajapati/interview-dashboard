@@ -34,7 +34,8 @@ export type TechnologyType =
   | 'TOOL'
   | 'CONCEPT'
   | 'LIBRARY'
-  | 'PROTOCOL';
+  | 'PROTOCOL'
+  | 'SKILL';
 
 export type TopicCategory =
   | 'DSA'
@@ -89,7 +90,9 @@ export interface JobApplication {
   linkedInProfileShared?: boolean;
   jobUrl?: string;
   company?: Company;
+  companyName?: string;
   resume?: Resume;
+  resumeName?: string;
   technologies?: (Technology | string)[];
   isActive?: boolean;
 }
@@ -152,3 +155,18 @@ export interface PageResponse<T> {
   size?: number;
   number?: number;
 }
+
+export interface Platform {
+  id?: number;
+  name: string;
+  accountLink?: string;
+  lastUpdatedDate?: string;
+  jobPostCount?: number;
+  userId: number;
+}
+
+export interface PlatformFilter {
+  name?: string;
+  userId?: number;
+}
+
