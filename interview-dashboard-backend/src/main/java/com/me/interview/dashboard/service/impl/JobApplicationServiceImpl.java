@@ -253,12 +253,13 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 Technology existingTech = technologyRepository.findById(techDto.getId())
                         .orElseThrow(() -> new ResourceNotFoundException("Technology", "id", techDto.getId()));
                 resolvedList.add(existingTech);
-            } else {
-                Technology newTech = Technology.builder()
-                        .name(techDto.getName())
-                        .type(techDto.getType())
-                        .build();
-                resolvedList.add(technologyRepository.save(newTech));
+            } else if (techDto.getName() != null && !techDto.getName().trim().isEmpty()) {
+                Technology tech = technologyRepository.findByNameIgnoreCase(techDto.getName().trim())
+                        .orElseGet(() -> technologyRepository.save(Technology.builder()
+                                .name(techDto.getName().trim())
+                                .type(techDto.getType() != null ? techDto.getType() : com.me.interview.dashboard.enumeration.TechnologyType.LANGUAGE)
+                                .build()));
+                resolvedList.add(tech);
             }
         }
         return resolvedList;

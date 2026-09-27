@@ -1,0 +1,57 @@
+[
+  {
+    "name": "System Design",
+    "category": "SYSTEM_DESIGN",
+    "description": "Comprehensive study guide covering Low-Level Design (LLD) and High-Level Design (HLD)."
+  },
+  {
+    "name": "Low-Level Design (LLD) / Object-Oriented Design",
+    "category": "SYSTEM_DESIGN",
+    "description": "Focuses on classes, objects, interfaces, and design patterns."
+  },
+  {
+    "name": "High-Level Design (HLD) / System Architecture",
+    "category": "SYSTEM_DESIGN",
+    "description": "Focuses on system architecture, databases, scaling, and network protocols."
+  },
+  {
+    "name": "Design Principles (SOLID)",
+    "category": "SYSTEM_DESIGN",
+    "description": "Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion."
+  },
+  {
+    "name": "Design Patterns (Gang of Four)",
+    "category": "SYSTEM_DESIGN",
+    "description": "Creational, Structural, and Behavioral patterns in enterprise systems."
+  },
+  {
+    "name": "Architectural Patterns",
+    "category": "SYSTEM_DESIGN",
+    "description": "Microservices, Event-Driven Architecture, CQRS, and Serverless architectures."
+  },
+  {
+    "name": "Caching Systems",
+    "category": "SYSTEM_DESIGN",
+    "description": "Redis, Memcached, distributed caching strategies, eviction policies, and invalidation."
+  },
+  {
+    "name": "Data Management & Storage",
+    "category": "SQL",
+    "description": "RDBMS vs NoSQL, sharding, replication, partitioning, and ACID transactions."
+  },
+  {
+    "name": "Asynchronous Communication",
+    "category": "OTHER",
+    "description": "Message brokers, Kafka, RabbitMQ, pub/sub models, and event streaming."
+  },
+  {
+    "name": "Security & Identity",
+    "category": "SPRING_SECURITY",
+    "description": "Authentication, authorization, OAuth2, JWT, encryption, and secure APIs."
+  },
+  {
+    "name": "Monitoring & Observability",
+    "category": "DEVOPS",
+    "description": "Metrics, tracing, logging, Prometheus, Grafana, OpenTelemetry, and APM."
+  }
+]

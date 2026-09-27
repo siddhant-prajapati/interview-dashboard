@@ -1,0 +1,58 @@
+[
+  {
+    "topicName": "System Design",
+    "title": "CAP Theorem vs PACELC Theorem in Distributed Systems",
+    "type": "CONCEPT",
+    "difficulty": 4,
+    "completed": true,
+    "notes": "Understanding consistency, availability, and partition tolerance trade-offs."
+  },
+  {
+    "topicName": "Caching Systems",
+    "title": "Thread-Safe LRU Cache with Redis Integration",
+    "type": "PROBLEM",
+    "difficulty": 3,
+    "completed": true,
+    "notes": "Cache invalidation strategies: Cache-Aside vs Write-Through."
+  },
+  {
+    "topicName": "Architectural Patterns",
+    "title": "Event-Driven Saga Pattern vs Two-Phase Commit (2PC)",
+    "type": "CONCEPT",
+    "difficulty": 5,
+    "completed": false,
+    "notes": "Choreography vs Orchestration approaches in microservices."
+  },
+  {
+    "topicName": "High-Level Design (HLD) / System Architecture",
+    "title": "Design a Distributed Rate Limiter with Token Bucket",
+    "type": "ASSIGNMENT",
+    "difficulty": 4,
+    "completed": false,
+    "notes": "Explore Redis cluster sliding window vs token bucket tradeoffs."
+  },
+  {
+    "topicName": "Data Management & Storage",
+    "title": "Database Sharding and Consistent Hashing",
+    "type": "ARTICLE",
+    "difficulty": 4,
+    "completed": false,
+    "notes": "Partitioning large datasets across multiple database instances."
+  },
+  {
+    "topicName": "Asynchronous Communication",
+    "title": "Kafka Message Delivery Guarantees (At-least-once vs Exactly-once)",
+    "type": "CONCEPT",
+    "difficulty": 4,
+    "completed": false,
+    "notes": "Idempotent producers, consumer offsets, and transactional outbox pattern."
+  },
+  {
+    "topicName": "Design Principles (SOLID)",
+    "title": "Dependency Inversion and Clean Architecture in Spring Boot",
+    "type": "ARTICLE",
+    "difficulty": 3,
+    "completed": true,
+    "notes": "Decoupling business logic from infrastructure and framework concerns."
+  }
+]
