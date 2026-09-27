@@ -7,7 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class ResumeSpecifications {
 
     public static Specification<Resume> buildSpecification(ResumeFilterDTO filter) {
-        Specification<Resume> spec = Specification.where((Specification<Resume>) null);
+        Specification<Resume> spec = (root, query, cb) -> null;
 
         if (filter == null) {
             return spec;

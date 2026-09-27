@@ -7,6 +7,5 @@ import lombok.Data;
 public class TechnologyRequestDTO {
     private String name;
     private TechnologyType type;
-    private Double experience;
-    private Integer currentProficiency;
+    private String description;
 }

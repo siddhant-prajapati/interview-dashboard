@@ -28,7 +28,7 @@ public class JobApplicationResponseDTO {
     private LocalDateTime updatedAt;
 
     // Simplified relationship data
-    private Long companyId;
-    private Long resumeId;
-    private List<Long> technologyIds;
+    private String companyName;
+    private String resumeName;
+    private List<String> technologies;
 }

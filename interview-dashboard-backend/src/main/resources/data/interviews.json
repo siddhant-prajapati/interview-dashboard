@@ -1,0 +1,12 @@
+[
+  {
+    "companyName": "Microsoft",
+    "role": "Senior Java Backend Engineer",
+    "stage": "TECHNICAL",
+    "status": "SCHEDULED",
+    "daysFromNow": 2,
+    "hourOfDay": 15,
+    "minuteOfDay": 0,
+    "notes": "Focus on distributed caching, virtual threads, and database optimization"
+  }
+]

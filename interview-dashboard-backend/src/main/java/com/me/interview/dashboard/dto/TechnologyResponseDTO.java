@@ -8,6 +8,5 @@ public class TechnologyResponseDTO {
     private Long id;
     private String name;
     private TechnologyType type;
-    private Double experience;
-    private Integer currentProficiency;
+    private String description;
 }

@@ -19,6 +19,7 @@ public class UserTopicProgress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,19 +30,25 @@ public class UserTopicProgress {
     @JoinColumn(name = "topic_id", nullable = false)
     private PreparationTopic topic;
 
+    @Column(name = "progress_percentage")
     private Integer progressPercentage;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 50)
     private PreparationStatus status;
 
+    @Column(name = "started_at")
     private LocalDate startedAt;
 
+    @Column(name = "completed_at")
     private LocalDate completedAt;
 
+    @Column(name = "last_revised_at")
     private LocalDate lastRevisedAt;
 
+    @Column(name = "next_revision_date")
     private LocalDate nextRevisionDate;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
 }

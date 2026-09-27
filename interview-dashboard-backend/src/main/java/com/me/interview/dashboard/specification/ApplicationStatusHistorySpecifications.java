@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ApplicationStatusHistorySpecifications {
 
     public static Specification<ApplicationStatusHistory> buildSpecification(ApplicationStatusHistoryFilterDTO filter) {
-        Specification<ApplicationStatusHistory> spec = Specification.where((Specification<ApplicationStatusHistory>) null);
+        Specification<ApplicationStatusHistory> spec = (root, query, cb) -> null;
 
         if (filter == null) {
             return spec;

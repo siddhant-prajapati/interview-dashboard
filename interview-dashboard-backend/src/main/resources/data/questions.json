@@ -1,0 +1,26 @@
+[
+  {
+    "technologyName": "Java 21",
+    "question": "How do Java 21 Virtual Threads differ from OS Platform Threads in scheduling and resource footprint?"
+  },
+  {
+    "technologyName": "Java 21",
+    "question": "Explain the memory model changes in modern Java and when to use volatile vs AtomicReference."
+  },
+  {
+    "technologyName": "Spring Boot",
+    "question": "How does @Transactional propagation work, specifically REQUIRES_NEW vs REQUIRED in inner helper methods?"
+  },
+  {
+    "technologyName": "System Design",
+    "question": "How would you design a distributed cache invalidation strategy across multiple regional microservices?"
+  },
+  {
+    "technologyName": "MySQL",
+    "question": "Explain B-Tree index structure in InnoDB and the impact of composite index column ordering."
+  },
+  {
+    "technologyName": "Kafka",
+    "question": "How does consumer group rebalancing work in Kafka and what is the difference between Eager and Cooperative Sticky rebalancing?"
+  }
+]

@@ -1,0 +1,55 @@
+[
+  {
+    "companyName": "Microsoft",
+    "resumeName": "Evano_Lead_Backend_Java.pdf",
+    "role": "Senior Java Backend Engineer",
+    "platform": "LinkedIn",
+    "jobType": "REMOTE",
+    "expectedSalary": "$140,000 - $160,000",
+    "experience": 5.0,
+    "postingDateDaysAgo": 10,
+    "applyDateDaysAgo": 5,
+    "status": "TECHNICAL_ROUND",
+    "followUpCount": 1,
+    "portfolioShared": true,
+    "linkedInProfileShared": true,
+    "jobUrl": "https://linkedin.com/jobs/view/microsoft-sr-java",
+    "technologyNames": ["Java 21", "Spring Boot", "MySQL"],
+    "statusHistory": [
+      {
+        "status": "APPLIED",
+        "notes": "Application submitted via LinkedIn",
+        "daysAgo": 5
+      },
+      {
+        "status": "TECHNICAL_ROUND",
+        "notes": "Invited to Technical Architecture interview",
+        "daysAgo": 1
+      }
+    ]
+  },
+  {
+    "companyName": "Adobe",
+    "resumeName": "Evano_Lead_Backend_Java.pdf",
+    "role": "Lead Platform Architect",
+    "platform": "Wellfound",
+    "jobType": "REMOTE",
+    "expectedSalary": "$160,000 - $185,000",
+    "experience": 6.0,
+    "postingDateDaysAgo": 14,
+    "applyDateDaysAgo": 8,
+    "status": "OFFER",
+    "followUpCount": 2,
+    "portfolioShared": true,
+    "linkedInProfileShared": true,
+    "jobUrl": "https://adobe.com/careers/lead-platform",
+    "technologyNames": ["Java 21", "System Design", "Kafka"],
+    "statusHistory": [
+      {
+        "status": "OFFER",
+        "notes": "Received offer package after final round",
+        "daysAgo": 2
+      }
+    ]
+  }
+]

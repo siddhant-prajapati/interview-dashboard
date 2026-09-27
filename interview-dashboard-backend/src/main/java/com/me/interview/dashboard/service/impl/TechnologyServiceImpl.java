@@ -16,6 +16,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TechnologyServiceImpl implements TechnologyService {
@@ -29,6 +32,17 @@ public class TechnologyServiceImpl implements TechnologyService {
         Technology technology = technologyMapper.toEntity(requestDTO);
         Technology savedTechnology = technologyRepository.save(technology);
         return technologyMapper.toDto(savedTechnology);
+    }
+
+    @Override
+    @Transactional
+    public List<TechnologyResponseDTO> createTechnologiesBulk(List<TechnologyRequestDTO> requestDTOs) {
+        if (requestDTOs == null || requestDTOs.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Technology> technologies = technologyMapper.toEntityList(requestDTOs);
+        List<Technology> savedTechnologies = technologyRepository.saveAll(technologies);
+        return technologyMapper.toDtoList(savedTechnologies);
     }
 
     @Override

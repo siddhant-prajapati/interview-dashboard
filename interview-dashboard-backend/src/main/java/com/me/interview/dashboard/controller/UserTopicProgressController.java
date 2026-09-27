@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +33,8 @@ public class UserTopicProgressController {
             @ApiResponse(responseCode = "400", description = "Invalid payload or record already exists for user and topic"),
             @ApiResponse(responseCode = "404", description = "Referenced User or Topic not found")
     })
-    public ResponseEntity<UserTopicProgressResponseDTO> createProgress(@RequestBody UserTopicProgressRequestDTO requestDTO) {
+    public ResponseEntity<UserTopicProgressResponseDTO> createProgress(
+            @RequestBody UserTopicProgressRequestDTO requestDTO) {
         UserTopicProgressResponseDTO response = progressService.createProgress(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -51,7 +54,13 @@ public class UserTopicProgressController {
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of progress records")
     public ResponseEntity<Page<UserTopicProgressResponseDTO>> getAllProgress(
             @ParameterObject UserTopicProgressFilterDTO filter,
-            @ParameterObject Pageable pageable) {
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sort) {
+
+        Sort.Direction direction = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         return ResponseEntity.ok(progressService.getAllProgress(filter, pageable));
     }
 

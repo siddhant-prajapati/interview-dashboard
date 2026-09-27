@@ -12,8 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,9 +74,14 @@ public class JobApplicationController {
     @Operation(summary = "Get all Job Applications", description = "Retrieves a paginated list of job applications. Supports dynamic filtering based on platform, role, status, etc.")
     @ApiResponse(responseCode = "200", description = "List of job applications retrieved successfully")
     public ResponseEntity<Page<JobApplicationResponseDTO>> getJobApplications(
-            @ModelAttribute JobApplicationFilterDTO filter,
-            @Parameter(description = "Pagination parameters (page, size, sort)") Pageable pageable) {
+            @ParameterObject @ModelAttribute JobApplicationFilterDTO filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sort) {
 
+        Sort.Direction direction = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<JobApplicationResponseDTO> applications = jobApplicationService.getJobApplications(filter, pageable);
         return ResponseEntity.ok(applications);
     }

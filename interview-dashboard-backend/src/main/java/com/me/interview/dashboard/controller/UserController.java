@@ -1,6 +1,5 @@
 package com.me.interview.dashboard.controller;
 
-
 import com.me.interview.dashboard.dto.UserFilterDTO;
 import com.me.interview.dashboard.dto.UserRequestDTO;
 import com.me.interview.dashboard.dto.UserResponseDTO;
@@ -12,7 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,8 +51,14 @@ public class UserController {
     @Operation(summary = "Get all Users", description = "Fetches a paginated list of users with optional dynamic filtering.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of users")
     public ResponseEntity<Page<UserResponseDTO>> getUsers(
-            @ParameterObject UserFilterDTO filter,
-            @ParameterObject Pageable pageable) {
+            @ParameterObject @ModelAttribute UserFilterDTO filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sort) {
+
+        Sort.Direction direction = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         return ResponseEntity.ok(userService.getUsers(filter, pageable));
     }
 

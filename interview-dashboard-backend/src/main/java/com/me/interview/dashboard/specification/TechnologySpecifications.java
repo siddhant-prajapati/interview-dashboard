@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class TechnologySpecifications {
 
     public static Specification<Technology> buildSpecification(TechnologyFilterDTO filter) {
-        Specification<Technology> spec = Specification.where((Specification<Technology>) null);
+        Specification<Technology> spec = (root, query, cb) -> null;
 
         if (filter == null) {
             return spec;

@@ -11,11 +11,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/interviews")
@@ -37,6 +42,22 @@ public class InterviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdInterview);
     }
 
+    @PostMapping("/bulk")
+    @Operation(
+            summary = "Bulk Create Interviews with Nested Data",
+            description = "Creates multiple interviews along with their associated questions and required technology improvements in a single transaction."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Interviews created successfully"),
+            @ApiResponse(responseCode = "404", description = "Referenced Job Application not found")
+    })
+    public ResponseEntity<List<InterviewResponseDTO>> createInterviewsBulk(
+            @RequestBody List<InterviewRequestDTO> requestDTOs) {
+
+        List<InterviewResponseDTO> response = interviewService.createInterviewsBulk(requestDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get Interview by ID", description = "Retrieves a specific interview by its unique ID.")
     @ApiResponses(value = {
@@ -54,9 +75,14 @@ public class InterviewController {
     @Operation(summary = "Get all Interviews", description = "Retrieves a paginated list of interviews. Supports dynamic filtering based on stage, status, date, and associated job application.")
     @ApiResponse(responseCode = "200", description = "List of interviews retrieved successfully")
     public ResponseEntity<Page<InterviewResponseDTO>> getInterviews(
-            @ModelAttribute InterviewFilterDTO filter,
-            @Parameter(description = "Pagination parameters (page, size, sort)") Pageable pageable) {
+            @ParameterObject @ModelAttribute InterviewFilterDTO filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sort) {
 
+        Sort.Direction direction = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<InterviewResponseDTO> interviews = interviewService.getInterviews(filter, pageable);
         return ResponseEntity.ok(interviews);
     }

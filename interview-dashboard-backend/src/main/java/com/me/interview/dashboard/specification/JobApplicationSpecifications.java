@@ -13,7 +13,7 @@ public class JobApplicationSpecifications {
 
     // Centralized method to build the entire specification from the DTO
     public static Specification<JobApplication> buildSpecification(JobApplicationFilterDTO filter) {
-        Specification<JobApplication> spec = Specification.where((Specification<JobApplication>) null);
+        Specification<JobApplication> spec = (root, query, cb) -> null;
 
         if (filter == null) {
             return spec;

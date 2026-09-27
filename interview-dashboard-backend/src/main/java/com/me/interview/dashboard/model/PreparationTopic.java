@@ -20,21 +20,24 @@ public class PreparationTopic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "category", length = 50)
     private TopicCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private PreparationTopic parent;
 
+    @Builder.Default
     @OneToMany(mappedBy = "parent")
     private List<PreparationTopic> children = new ArrayList<>();
 }

@@ -1,0 +1,222 @@
+[
+  {
+    "name": "System Design",
+    "type": "CONCEPT",
+    "description": "The process of defining the architecture, components, modules, interfaces, and data for a system to satisfy specified requirements and scale efficiently."
+  },
+  {
+    "name": "Retrieval-Augmented Generation (RAG)",
+    "type": "CONCEPT",
+    "description": "An AI framework combining external knowledge retrieval with generative LLMs to produce accurate, context-rich, and grounded responses."
+  },
+  {
+    "name": "Chatbot Development",
+    "type": "SKILL",
+    "description": "Designing, building, and deploying conversational AI agents and interactive dialogue systems across platforms using NLP, LLMs, and intent-recognition frameworks."
+  },
+  {
+    "name": "Model Context Protocol (MCP)",
+    "type": "PROTOCOL",
+    "description": "An open standard protocol that enables AI models and assistants to securely access external tools, prompts, and context resources across distributed clients and servers."
+  },
+  {
+    "name": "Unit Testing",
+    "type": "SKILL",
+    "description": "The practice of writing and executing automated tests to verify individual components or methods of software in isolation using frameworks like JUnit or Mockito."
+  },
+  {
+    "name": "Integration Testing",
+    "type": "SKILL",
+    "description": "Software testing where individual units and external modules (databases, APIs, message queues) are combined and evaluated together to verify seamless system interoperability."
+  },
+  {
+    "name": "Continuous Integration and Continuous Delivery (CI/CD)",
+    "type": "CONCEPT",
+    "description": "A modern DevOps methodology and pipeline practice that automates the building, testing, and deployment of code changes to produce rapid, reliable software releases."
+  },
+  {
+    "name": "Hibernate",
+    "type": "FRAMEWORK",
+    "description": "A widely-used Java Object-Relational Mapping (ORM) framework that facilitates mapping domain models to relational database tables and abstracts SQL interactions."
+  },
+  {
+    "name": "Jakarta EE",
+    "type": "FRAMEWORK",
+    "description": "A set of enterprise Java specifications (formerly Java EE) providing foundational enterprise standards such as JPA, Servlets, CDI, JMS, and RESTful web services."
+  },
+  {
+    "name": "Kafka",
+    "type": "TOOL",
+    "description": "A distributed event streaming platform used for high-throughput data pipelines, real-time analytics, event sourcing, and decoupled pub/sub messaging."
+  },
+  {
+    "name": "Spring MVC",
+    "type": "FRAMEWORK",
+    "description": "A robust Model-View-Controller web framework within the Spring ecosystem that simplifies building RESTful APIs and MVC-based web applications in Java."
+  },
+  {
+    "name": "MySQL",
+    "type": "DATABASE",
+    "description": "A popular open-source relational database management system (RDBMS) based on SQL, known for its reliability, ACID compliance, and multi-tenant performance."
+  },
+  {
+    "name": "Microservices",
+    "type": "CONCEPT",
+    "description": "An architectural style that structures an application as a collection of small, independently deployable, loosely coupled, and bounded services communicating via lightweight protocols."
+  },
+  {
+    "name": "Monolithic Architecture",
+    "type": "CONCEPT",
+    "description": "A traditional software design model where the entire software system, UI, business logic, and data layer are packaged and deployed as a single unified executable."
+  },
+  {
+    "name": "HTML5",
+    "type": "LANGUAGE",
+    "description": "The standard markup language used to structure and present content across the World Wide Web, featuring native multimedia, semantic elements, and modern APIs."
+  },
+  {
+    "name": "Amazon Web Services (AWS)",
+    "type": "CLOUD",
+    "description": "A comprehensive cloud computing platform offering compute, storage, networking, managed databases, security, and AI/ML services globally."
+  },
+  {
+    "name": "GitHub Copilot",
+    "type": "TOOL",
+    "description": "An AI-powered pair programmer developed by GitHub and OpenAI that autocompletes code, suggests whole functions, and answers technical questions within IDEs."
+  },
+  {
+    "name": "Claude Skills",
+    "type": "SKILL",
+    "description": "The capability to configure, extend, and integrate Claude AI models with customized tools, system prompts, API functions, and contextual workflows."
+  },
+  {
+    "name": "Docker",
+    "type": "TOOL",
+    "description": "An open platform for developing, shipping, and running applications inside lightweight, portable, and isolated containers across environments."
+  },
+  {
+    "name": "WebSockets",
+    "type": "PROTOCOL",
+    "description": "A bidirectional, full-duplex communication protocol operating over a single TCP connection, ideal for real-time applications like chats, live feeds, and notifications."
+  },
+  {
+    "name": "GitHub",
+    "type": "TOOL",
+    "description": "A cloud-based Git repository hosting and developer platform offering version control, pull requests, issue tracking, CI/CD automation via Actions, and code review."
+  },
+  {
+    "name": "Git",
+    "type": "TOOL",
+    "description": "A distributed version control system designed to handle everything from small to very large projects with speed, branch management, and collaborative efficiency."
+  },
+  {
+    "name": "Payment Gateways",
+    "type": "CONCEPT",
+    "description": "Merchant service mechanisms that authorize credit card or direct payment processing for e-businesses, handling encryption, PCI-DSS compliance, and settlement."
+  },
+  {
+    "name": "REST APIs",
+    "type": "CONCEPT",
+    "description": "Representational State Transfer web services that utilize standard HTTP methods (GET, POST, PUT, DELETE) and stateless client-server conventions for data interchange."
+  },
+  {
+    "name": "Google Cloud Platform (GCP)",
+    "type": "CLOUD",
+    "description": "A suite of cloud computing services by Google providing modular cloud storage, compute engines, Kubernetes orchestration, BigQuery analytics, and machine learning tools."
+  },
+  {
+    "name": "Spring Security",
+    "type": "FRAMEWORK",
+    "description": "A powerful, customizable authentication and access-control framework that provides comprehensive security protection for Spring-based Java applications."
+  },
+  {
+    "name": "JWT",
+    "type": "CONCEPT",
+    "description": "JSON Web Tokens, a compact, URL-safe means of representing claims to be transferred securely between two parties, widely used for stateless authentication and authorization."
+  },
+  {
+    "name": "OAuth2",
+    "type": "PROTOCOL",
+    "description": "An industry-standard authorization framework that enables third-party applications to obtain limited access to an HTTP service on behalf of a resource owner."
+  },
+  {
+    "name": "React",
+    "type": "LIBRARY",
+    "description": "A declarative, efficient, component-based JavaScript/TypeScript library developed by Meta for building dynamic and interactive user interfaces."
+  },
+  {
+    "name": "Spring Framework",
+    "type": "FRAMEWORK",
+    "description": "An enterprise Java application framework that provides comprehensive infrastructure support including Inversion of Control (IoC), Dependency Injection (DI), and AOP."
+  },
+  {
+    "name": "Spring Boot",
+    "type": "FRAMEWORK",
+    "description": "An opinionated extension of the Spring framework that streamlines configuring, bootstrapping, and launching production-ready, standalone Spring applications."
+  },
+  {
+    "name": "Java",
+    "type": "LANGUAGE",
+    "description": "A high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible (Write Once, Run Anywhere)."
+  },
+  {
+    "name": "Cascading Style Sheets (CSS)",
+    "type": "LANGUAGE",
+    "description": "A stylesheet language used to describe the presentation, layout, typography, and visual design of documents written in HTML or other markup languages."
+  },
+  {
+    "name": "NodeJs",
+    "type": "FRAMEWORK",
+    "description": "An open-source, cross-platform JavaScript runtime environment built on Chrome's V8 engine that executes JavaScript code outside a web browser using an event-driven model."
+  },
+  {
+    "name": "JavaScript",
+    "type": "LANGUAGE",
+    "description": "A high-level, dynamic, multi-paradigm programming language that serves as the core scripting language of the web alongside HTML and CSS."
+  },
+  {
+    "name": "TypeScript",
+    "type": "LANGUAGE",
+    "description": "A strongly typed superset of JavaScript developed by Microsoft that compiles to plain JavaScript and adds static type checking and modern tooling support."
+  },
+  {
+    "name": "MongoDB",
+    "type": "DATABASE",
+    "description": "A leading open-source NoSQL document database that stores data in flexible, JSON-like BSON documents with dynamic schemas and high horizontal scalability."
+  },
+  {
+    "name": "ExpressJs",
+    "type": "FRAMEWORK",
+    "description": "A minimal and flexible Node.js web application framework that provides a robust set of features for routing, middleware handling, and RESTful API development."
+  },
+  {
+    "name": "Object-Oriented Programming (OOP)",
+    "type": "CONCEPT",
+    "description": "A programming paradigm based on the concept of objects containing data (attributes) and code (methods), organized through encapsulation, inheritance, polymorphism, and abstraction."
+  },
+  {
+    "name": "Back-End Web Development",
+    "type": "SKILL",
+    "description": "The discipline of designing, building, and maintaining the server-side architecture, APIs, business logic, database integrations, and authentication of web applications."
+  },
+  {
+    "name": "Communication",
+    "type": "SKILL",
+    "description": "The ability to convey technical concepts clearly, actively listen, collaborate across cross-functional teams, write concise documentation, and facilitate project discussions."
+  },
+  {
+    "name": "Leadership",
+    "type": "SKILL",
+    "description": "Guiding, mentoring, and empowering team members, making architectural and strategic technical decisions, and driving team success through vision and accountability."
+  },
+  {
+    "name": "Problem Solving",
+    "type": "SKILL",
+    "description": "The analytical process of diagnosing complex technical issues, evaluating constraints, debugging root causes, and implementing optimal, maintainable software solutions."
+  },
+  {
+    "name": "Research",
+    "type": "SKILL",
+    "description": "Investigating emerging technologies, evaluating competing libraries or architectures, and synthesizing technical documentation to make informed engineering decisions."
+  }
+]

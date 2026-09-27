@@ -14,4 +14,6 @@ public class UserRequestDTO {
     private String githubLink;
     private String hackerrankLink;
     private String leetcodeLink;
+    private String linkedInLink;
+    private List<Long> companyIds; // Accepts list of existing Company IDs
 }

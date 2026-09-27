@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Microsoft",
+    "technologyTest": true,
+    "workOn": "Cloud & AI Platforms",
+    "allowedJobType": ["REMOTE", "HYBRID"],
+    "contactNumber": "(225) 555-0118",
+    "email": "careers@microsoft.com",
+    "location": "Redmond, WA"
+  },
+  {
+    "name": "Google",
+    "technologyTest": true,
+    "workOn": "Search & Distributed Infrastructure",
+    "allowedJobType": ["HYBRID", "ON_SITE"],
+    "contactNumber": "(650) 253-0000",
+    "email": "jobs@google.com",
+    "location": "Mountain View, CA"
+  },
+  {
+    "name": "Amazon",
+    "technologyTest": true,
+    "workOn": "AWS Distributed Cloud Services",
+    "allowedJobType": ["HYBRID"],
+    "contactNumber": "(206) 266-1000",
+    "email": "aws-recruiting@amazon.com",
+    "location": "Seattle, WA"
+  },
+  {
+    "name": "Adobe",
+    "technologyTest": false,
+    "workOn": "Creative Cloud Enterprise Services",
+    "allowedJobType": ["REMOTE"],
+    "contactNumber": "(408) 536-6000",
+    "email": "careers@adobe.com",
+    "location": "San Jose, CA"
+  }
+]
