@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class CompanySpecifications {
 
     public static Specification<Company> buildSpecification(CompanyFilterDTO filter) {
-        Specification<Company> spec = Specification.where((Specification<Company>) null);
+        Specification<Company> spec = (root, query, cb) -> null;
 
         if (filter == null) {
             return spec;

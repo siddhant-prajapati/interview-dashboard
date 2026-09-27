@@ -11,8 +11,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,9 +57,14 @@ public class QuestionController {
     @Operation(summary = "Get all Questions", description = "Retrieves a paginated list of questions. Supports dynamic filtering based on question text, technology, or date listed.")
     @ApiResponse(responseCode = "200", description = "List of questions retrieved successfully")
     public ResponseEntity<Page<QuestionResponseDTO>> getQuestions(
-            @ModelAttribute QuestionFilterDTO filter,
-            @Parameter(description = "Pagination parameters (page, size, sort)") Pageable pageable) {
+            @ParameterObject @ModelAttribute QuestionFilterDTO filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sort) {
 
+        Sort.Direction direction = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<QuestionResponseDTO> questions = questionService.getQuestions(filter, pageable);
         return ResponseEntity.ok(questions);
     }

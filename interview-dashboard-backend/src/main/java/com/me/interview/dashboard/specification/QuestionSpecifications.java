@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class QuestionSpecifications {
 
     public static Specification<Question> buildSpecification(QuestionFilterDTO filter) {
-        Specification<Question> spec = Specification.where((Specification<Question>) null);
+        Specification<Question> spec = (root, query, cb) -> null;
 
         if (filter == null) {
             return spec;

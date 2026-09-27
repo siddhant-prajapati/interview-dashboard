@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class InterviewSpecifications {
 
     public static Specification<Interview> buildSpecification(InterviewFilterDTO filter) {
-        Specification<Interview> spec = Specification.where((Specification<Interview>) null);
+        Specification<Interview> spec = (root, query, cb) -> null;
 
         if (filter == null) {
             return spec;

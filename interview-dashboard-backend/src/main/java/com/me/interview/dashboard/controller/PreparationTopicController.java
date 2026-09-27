@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,8 +70,14 @@ public class PreparationTopicController {
     @Operation(summary = "Get all Topics", description = "Fetches a paginated list of topics. Use the 'isRoot=true' filter to get only top-level categories.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of topics")
     public ResponseEntity<Page<PreparationTopicResponseDTO>> getTopics(
-            @ParameterObject PreparationTopicFilterDTO filter,
-            @ParameterObject Pageable pageable) {
+            @ParameterObject @ModelAttribute PreparationTopicFilterDTO filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sort) {
+
+        Sort.Direction direction = "desc".equalsIgnoreCase(sort) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         return ResponseEntity.ok(topicService.getTopics(filter, pageable));
     }
 
