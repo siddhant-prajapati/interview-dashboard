@@ -34,5 +34,14 @@
     "contactNumber": "(408) 536-6000",
     "email": "careers@adobe.com",
     "location": "San Jose, CA"
+  },
+  {
+    "name": "SmartBear",
+    "technologyTest": false,
+    "workOn": "Software development and Quality Tools",
+    "allowedJobType": ["REMOTE"],
+    "contactNumber": "(408) 536-6000",
+    "email": "careers@adobe.com",
+    "location": "San Jose, CA"
   }
 ]
