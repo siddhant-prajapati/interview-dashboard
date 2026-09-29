@@ -27,5 +27,6 @@ public class JobApplicationRequestDTO {
     // Relationship IDs
     private Long companyId;
     private Long resumeId;
+    private Long platformId;
     private List<Long> technologyIds;
 }

@@ -30,5 +30,7 @@ public class JobApplicationResponseDTO {
     // Simplified relationship data
     private String companyName;
     private String resumeName;
+    private Long platformId;
+    private String platformName;
     private List<String> technologies;
 }

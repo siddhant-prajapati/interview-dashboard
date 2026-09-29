@@ -4,6 +4,6 @@ public enum ProjectType {
 
     DEMO,
     MVP,
-    COMPLETE_USECASE
+    COMPLETE_USECASE,
     COMPANY
 }

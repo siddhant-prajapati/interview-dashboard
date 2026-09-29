@@ -27,6 +27,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final CompanyRepository companyRepository;
     private final ResumeRepository resumeRepository;
     private final TechnologyRepository technologyRepository;
+    private final PlatformRepository platformRepository;
+    private final UserRepository userRepository;
     private final JobApplicationMapper jobApplicationMapper;
     private final ApplicationStatusHistoryRepository applicationStatusHistoryRepository;
 
@@ -152,6 +154,26 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         } else {
             entity.getTechnologies().clear();
         }
+
+        if (dto.getPlatformId() != null) {
+            Platform platform = platformRepository.findById(dto.getPlatformId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Platform", "id", dto.getPlatformId()));
+            entity.setPlatform(platform);
+        } else if (dto.getPlatform() != null && !dto.getPlatform().trim().isEmpty()) {
+            String platformName = dto.getPlatform().trim();
+            Platform platform = platformRepository.findFirstByNameIgnoreCase(platformName)
+                    .orElseGet(() -> {
+                        User user = userRepository.findAll().stream().findFirst().orElse(null);
+                        return platformRepository.save(Platform.builder()
+                                .name(platformName)
+                                .user(user)
+                                .lastUpdatedDate(LocalDateTime.now())
+                                .build());
+                    });
+            entity.setPlatform(platform);
+        } else {
+            entity.setPlatform(null);
+        }
     }
 
     @Override
@@ -168,9 +190,12 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         // 3. Resolve or Create Technologies
         List<Technology> technologies = resolveTechnologies(dto.getTechnologys());
 
-        // 4. Build and persist JobApplication
+        // 4. Resolve or Create Platform
+        Platform platform = resolvePlatform(dto);
+
+        // 5. Build and persist JobApplication
         JobApplication jobApplication = JobApplication.builder()
-                .platform(dto.getPlatform())
+                .platform(platform)
                 .postingDate(dto.getPostingDate())
                 .about(dto.getAbout())
                 .role(dto.getRole())
@@ -191,7 +216,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         JobApplication savedApplication = jobApplicationRepository.save(jobApplication);
         logger.info("Saved composite Job Application with ID: " + savedApplication.getId());
 
-        // 5. Automatically create the initial ApplicationStatusHistory record
+        // 6. Automatically create the initial ApplicationStatusHistory record
         ApplicationStatusHistory statusHistory = ApplicationStatusHistory.builder()
                 .status(savedApplication.getStatus())
                 .changedAt(LocalDateTime.now())
@@ -263,5 +288,47 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             }
         }
         return resolvedList;
+    }
+
+    private Platform resolvePlatform(JobApplicationCompositeRequestDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        if (dto.getPlatformId() != null) {
+            return platformRepository.findById(dto.getPlatformId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Platform", "id", dto.getPlatformId()));
+        }
+        if (dto.getPlatformNested() != null) {
+            if (dto.getPlatformNested().getId() != null) {
+                return platformRepository.findById(dto.getPlatformNested().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Platform", "id", dto.getPlatformNested().getId()));
+            }
+            if (dto.getPlatformNested().getName() != null && !dto.getPlatformNested().getName().trim().isEmpty()) {
+                String name = dto.getPlatformNested().getName().trim();
+                return platformRepository.findFirstByNameIgnoreCase(name)
+                        .orElseGet(() -> {
+                            User user = userRepository.findAll().stream().findFirst().orElse(null);
+                            return platformRepository.save(Platform.builder()
+                                    .name(name)
+                                    .accountLink(dto.getPlatformNested().getAccountLink())
+                                    .user(user)
+                                    .lastUpdatedDate(LocalDateTime.now())
+                                    .build());
+                        });
+            }
+        }
+        if (dto.getPlatform() != null && !dto.getPlatform().trim().isEmpty()) {
+            String name = dto.getPlatform().trim();
+            return platformRepository.findFirstByNameIgnoreCase(name)
+                    .orElseGet(() -> {
+                        User user = userRepository.findAll().stream().findFirst().orElse(null);
+                        return platformRepository.save(Platform.builder()
+                                .name(name)
+                                .user(user)
+                                .lastUpdatedDate(LocalDateTime.now())
+                                .build());
+                    });
+        }
+        return null;
     }
 }

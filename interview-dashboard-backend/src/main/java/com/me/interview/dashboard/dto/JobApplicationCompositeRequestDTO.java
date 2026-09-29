@@ -11,6 +11,8 @@ import java.util.List;
 @Data
 public class JobApplicationCompositeRequestDTO {
     private String platform;
+    private Long platformId;
+    private PlatformNestedDTO platformNested;
     private LocalDate postingDate;
     private String about;
     private String role;

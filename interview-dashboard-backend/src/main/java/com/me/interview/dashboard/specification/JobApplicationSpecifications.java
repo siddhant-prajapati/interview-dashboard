@@ -5,6 +5,7 @@ import com.me.interview.dashboard.dto.JobApplicationFilterDTO;
 import com.me.interview.dashboard.enumeration.ApplicationStatus;
 import com.me.interview.dashboard.enumeration.JobType;
 import com.me.interview.dashboard.model.JobApplication;
+import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -20,6 +21,7 @@ public class JobApplicationSpecifications {
         }
 
         return spec.and(hasPlatform(filter.getPlatform()))
+                .and(hasPlatformId(filter.getPlatformId()))
                 .and(hasRole(filter.getRole()))
                 .and(hasStatus(filter.getStatus()))
                 .and(hasJobType(filter.getJobType()))
@@ -32,7 +34,12 @@ public class JobApplicationSpecifications {
     public static Specification<JobApplication> hasPlatform(String platform) {
         return (root, query, criteriaBuilder) ->
                 platform == null || platform.isEmpty() ? null :
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("platform")), "%" + platform.toLowerCase() + "%");
+                        criteriaBuilder.like(criteriaBuilder.lower(root.join("platform", JoinType.LEFT).get("name")), "%" + platform.toLowerCase() + "%");
+    }
+
+    public static Specification<JobApplication> hasPlatformId(Long platformId) {
+        return (root, query, criteriaBuilder) ->
+                platformId == null ? null : criteriaBuilder.equal(root.get("platform").get("id"), platformId);
     }
 
     public static Specification<JobApplication> hasRole(String role) {
