@@ -7,9 +7,13 @@ import com.me.interview.dashboard.dto.QuestionResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface QuestionService {
 
     QuestionResponseDTO createQuestion(QuestionRequestDTO requestDTO);
+
+    List<QuestionResponseDTO> createQuestionsBulk(List<QuestionRequestDTO> requestDTOs);
 
     QuestionResponseDTO getQuestionById(Long id);
 

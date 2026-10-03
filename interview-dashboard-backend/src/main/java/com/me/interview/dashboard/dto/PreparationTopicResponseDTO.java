@@ -14,5 +14,5 @@ public class PreparationTopicResponseDTO {
     private Long parentId;
 
     // Nested children to easily build category trees in the UI
-    private List<PreparationTopicResponseDTO> children;
+    private List<PreparationTopicResponseDTO> subTopics;
 }

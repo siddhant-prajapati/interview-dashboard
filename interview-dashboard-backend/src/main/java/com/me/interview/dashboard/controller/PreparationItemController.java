@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/preparation-items")
 @RequiredArgsConstructor
@@ -35,6 +37,17 @@ public class PreparationItemController {
     })
     public ResponseEntity<PreparationItemResponseDTO> createItem(@RequestBody PreparationItemRequestDTO requestDTO) {
         PreparationItemResponseDTO response = itemService.createItem(requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(summary = "Bulk create Preparation Items", description = "Creates multiple preparation items in bulk and links them to their referenced topics.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Preparation Items created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload provided")
+    })
+    public ResponseEntity<List<PreparationItemResponseDTO>> createItemsBulk(@RequestBody List<PreparationItemRequestDTO> requestDTOs) {
+        List<PreparationItemResponseDTO> response = itemService.createItemsBulk(requestDTOs);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

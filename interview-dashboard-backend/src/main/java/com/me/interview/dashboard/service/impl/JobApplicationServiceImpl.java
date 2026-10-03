@@ -55,6 +55,33 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     }
 
     @Override
+    @Transactional
+    public List<JobApplicationResponseDTO> createJobApplicationsBulk(List<JobApplicationRequestDTO> requestDTOs) {
+        logger.info("Attempting bulk creation of Job Applications. Total: " + (requestDTOs != null ? requestDTOs.size() : 0));
+
+        if (requestDTOs == null || requestDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        try {
+            List<JobApplication> applications = new ArrayList<>();
+            for (JobApplicationRequestDTO dto : requestDTOs) {
+                JobApplication jobApplication = jobApplicationMapper.toEntity(dto);
+                // Resolve all parent/foreign relations (company, platform, resume, technologies)
+                resolveRelationships(jobApplication, dto);
+                applications.add(jobApplication);
+            }
+
+            List<JobApplication> savedApplications = jobApplicationRepository.saveAll(applications);
+            logger.info("Successfully created " + savedApplications.size() + " Job Applications in bulk");
+            return jobApplicationMapper.toDtoList(savedApplications);
+        } catch (Exception e) {
+            logger.error("Failed to bulk create Job Applications: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public JobApplicationResponseDTO getJobApplicationById(Long id) {
         logger.info("Fetching Job Application with ID: " + id);

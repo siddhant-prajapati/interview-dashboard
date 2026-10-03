@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/job-applications")
 @RequiredArgsConstructor
@@ -39,6 +41,18 @@ public class JobApplicationController {
             @RequestBody JobApplicationRequestDTO requestDTO) {
         JobApplicationResponseDTO createdApplication = jobApplicationService.createJobApplication(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdApplication);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(summary = "Bulk create Job Applications", description = "Creates multiple job applications in bulk, resolving foreign keys (companyId, platformId, resumeId, technologyIds) when present.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Job Applications created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload provided")
+    })
+    public ResponseEntity<List<JobApplicationResponseDTO>> createJobApplicationsBulk(
+            @RequestBody List<JobApplicationRequestDTO> requestDTOs) {
+        List<JobApplicationResponseDTO> createdApplications = jobApplicationService.createJobApplicationsBulk(requestDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdApplications);
     }
 
     @PostMapping("/composite")

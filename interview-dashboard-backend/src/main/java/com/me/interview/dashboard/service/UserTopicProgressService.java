@@ -6,8 +6,11 @@ import com.me.interview.dashboard.dto.UserTopicProgressResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface UserTopicProgressService {
     UserTopicProgressResponseDTO createProgress(UserTopicProgressRequestDTO requestDTO);
+    List<UserTopicProgressResponseDTO> createProgressBulk(List<UserTopicProgressRequestDTO> requestDTOs);
     UserTopicProgressResponseDTO getProgressById(Long id);
     Page<UserTopicProgressResponseDTO> getAllProgress(UserTopicProgressFilterDTO filter, Pageable pageable);
     UserTopicProgressResponseDTO updateProgress(Long id, UserTopicProgressRequestDTO requestDTO);

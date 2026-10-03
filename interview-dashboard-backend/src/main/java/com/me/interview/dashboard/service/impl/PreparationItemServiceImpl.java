@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +38,11 @@ public class PreparationItemServiceImpl implements PreparationItemService {
     public PreparationItemResponseDTO createItem(PreparationItemRequestDTO requestDTO) {
         logger.info("Attempting to create Preparation Item: " + requestDTO.getTitle());
 
-        PreparationTopic topic = topicRepository.findById(requestDTO.getTopicId())
-                .orElseThrow(() -> new ResourceNotFoundException("PreparationTopic", "id", requestDTO.getTopicId()));
+        PreparationTopic topic = null;
+        if (requestDTO.getTopicId() != null) {
+            topic = topicRepository.findById(requestDTO.getTopicId())
+                    .orElseThrow(() -> new ResourceNotFoundException("PreparationTopic", "id", requestDTO.getTopicId()));
+        }
 
         try {
             PreparationItem item = itemMapper.toEntity(requestDTO);
@@ -53,6 +58,43 @@ public class PreparationItemServiceImpl implements PreparationItemService {
             return itemMapper.toDto(savedItem);
         } catch (Exception e) {
             logger.error("Failed to create Preparation Item: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<PreparationItemResponseDTO> createItemsBulk(List<PreparationItemRequestDTO> requestDTOs) {
+        logger.info("Attempting bulk creation of Preparation Items. Total: " + (requestDTOs != null ? requestDTOs.size() : 0));
+
+        if (requestDTOs == null || requestDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        try {
+            List<PreparationItem> items = new ArrayList<>();
+            for (PreparationItemRequestDTO dto : requestDTOs) {
+                // In case parent topicId is present, resolve parent topic
+                PreparationTopic topic = null;
+                if (dto.getTopicId() != null) {
+                    topic = topicRepository.findById(dto.getTopicId())
+                            .orElseThrow(() -> new ResourceNotFoundException("PreparationTopic", "id", dto.getTopicId()));
+                }
+
+                PreparationItem item = itemMapper.toEntity(dto);
+                item.setTopic(topic);
+
+                if (Boolean.TRUE.equals(dto.getCompleted()) && item.getCompletedAt() == null) {
+                    item.setCompletedAt(LocalDate.now());
+                }
+                items.add(item);
+            }
+
+            List<PreparationItem> savedItems = itemRepository.saveAll(items);
+            logger.info("Successfully created " + savedItems.size() + " preparation items in bulk");
+            return itemMapper.toDtoList(savedItems);
+        } catch (Exception e) {
+            logger.error("Failed to bulk create Preparation Items: " + e.getMessage());
             throw e;
         }
     }

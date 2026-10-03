@@ -148,11 +148,19 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void seedPreparationTopicsAndItems() {
-        if (topicRepository.count() == 0) {
-            loadFromResource("data/preparation_topics.json", new TypeReference<List<PreparationTopic>>() {}, topics -> {
-                topicRepository.saveAll(topics);
-                log.info("Successfully seeded {} preparation topics from preparation_topics.json", topics.size());
-            });
+        if (topicRepository.count() < 10) {
+            if (topicRepository.count() > 0 && itemRepository.count() == 0) {
+                topicRepository.deleteAll();
+            }
+            if (topicRepository.count() == 0) {
+                loadFromResource("data/preparation_topics.json", new TypeReference<List<PreparationTopic>>() {}, topics -> {
+                    int totalSeeded = 0;
+                    for (PreparationTopic topic : topics) {
+                        totalSeeded += seedTopicRecursive(topic, null);
+                    }
+                    log.info("Successfully seeded {} preparation topics hierarchically from preparation_topics.json", totalSeeded);
+                });
+            }
         }
 
         if (itemRepository.count() == 0) {
@@ -181,6 +189,26 @@ public class DataInitializer implements CommandLineRunner {
                 log.info("Successfully seeded {} preparation items from preparation_items.json", items.size());
             });
         }
+    }
+
+    private int seedTopicRecursive(PreparationTopic topic, PreparationTopic parent) {
+        topic.setParent(parent);
+        List<PreparationTopic> children = topic.getChildren();
+        topic.setChildren(new ArrayList<>());
+        PreparationTopic savedTopic = topicRepository.save(topic);
+        int count = 1;
+        if (children != null && !children.isEmpty()) {
+            List<PreparationTopic> savedChildren = new ArrayList<>();
+            for (PreparationTopic child : children) {
+                if (child.getCategory() == null && savedTopic.getCategory() != null) {
+                    child.setCategory(savedTopic.getCategory());
+                }
+                count += seedTopicRecursive(child, savedTopic);
+                savedChildren.add(child);
+            }
+            savedTopic.setChildren(savedChildren);
+        }
+        return count;
     }
 
     private void seedQuestions() {

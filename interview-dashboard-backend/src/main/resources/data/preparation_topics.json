@@ -3,23 +3,23 @@
     "name": "Data Structures & Algorithms",
     "description": "DSA interview preparation covering fundamental data structures, problem-solving patterns, and algorithmic techniques.",
     "category": "DSA",
-    "children": [
+    "subTopics": [
       {
         "name": "Prefix Sum",
         "description": "Use cumulative sums to efficiently calculate subarray sums and solve range and exact-sum problems.",
         "category": "DSA",
-        "children": [
+        "subTopics": [
           {
             "name": "Prefix Sum Fundamentals",
             "description": "Build cumulative sums and use prefix sums to calculate subarray sums efficiently.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Prefix Sum with HashMap",
             "description": "Use prefix sums with a HashMap to solve exact subarray sum problems, including cases containing negative numbers.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -27,18 +27,18 @@
         "name": "Binary Search",
         "description": "Use binary search to efficiently search sorted data and monotonic answer spaces.",
         "category": "DSA",
-        "children": [
+        "subTopics": [
           {
             "name": "Binary Search Fundamentals",
             "description": "Search for an element in a sorted array using left, right, and middle pointers.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Binary Search on Answer",
             "description": "Apply binary search to a monotonic search space when the answer itself is not directly present in the array.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -46,72 +46,72 @@
         "name": "Heap / Priority Queue",
         "description": "Heap fundamentals, PriorityQueue operations, Top-K patterns, custom comparators, and advanced heap problems.",
         "category": "DSA",
-        "children": [
+        "subTopics": [
           {
             "name": "Heap Fundamentals",
             "description": "Min Heap, Max Heap, peek, add, poll, and heap time complexity.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Top K Pattern",
             "description": "Kth Largest, Kth Smallest, keeping K largest or smallest elements using heaps.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Kth Largest",
             "description": "Find the Kth largest element using a Min Heap of size K.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Kth Smallest",
             "description": "Find the Kth smallest element using a Max Heap of size K.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Top K Frequent Elements",
             "description": "Use a frequency HashMap and Min Heap of size K with custom comparator and tie-breaking.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Custom Heap Comparator",
             "description": "Design custom PriorityQueue comparators using frequency, distance, and tie-breaking rules to keep the worst candidate at the root.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "K Closest Elements",
             "description": "Keep K elements with the smallest distance from a target using a Max Heap where the farthest element is the worst candidate.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "K Closest Points",
             "description": "Use a Max Heap of size K based on x² + y² where the farthest point is the worst candidate and is removed first.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Merge K Sorted Lists",
             "description": "Use a Min Heap containing one current element from each sorted list and insert the next element from the list after polling.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Kth Largest in Stream",
             "description": "Maintain a Min Heap of size K while processing streaming values.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Median From Data Stream",
             "description": "Use two heaps: Max Heap for the smaller half and Min Heap for the larger half while maintaining balanced heap sizes.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -119,35 +119,35 @@
         "name": "Sliding Window",
         "description": "Solve contiguous subarray and substring problems by maintaining and efficiently updating a window.",
         "category": "DSA",
-        "children": [
+        "subTopics": [
           {
             "name": "Fixed Size Sliding Window",
             "description": "Maintain a window of fixed size and update the result when the window moves.",
             "category": "DSA",
-            "children": [
+            "subTopics": [
               {
                 "name": "Maximum Sum Subarray of Size K",
                 "description": "Maintain the sum of a fixed-size window by adding the incoming element and removing the outgoing element.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Maximum Average Subarray",
                 "description": "Find the maximum average of a fixed-size subarray by maintaining the maximum window sum.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "First Negative Number",
                 "description": "Track indexes of negative numbers using a queue to find the first negative number in every fixed-size window.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Maximum Vowels in Substring",
                 "description": "Maintain the number of vowels in a fixed-size substring by adding the incoming character and removing the outgoing character.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -155,42 +155,42 @@
             "name": "Variable Size Sliding Window",
             "description": "Expand and shrink a dynamic window based on a validity condition to find optimal subarrays or substrings.",
             "category": "DSA",
-            "children": [
+            "subTopics": [
               {
                 "name": "Minimum Subarray Length",
                 "description": "Find the minimum-length contiguous subarray whose sum is at least a target using window expansion and contraction.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Longest Subarray with Constraint",
                 "description": "Find the longest valid subarray by expanding the right pointer and shrinking from the left when the constraint is violated.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Longest Substring Without Repeating Characters",
                 "description": "Use a HashSet and sliding window to maintain a substring containing only unique characters.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "At Most K Distinct Characters",
                 "description": "Use a frequency HashMap to find the longest substring containing at most K distinct characters.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Longest Subarray with At Most K Odd Numbers",
                 "description": "Maintain the count of odd numbers and find the longest contiguous subarray containing at most K odd numbers.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Longest Subarray with Sum Less Than Target",
                 "description": "For positive integers, maintain a variable window whose sum remains strictly less than the target.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -198,18 +198,18 @@
             "name": "Sliding Window with Frequency Map",
             "description": "Use HashMap frequency tracking to maintain character or element counts inside the current window.",
             "category": "DSA",
-            "children": [
+            "subTopics": [
               {
                 "name": "Character Replacement",
                 "description": "Find the longest substring that can be converted into one repeated character using at most K replacements. Required replacements are window size minus maximum frequency.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Minimum Window with Required Characters",
                 "description": "Find the minimum substring containing all required characters by tracking their frequencies and shrinking a valid window.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -217,18 +217,18 @@
             "name": "Longest / Shortest Window",
             "description": "Find the longest or shortest valid contiguous subarray or substring using window expansion and contraction.",
             "category": "DSA",
-            "children": [
+            "subTopics": [
               {
                 "name": "Minimum Length Window",
                 "description": "Once a window becomes valid, repeatedly shrink it to find the smallest possible valid window.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Maximum Length Window",
                 "description": "Maintain a valid window and update the maximum length whenever the current window satisfies the constraint.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -236,18 +236,18 @@
             "name": "Counting with Sliding Window",
             "description": "Count all valid contiguous subarrays by using the current valid window length to determine how many valid subarrays end at the right pointer.",
             "category": "DSA",
-            "children": [
+            "subTopics": [
               {
                 "name": "Count Subarrays with Sum at Most K",
                 "description": "For positive integers, count subarrays with sum less than or equal to K using count += right - left + 1 after restoring window validity.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Count Subarrays with Product Less Than K",
                 "description": "For positive integers, maintain a product-based sliding window and count valid subarrays using the current window length.",
                 "category": "DSA",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -255,7 +255,7 @@
             "name": "Sliding Window Pattern Recognition",
             "description": "Identify when Sliding Window applies and distinguish it from techniques such as Prefix Sum when negative numbers make window behavior unpredictable.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -263,30 +263,30 @@
         "name": "Two Pointers",
         "description": "Solve array and string problems using two indices that move based on the problem conditions.",
         "category": "DSA",
-        "children": [
+        "subTopics": [
           {
             "name": "Opposite Direction Two Pointers",
             "description": "Start pointers from both ends and move them toward each other based on comparisons or constraints.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Same Direction Two Pointers",
             "description": "Use two pointers moving through the array or string at different positions to maintain a valid range.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Sorted Array Two Pointers",
             "description": "Use the sorted order to efficiently find pairs or combinations satisfying a target condition.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Fast and Slow Pointers",
             "description": "Use pointers moving at different speeds for cycle detection, finding the middle, and related linked-list patterns.",
             "category": "DSA",
-            "children": []
+            "subTopics": []
           }
         ]
       }
@@ -296,46 +296,46 @@
     "name": "System Design",
     "description": "Comprehensive study guide covering Low-Level Design (LLD) and High-Level Design (HLD).",
     "category": "SYSTEM_DESIGN",
-    "children": [
+    "subTopics": [
       {
         "name": "Low-Level Design (LLD) / Object-Oriented Design",
         "description": "Focuses on classes, objects, interfaces, and design patterns.",
         "category": "SYSTEM_DESIGN",
-        "children": [
+        "subTopics": [
           {
             "name": "Design Principles (SOLID)",
             "description": "Core object-oriented design principles to build maintainable, flexible, and scalable software systems.",
             "category": "SYSTEM_DESIGN",
-            "children": [
+            "subTopics": [
               {
                 "name": "Single Responsibility Principle (SRP)",
                 "description": "A class should have only one reason to change, meaning it should perform only a single job or module responsibility.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Open/Closed Principle (OCP)",
                 "description": "Software entities should be open for extension, but closed for modification.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Liskov Substitution Principle (LSP)",
                 "description": "Subtypes must be substitutable for their base types without altering the correctness of the program.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Interface Segregation Principle (ISP)",
                 "description": "Clients should not be forced to depend upon interfaces and methods they do not use.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Dependency Inversion Principle (DIP)",
                 "description": "High-level modules should depend on abstractions rather than low-level modules and concrete implementations.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -343,41 +343,41 @@
             "name": "Design Patterns (Gang of GoF)",
             "description": "Standard reusable solutions to common software design problems in enterprise systems.",
             "category": "SYSTEM_DESIGN",
-            "children": [
+            "subTopics": [
               {
                 "name": "Creational Patterns",
                 "description": "Mechanisms that deal with object creation mechanisms to increase flexibility and reuse of existing code.",
                 "category": "SYSTEM_DESIGN",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Singleton Pattern",
                     "description": "Ensure a class has only one instance and provide a global point of access to it.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Factory Method Pattern",
                     "description": "Define an interface for creating an object, but let subclasses decide which class to instantiate.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Abstract Factory Pattern",
                     "description": "Provide an interface for creating families of related or dependent objects without specifying concrete classes.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Builder Pattern",
                     "description": "Separate the construction of a complex object from its representation so that the same construction process can create different representations.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Prototype Pattern",
                     "description": "Specify the kinds of objects to create using a prototypical instance, and create new objects by copying this prototype.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -385,36 +385,36 @@
                 "name": "Structural Patterns",
                 "description": "Mechanisms that explain how to assemble objects and classes into larger structures while keeping them flexible and efficient.",
                 "category": "SYSTEM_DESIGN",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Adapter Pattern",
                     "description": "Convert the interface of a class into another interface clients expect, allowing incompatible interfaces to work together.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Decorator Pattern",
                     "description": "Attach additional responsibilities to an object dynamically to provide a flexible alternative to subclassing.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Facade Pattern",
                     "description": "Provide a unified interface to a set of interfaces in a subsystem to make the subsystem easier to use.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Composite Pattern",
                     "description": "Compose objects into tree structures to represent part-whole hierarchies, allowing clients to treat individual objects and compositions uniformly.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Proxy Pattern",
                     "description": "Provide a surrogate or placeholder for another object to control access to it.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -422,30 +422,30 @@
                 "name": "Behavioral Patterns",
                 "description": "Mechanisms that deal with algorithms and the assignment of responsibilities between objects.",
                 "category": "SYSTEM_DESIGN",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Observer Pattern",
                     "description": "Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified automatically.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Strategy Pattern",
                     "description": "Define a family of algorithms, encapsulate each one, and make them interchangeable at runtime.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Command Pattern",
                     "description": "Encapsulate a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "State Pattern",
                     "description": "Allow an object to alter its behavior when its internal state changes, appearing to change its class.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               }
@@ -457,35 +457,35 @@
         "name": "High-Level Design (HLD) / System Architecture",
         "description": "Focuses on system architecture, databases, scaling, and network protocols.",
         "category": "SYSTEM_DESIGN",
-        "children": [
+        "subTopics": [
           {
             "name": "Architectural Patterns",
             "description": "High-level architectural patterns for modern distributed and scalable systems.",
             "category": "SYSTEM_DESIGN",
-            "children": [
+            "subTopics": [
               {
                 "name": "Microservices Architecture",
                 "description": "Decomposing applications into small, loosely coupled, independently deployable services.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Event-Driven Architecture",
                 "description": "Asynchronous communication and workflow management driven by event generation and consumption.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "CQRS (Command Query Responsibility Segregation)",
                 "description": "Separating read and write operations to optimize performance, scalability, and security.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Serverless Architecture",
                 "description": "Executing applications in stateless compute containers managed entirely by cloud providers.",
                 "category": "SYSTEM_DESIGN",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -493,23 +493,23 @@
             "name": "Caching Systems",
             "description": "In-memory data stores and caching strategies to improve system read performance and latency.",
             "category": "SYSTEM_DESIGN",
-            "children": [
+            "subTopics": [
               {
                 "name": "In-Memory Data Stores",
                 "description": "Dedicated distributed memory engines designed for ultra-low latency data access.",
                 "category": "SYSTEM_DESIGN",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Redis",
                     "description": "In-memory key-value data store supporting rich data structures, persistence, and pub/sub.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Memcached",
                     "description": "High-performance, multithreaded in-memory key-value cache designed for string-based data storage.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -517,30 +517,30 @@
                 "name": "Caching Strategies",
                 "description": "Application and database synchronization access patterns.",
                 "category": "SYSTEM_DESIGN",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Cache-Aside (Lazy Loading)",
                     "description": "Application reads from cache first; if missing, reads from DB and populates cache.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Write-Through",
                     "description": "Data is written to the cache and the backing database synchronously.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Write-Behind (Write-Back)",
                     "description": "Data is written to the cache immediately and asynchronously batched to the database.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Refresh-Ahead",
                     "description": "Cache automatically refreshes hot entries before they expire.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -548,30 +548,30 @@
                 "name": "Cache Eviction & Invalidation",
                 "description": "Algorithms and rules for managing capacity limits and data freshness.",
                 "category": "SYSTEM_DESIGN",
-                "children": [
+                "subTopics": [
                   {
                     "name": "LRU (Least Recently Used)",
                     "description": "Evicts the items that have not been accessed for the longest period of time.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "LFU (Least Frequently Used)",
                     "description": "Evicts the items that have the lowest access frequency.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "TTL (Time-To-Live)",
                     "description": "Automatically invalidates and purges keys after a designated duration.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Cache Invalidation & Thundering Herd",
                     "description": "Mitigating stale data, cache breakdown, penetration, and thundering herd stampedes.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               }
@@ -581,29 +581,29 @@
             "name": "Data Management & Storage",
             "description": "Database paradigms, scaling techniques, and transaction consistency models.",
             "category": "SQL",
-            "children": [
+            "subTopics": [
               {
                 "name": "Database Paradigms",
                 "description": "Structural models and data organization across storage types.",
                 "category": "SQL",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Relational Databases (RDBMS)",
                     "description": "Structured tables, foreign keys, schema constraints, and normalized models.",
                     "category": "SQL",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "NoSQL Document Stores",
                     "description": "Flexible semi-structured JSON/BSON storage systems like MongoDB.",
                     "category": "OTHER",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "NoSQL Key-Value & Column Stores",
                     "description": "High-throughput horizontally partitioned storage such as DynamoDB and Cassandra.",
                     "category": "OTHER",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -611,24 +611,24 @@
                 "name": "Database Scaling Techniques",
                 "description": "Approaches for scaling database reads, writes, and capacity across nodes.",
                 "category": "SQL",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Database Sharding",
                     "description": "Horizontal partitioning of database rows across multiple autonomous machines.",
                     "category": "SQL",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Read Replicas & Replication",
                     "description": "Distributing read traffic using asynchronous or synchronous primary-replica copies.",
                     "category": "SQL",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Partitioning Strategies",
                     "description": "Range-based, hash-based, and list-based table partitioning.",
                     "category": "SQL",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -636,24 +636,24 @@
                 "name": "Consistency & Transactions",
                 "description": "Correctness guarantees in single-node and distributed systems.",
                 "category": "SQL",
-                "children": [
+                "subTopics": [
                   {
                     "name": "ACID Properties & Isolation Levels",
                     "description": "Atomicity, Consistency, Isolation (Read Uncommitted to Serializable), and Durability.",
                     "category": "SQL",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "CAP & PACELC Theorems",
                     "description": "Fundamental trade-offs between Consistency, Availability, Partition tolerance, and Latency.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Distributed Transactions (2PC & Saga)",
                     "description": "Managing cross-service transactions using Two-Phase Commit or choreographed/orchestrated Sagas.",
                     "category": "SYSTEM_DESIGN",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               }
@@ -663,23 +663,23 @@
             "name": "Asynchronous Communication",
             "description": "Decoupled messaging systems, brokers, and event pipelines.",
             "category": "OTHER",
-            "children": [
+            "subTopics": [
               {
                 "name": "Message Brokers & Queues",
                 "description": "Point-to-point and worker queue mechanisms for decoupled processing.",
                 "category": "OTHER",
-                "children": [
+                "subTopics": [
                   {
                     "name": "RabbitMQ",
                     "description": "AMQP-based broker emphasizing routing flexibility, exchanges, and guaranteed delivery.",
                     "category": "OTHER",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Apache Kafka",
                     "description": "High-throughput append-only distributed commit log and event streaming platform.",
                     "category": "OTHER",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -687,24 +687,24 @@
                 "name": "Messaging Paradigms & Semantics",
                 "description": "Delivery guarantees and consumption models.",
                 "category": "OTHER",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Publish-Subscribe (Pub/Sub)",
                     "description": "Broadcasting messages to multiple independent consumer subscriptions.",
                     "category": "OTHER",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Delivery Semantics",
                     "description": "Trade-offs and implementations of At-Most-Once, At-Least-Once, and Exactly-Once processing.",
                     "category": "OTHER",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Event Streaming & Consumer Groups",
                     "description": "Partitioned ordered reads and horizontal consumer scale-out in stream processing.",
                     "category": "OTHER",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               }
@@ -714,29 +714,29 @@
             "name": "Security & Identity",
             "description": "Protocols and standards for system security, user identity, and data protection.",
             "category": "SPRING_SECURITY",
-            "children": [
+            "subTopics": [
               {
                 "name": "Authentication & Authorization",
                 "description": "Verifying user identity and enforcing granular permission boundaries.",
                 "category": "SPRING_SECURITY",
-                "children": [
+                "subTopics": [
                   {
                     "name": "OAuth 2.0 & OpenID Connect (OIDC)",
                     "description": "Delegated authorization flows, identity verification, and scopes.",
                     "category": "SPRING_SECURITY",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "JSON Web Tokens (JWT)",
                     "description": "Stateless claims-based tokens with cryptographic signing and verification.",
                     "category": "SPRING_SECURITY",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Role-Based & Attribute-Based Access Control (RBAC/ABAC)",
                     "description": "Access policy enforcement models based on roles, groups, and contextual attributes.",
                     "category": "SPRING_SECURITY",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -744,18 +744,18 @@
                 "name": "Data Protection & API Defense",
                 "description": "Safeguarding communication channels, endpoints, and stored information.",
                 "category": "SPRING_SECURITY",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Encryption (At-Rest & In-Transit)",
                     "description": "Securing data over the wire with TLS/mTLS and on disk using AES encryption.",
                     "category": "SPRING_SECURITY",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "API Security & Rate Limiting",
                     "description": "Throttling, Token Bucket algorithms, CORS, CSRF, and WAF protection.",
                     "category": "SPRING_SECURITY",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               }
@@ -765,23 +765,23 @@
             "name": "Monitoring & Observability",
             "description": "Tools and practices to track, diagnose, and maintain distributed system health.",
             "category": "DEVOPS",
-            "children": [
+            "subTopics": [
               {
                 "name": "Metrics & Dashboards",
                 "description": "Time-series measurement of system counters, gauges, latencies, and saturation.",
                 "category": "DEVOPS",
-                "children": [
+                "subTopics": [
                   {
                     "name": "Prometheus",
                     "description": "Pull-based time-series database and alerting engine using PromQL.",
                     "category": "DEVOPS",
-                    "children": []
+                    "subTopics": []
                   },
                   {
                     "name": "Grafana",
                     "description": "Visualization platform to build interactive operational and business dashboards.",
                     "category": "DEVOPS",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -789,12 +789,12 @@
                 "name": "Distributed Tracing",
                 "description": "End-to-end request propagation across asynchronous distributed services.",
                 "category": "DEVOPS",
-                "children": [
+                "subTopics": [
                   {
                     "name": "OpenTelemetry & Jaeger",
                     "description": "Vendor-agnostic instrumentation APIs, spans, trace context propagation, and Jaeger UI.",
                     "category": "DEVOPS",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               },
@@ -802,12 +802,12 @@
                 "name": "Centralized Logging",
                 "description": "Aggregation, indexing, and search of structured log output across clusters.",
                 "category": "DEVOPS",
-                "children": [
+                "subTopics": [
                   {
                     "name": "ELK / OpenSearch Stack",
                     "description": "Logstash/Fluentd collection, Elasticsearch indexing, and Kibana log exploration.",
                     "category": "DEVOPS",
-                    "children": []
+                    "subTopics": []
                   }
                 ]
               }
@@ -821,71 +821,71 @@
     "name": "SQL",
     "description": "Comprehensive SQL interview preparation covering SQL fundamentals, joins, aggregation, subqueries, correlated subqueries, window functions, and Common Table Expressions (CTEs).",
     "category": "SQL",
-    "children": [
+    "subTopics": [
       {
         "name": "SQL Fundamentals",
         "description": "Core SQL concepts and query-building fundamentals required for working with relational databases.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "SELECT",
             "description": "Retrieving columns and records from database tables using SELECT queries.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "DISTINCT",
             "description": "Removing duplicate rows from query results using DISTINCT.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "WHERE",
             "description": "Filtering rows based on specified conditions.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "ORDER BY",
             "description": "Sorting query results in ascending or descending order.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "LIMIT",
             "description": "Restricting the number of rows returned by a query.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Aliases",
             "description": "Using aliases for columns and tables to make SQL queries shorter and easier to understand.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "LIKE",
             "description": "Pattern matching and filtering string values using LIKE.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "IN",
             "description": "Checking whether a value belongs to a specified set of values.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "BETWEEN",
             "description": "Filtering values within an inclusive range.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "NULL Handling",
             "description": "Understanding NULL values and filtering records involving NULL.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -893,36 +893,36 @@
         "name": "SQL Command Categories",
         "description": "Classification of SQL commands based on their purpose.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "DDL",
             "description": "Data Definition Language commands used to define and modify database structures.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "DML",
             "description": "Data Manipulation Language commands used to insert, update, and delete data.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "DQL",
             "description": "Data Query Language used to retrieve data from databases.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "DCL",
             "description": "Data Control Language used to manage database permissions and access.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "TCL",
             "description": "Transaction Control Language used to manage database transactions.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -930,60 +930,60 @@
         "name": "SQL Query Execution Order",
         "description": "Understanding the logical order in which SQL query clauses are processed.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "FROM",
             "description": "Identifies the source table or tables from which data is retrieved.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "JOIN and ON",
             "description": "Combines related rows from multiple tables using join conditions.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "WHERE",
             "description": "Filters individual rows before grouping and aggregation.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "GROUP BY",
             "description": "Groups rows based on one or more columns for aggregation.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "HAVING",
             "description": "Filters grouped results after aggregation.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "SELECT",
             "description": "Determines the columns and expressions returned in the final result.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "DISTINCT",
             "description": "Removes duplicate rows from the selected result.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "ORDER BY",
             "description": "Sorts the final query result.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "LIMIT",
             "description": "Restricts the number of rows returned.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -991,30 +991,30 @@
         "name": "Joins",
         "description": "Combining data from multiple tables using relationships between columns.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "INNER JOIN",
             "description": "Returns rows where matching records exist in both joined tables.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "LEFT JOIN",
             "description": "Returns all rows from the left table and matching rows from the right table.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "SELF JOIN",
             "description": "Joining a table with itself, commonly used for employee-manager relationships.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "JOIN Conditions",
             "description": "Using ON conditions to correctly relate rows between tables.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -1022,42 +1022,42 @@
         "name": "Aggregate Functions",
         "description": "Calculating summary values across groups or sets of rows.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "COUNT",
             "description": "Counts rows or non-null values.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "AVG",
             "description": "Calculates the average value of a numeric column.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "MAX",
             "description": "Finds the maximum value within a set of rows.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "MIN",
             "description": "Finds the minimum value within a set of rows.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "GROUP BY",
             "description": "Groups rows so aggregate functions can be applied independently to each group.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "HAVING",
             "description": "Filters groups based on aggregate conditions.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -1065,59 +1065,59 @@
         "name": "Subqueries",
         "description": "Using one SQL query inside another query to solve multi-step filtering and comparison problems.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "Basic Subqueries",
             "description": "Using a nested query to provide a value or result set to an outer query.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Scalar Subqueries",
             "description": "Using a subquery that returns a single value for comparison in an outer query.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Correlated Subqueries",
             "description": "Subqueries that reference a column from the outer query and are evaluated relative to each outer row.",
             "category": "SQL",
-            "children": [
+            "subTopics": [
               {
                 "name": "Highest Salary Per Department",
                 "description": "Finding employees whose salary equals the maximum salary within their own department.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Lowest Salary Per Department",
                 "description": "Finding employees whose salary equals the minimum salary within their own department.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Above Department Average",
                 "description": "Finding employees whose salary is greater than the average salary of their own department.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Second Highest Per Department",
                 "description": "Finding the second-highest distinct salary within each department using correlated subqueries.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Salary Compared With Manager",
                 "description": "Comparing an employee's salary with the salary of their manager.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Manager Team Average",
                 "description": "Comparing an employee's salary with the average salary of employees sharing the same manager.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -1125,37 +1125,37 @@
             "name": "EXISTS",
             "description": "Testing whether a correlated subquery returns at least one matching row.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "NOT EXISTS",
             "description": "Testing whether a correlated subquery returns no matching rows.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "ANY",
             "description": "Comparing a value against at least one value returned by a subquery.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "ALL",
             "description": "Comparing a value against every value returned by a subquery.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Duplicate Detection",
             "description": "Finding employees with duplicate salaries while excluding the current employee from the comparison.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Unique Values Within Group",
             "description": "Finding employees whose salary occurs only once within their department.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -1163,53 +1163,53 @@
         "name": "Window Functions",
         "description": "Performing calculations across related rows while preserving individual rows in the result.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "PARTITION BY",
             "description": "Divides rows into logical groups for window calculations without collapsing the rows.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Window ORDER BY",
             "description": "Defines the ordering of rows inside each window partition.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "ROW_NUMBER",
             "description": "Assigns a unique sequential number to each row within a window partition.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "RANK",
             "description": "Assigns the same rank to tied values while leaving gaps after ties.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "DENSE_RANK",
             "description": "Assigns the same rank to tied values without leaving gaps after ties.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "SUM OVER",
             "description": "Calculating totals and running totals using SUM as a window function.",
             "category": "SQL",
-            "children": [
+            "subTopics": [
               {
                 "name": "Department Total",
                 "description": "Calculating the total salary for each department while keeping every employee row.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Running Total",
                 "description": "Calculating cumulative salary values according to a defined row ordering.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -1217,18 +1217,18 @@
             "name": "AVG OVER",
             "description": "Calculating averages across window partitions without collapsing individual rows.",
             "category": "SQL",
-            "children": [
+            "subTopics": [
               {
                 "name": "Department Average",
                 "description": "Adding the department's average salary to every employee row.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Moving Average",
                 "description": "Calculating an average over a limited number of preceding rows and the current row.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -1236,18 +1236,18 @@
             "name": "LAG",
             "description": "Accessing a value from a previous row within an ordered window.",
             "category": "SQL",
-            "children": [
+            "subTopics": [
               {
                 "name": "Previous Salary",
                 "description": "Retrieving the previous employee's salary within the same department.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "Salary Difference",
                 "description": "Comparing the current employee's salary with the previous employee's salary.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -1255,12 +1255,12 @@
             "name": "LEAD",
             "description": "Accessing a value from the next row within an ordered window.",
             "category": "SQL",
-            "children": [
+            "subTopics": [
               {
                 "name": "Next Salary",
                 "description": "Retrieving the next employee's salary within the same department.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -1268,30 +1268,30 @@
             "name": "Window Frames",
             "description": "Controlling exactly which rows are included in a window calculation.",
             "category": "SQL",
-            "children": [
+            "subTopics": [
               {
                 "name": "UNBOUNDED PRECEDING",
                 "description": "Starts the window frame from the first row of the partition.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "CURRENT ROW",
                 "description": "Defines the current row as the end or starting point of a window frame.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "N PRECEDING",
                 "description": "Includes a specified number of rows before the current row.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               },
               {
                 "name": "ROWS BETWEEN",
                 "description": "Defines a row-based window frame for calculations such as running totals and moving averages.",
                 "category": "SQL",
-                "children": []
+                "subTopics": []
               }
             ]
           },
@@ -1299,19 +1299,19 @@
             "name": "Top N Per Group",
             "description": "Finding the top employees within each department using ranking window functions.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Second Highest Per Group",
             "description": "Finding the second-highest distinct salary per department using DENSE_RANK.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Window Function With Subquery",
             "description": "Using a subquery to filter results based on a calculated window-function alias.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -1319,54 +1319,54 @@
         "name": "Common Table Expressions (CTE)",
         "description": "Using named temporary query results to structure complex SQL queries into readable and reusable logical steps.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "CTE Fundamentals",
             "description": "Understanding the WITH clause and defining a named temporary result set.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Basic CTE",
             "description": "Creating a CTE and using it in the main SELECT query.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "CTE With Aggregation",
             "description": "Using GROUP BY and aggregate functions inside a CTE.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "CTE With HAVING",
             "description": "Filtering aggregated groups inside a CTE using HAVING.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "CTE With Window Functions",
             "description": "Combining CTEs with window functions such as DENSE_RANK for multi-step queries.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Multiple CTEs",
             "description": "Defining multiple CTEs in a single WITH clause and combining their results.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "CTE With JOIN",
             "description": "Joining a CTE with the original table or another CTE to solve multi-step problems.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "CTE vs Subquery",
             "description": "Understanding when a named CTE provides better readability and structure than nested subqueries.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       },
@@ -1374,72 +1374,72 @@
         "name": "Interview Problem-Solving Patterns",
         "description": "Practical SQL patterns repeatedly used in interview questions and real-world query development.",
         "category": "SQL",
-        "children": [
+        "subTopics": [
           {
             "name": "Highest Salary",
             "description": "Finding the highest salary globally or within each department.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Second Highest Salary",
             "description": "Finding the second-highest salary using subqueries and ranking techniques.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Highest Salary Per Department",
             "description": "Finding all employees tied for the highest salary in each department.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Second Highest Salary Per Department",
             "description": "Finding employees with the second-highest distinct salary in each department.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Above Department Average",
             "description": "Finding employees earning more than their department's average salary.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Below Department Maximum",
             "description": "Finding employees whose salary is below the highest salary in their department.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Duplicate Salary Detection",
             "description": "Finding employees sharing the same salary within a department.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Employees With Higher-Paid Coworker",
             "description": "Finding employees who have at least one coworker earning more in the same department.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Exactly One Higher-Paid Coworker",
             "description": "Finding employees with exactly one coworker earning a higher salary.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Manager Salary Comparison",
             "description": "Comparing employee salaries with their managers and manager teams.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           },
           {
             "name": "Top N Per Department",
             "description": "Finding a fixed number of highest-paid employees per department using ROW_NUMBER.",
             "category": "SQL",
-            "children": []
+            "subTopics": []
           }
         ]
       }

@@ -29,4 +29,6 @@ public interface QuestionMapper {
         if (interviews == null) return null;
         return interviews.stream().map(Interview::getId).collect(Collectors.toList());
     }
+
+    List<QuestionResponseDTO> toDtoList(List<Question> entities);
 }

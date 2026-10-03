@@ -47,4 +47,6 @@ public interface JobApplicationMapper {
                 .map(Technology::getName)
                 .collect(Collectors.toList());
     }
+
+    List<JobApplicationResponseDTO> toDtoList(List<JobApplication> entities);
 }

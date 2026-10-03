@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/user-topic-progress")
 @RequiredArgsConstructor
@@ -36,6 +38,18 @@ public class UserTopicProgressController {
     public ResponseEntity<UserTopicProgressResponseDTO> createProgress(
             @RequestBody UserTopicProgressRequestDTO requestDTO) {
         UserTopicProgressResponseDTO response = progressService.createProgress(requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(summary = "Bulk create Progress Records", description = "Creates multiple progress tracking records in bulk linking users to topics.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Progress records created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload provided")
+    })
+    public ResponseEntity<List<UserTopicProgressResponseDTO>> createProgressBulk(
+            @RequestBody List<UserTopicProgressRequestDTO> requestDTOs) {
+        List<UserTopicProgressResponseDTO> response = progressService.createProgressBulk(requestDTOs);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
