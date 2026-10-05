@@ -1,12 +1,14 @@
 package com.me.interview.dashboard.service;
 
-import com.me.interview.dashboard.dto.openrouter.OpenRouterRequest;
-import com.me.interview.dashboard.dto.openrouter.OpenRouterResponse;
+import com.me.interview.dashboard.dto.OpenRouterRequest;
+import com.me.interview.dashboard.dto.OpenRouterResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OpenRouterService {
@@ -14,14 +16,16 @@ public class OpenRouterService {
     private final RestClient restClient;
     private final String model;
 
+    @Autowired
     public OpenRouterService(
-            RestClient.Builder restClientBuilder,
+            Optional<RestClient.Builder> restClientBuilder,
             @Value("${openrouter.api-url}") String apiUrl,
             @Value("${openrouter.api-key}") String apiKey,
             @Value("${openrouter.model}") String model) {
         
         this.model = model;
-        this.restClient = restClientBuilder
+        RestClient.Builder builder = restClientBuilder.orElseGet(RestClient::builder);
+        this.restClient = builder
                 .baseUrl(apiUrl)
                 .defaultHeader("Authorization", "Bearer " + apiKey)
                 .defaultHeader("Content-Type", "application/json")
@@ -29,6 +33,13 @@ public class OpenRouterService {
                 .defaultHeader("HTTP-Referer", "http://localhost:8080")
                 .defaultHeader("X-Title", "Interview Command Center")
                 .build();
+    }
+
+    public OpenRouterService(
+            String apiUrl,
+            String apiKey,
+            String model) {
+        this(Optional.of(RestClient.builder()), apiUrl, apiKey, model);
     }
 
     public String generateEmailFromPrompt(String prompt) {

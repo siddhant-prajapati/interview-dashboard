@@ -28,4 +28,4 @@ spring:
 openrouter:
   api-url: https://openrouter.ai/api/v1/chat/completions
   api-key: ${OPENROUTER_API_KEY:your_default_key_here}
-  model: meta-llama/llama-3.1-8b-instruct:free
+  model: ${OPENROUTER_MODEL:openrouter/free}
