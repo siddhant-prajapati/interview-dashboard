@@ -233,6 +233,168 @@ export const mockStore = {
       resume: { id: 1, resumeName: "Kristin_Watson_Dev.pdf" },
       technologies: [{ id: 9, name: "React" }, { id: 2, name: "Spring Boot" }],
       isActive: false
+    },
+    {
+      id: 9,
+      candidateName: "Cameron Williamson",
+      role: "Senior Cloud Architect",
+      platform: "Indeed",
+      postingDate: "2026-09-15",
+      applyDate: "2026-09-18",
+      status: "TECHNICAL_ROUND",
+      jobType: "REMOTE",
+      expectedSalary: "$155,000",
+      experience: 8.0,
+      portfolioShared: true,
+      linkedInProfileShared: true,
+      jobUrl: "https://amazon.jobs/en/109",
+      company: {
+        id: 7,
+        name: "Amazon AWS",
+        contactNumber: "(206) 266-1000",
+        email: "cameron@amazon.com",
+        location: "Seattle, WA",
+        technologyTest: true,
+        workOn: "DynamoDB & SQS Services"
+      },
+      resume: { id: 1, resumeName: "Cameron_Williamson_Cloud.pdf" },
+      technologies: [{ id: 6, name: "AWS" }, { id: 1, name: "Java 21" }, { id: 5, name: "Docker" }],
+      isActive: true
+    },
+    {
+      id: 10,
+      candidateName: "Leslie Alexander",
+      role: "Principal Systems Engineer",
+      platform: "Referral",
+      postingDate: "2026-09-12",
+      applyDate: "2026-09-16",
+      status: "MANAGERIAL_ROUND",
+      jobType: "HYBRID",
+      expectedSalary: "$175,000",
+      experience: 10.0,
+      portfolioShared: true,
+      linkedInProfileShared: true,
+      jobUrl: "https://apple.com/careers/110",
+      company: {
+        id: 8,
+        name: "Apple",
+        contactNumber: "(408) 996-1010",
+        email: "leslie@apple.com",
+        location: "Cupertino, CA",
+        technologyTest: true,
+        workOn: "iCloud Storage Engine"
+      },
+      resume: { id: 1, resumeName: "Leslie_Alexander_Principal.pdf" },
+      technologies: [{ id: 1, name: "Java 21" }, { id: 4, name: "Kafka" }, { id: 8, name: "Redis" }],
+      isActive: true
+    },
+    {
+      id: 11,
+      candidateName: "Guy Hawkins",
+      role: "Backend Microservices Lead",
+      platform: "Wellfound",
+      postingDate: "2026-09-14",
+      applyDate: "2026-09-19",
+      status: "APPLIED",
+      jobType: "REMOTE",
+      expectedSalary: "$140,000",
+      experience: 6.0,
+      portfolioShared: false,
+      linkedInProfileShared: true,
+      jobUrl: "https://netflix.com/jobs/111",
+      company: {
+        id: 9,
+        name: "Netflix",
+        contactNumber: "(408) 540-3700",
+        email: "guy@netflix.com",
+        location: "Los Gatos, CA",
+        technologyTest: true,
+        workOn: "Playback Streaming Architecture"
+      },
+      resume: { id: 1, resumeName: "Guy_Hawkins_Lead.pdf" },
+      technologies: [{ id: 1, name: "Java 21" }, { id: 2, name: "Spring Boot" }],
+      isActive: true
+    },
+    {
+      id: 12,
+      candidateName: "Bessie Cooper",
+      role: "Observability Platform Engineer",
+      platform: "LinkedIn",
+      postingDate: "2026-09-08",
+      applyDate: "2026-09-11",
+      status: "OFFER",
+      jobType: "REMOTE",
+      expectedSalary: "$150,000",
+      experience: 5.5,
+      portfolioShared: true,
+      linkedInProfileShared: true,
+      jobUrl: "https://datadoghq.com/careers/112",
+      company: {
+        id: 10,
+        name: "Datadog",
+        contactNumber: "(866) 329-4601",
+        email: "bessie@datadoghq.com",
+        location: "New York, NY",
+        technologyTest: false,
+        workOn: "APM Distributed Tracing"
+      },
+      resume: { id: 1, resumeName: "Bessie_Cooper_Dev.pdf" },
+      technologies: [{ id: 1, name: "Java 21" }, { id: 7, name: "Kubernetes" }],
+      isActive: true
+    },
+    {
+      id: 13,
+      candidateName: "Devon Lane",
+      role: "High-Throughput API Engineer",
+      platform: "Indeed",
+      postingDate: "2026-09-16",
+      applyDate: "2026-09-20",
+      status: "APPLIED",
+      jobType: "ON_SITE",
+      expectedSalary: "$135,000",
+      experience: 4.5,
+      portfolioShared: true,
+      linkedInProfileShared: false,
+      jobUrl: "https://uber.com/careers/113",
+      company: {
+        id: 11,
+        name: "Uber",
+        contactNumber: "(415) 612-8582",
+        email: "devon@uber.com",
+        location: "San Francisco, CA",
+        technologyTest: true,
+        workOn: "Dispatching & Routing Engine"
+      },
+      resume: { id: 1, resumeName: "Devon_Lane_API.pdf" },
+      technologies: [{ id: 4, name: "Kafka" }, { id: 3, name: "MySQL" }],
+      isActive: true
+    },
+    {
+      id: 14,
+      candidateName: "Theresa Webb",
+      role: "Data Infrastructure Specialist",
+      platform: "Company Portal",
+      postingDate: "2026-09-10",
+      applyDate: "2026-09-13",
+      status: "HR_SCREENING",
+      jobType: "HYBRID",
+      expectedSalary: "$142,000",
+      experience: 6.0,
+      portfolioShared: true,
+      linkedInProfileShared: true,
+      jobUrl: "https://stripe.com/jobs/114",
+      company: {
+        id: 12,
+        name: "Stripe",
+        contactNumber: "(888) 926-2289",
+        email: "theresa@stripe.com",
+        location: "San Francisco, CA",
+        technologyTest: true,
+        workOn: "Global Payment Ledger"
+      },
+      resume: { id: 1, resumeName: "Theresa_Webb_Data.pdf" },
+      technologies: [{ id: 1, name: "Java 21" }, { id: 8, name: "Redis" }, { id: 3, name: "MySQL" }],
+      isActive: true
     }
   ] as JobApplication[],
 
@@ -353,7 +515,7 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
     return {
       content: mockStore.jobApplications,
       totalElements: mockStore.jobApplications.length,
-      totalPages: 1,
+      totalPages: Math.max(1, Math.ceil(mockStore.jobApplications.length / 10)),
       size: 10,
       number: 0
     } as T;
@@ -388,7 +550,7 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
     return {
       content: mockStore.companies,
       totalElements: mockStore.companies.length,
-      totalPages: 1,
+      totalPages: Math.max(1, Math.ceil(mockStore.companies.length / 10)),
       size: 10,
       number: 0
     } as T;
@@ -398,7 +560,7 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
     return {
       content: mockStore.interviews,
       totalElements: mockStore.interviews.length,
-      totalPages: 1,
+      totalPages: Math.max(1, Math.ceil(mockStore.interviews.length / 10)),
       size: 10,
       number: 0
     } as T;
@@ -408,7 +570,7 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
     return {
       content: mockStore.preparationTopics,
       totalElements: mockStore.preparationTopics.length,
-      totalPages: 1,
+      totalPages: Math.max(1, Math.ceil(mockStore.preparationTopics.length / 10)),
       size: 10,
       number: 0
     } as T;

@@ -77,7 +77,9 @@ export interface JobApplication {
   id: number;
   candidateName?: string;
   role: string;
-  platform?: string;
+  platform?: Platform | string;
+  platformName?: string;
+  platformId?: number;
   postingDate?: string;
   about?: string;
   experience?: number;

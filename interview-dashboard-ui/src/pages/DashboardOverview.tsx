@@ -151,9 +151,7 @@ export default function DashboardOverview() {
         subtitle="Active Pipeline & Interview Stages"
         columns={columns}
         data={applications}
-        totalEntries={256000}
         pageSize={8}
-        currentPage={1}
       />
 
       {/* Application Creation Modal */}
