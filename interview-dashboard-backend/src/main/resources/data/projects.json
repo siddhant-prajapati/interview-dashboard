@@ -22,11 +22,11 @@
     "status": "IN_PROGRESS",
     "type": "MVP",
     "githubUrl": null,
-    "liveUrl": null,
-    "createdDate": null,
-    "completionDate": null,
-    "createdAt": null,
-    "updatedAt": null,
+    "liveUrl": "https://real-estate-chatbot-sable.vercel.app/",
+    "createdDate": "2026/08/01",
+    "completionDate": "2026/08/02",
+    "createdAt": "2026/10/06",
+    "updatedAt": "2026/10/06",
     "userId": 1
   },
   {
@@ -48,13 +48,13 @@
     ],
     "about": "JobMatch recommends open roles to a candidate from a knowledge graph of people, skills, companies, jobs, and locations.",
     "githubUrl": null,
-    "liveUrl": null,
+    "liveUrl": "https://job-recommendation-seven.vercel.app/",
     "status": "IN_PROGRESS",
     "type": "MVP",
-    "createdDate": null,
-    "completionDate": null,
-    "createdAt": null,
-    "updatedAt": null,
+    "createdDate": "2026/08/07",
+    "completionDate": "2026/08/08",
+    "createdAt": "2026/10/06",
+    "updatedAt": "2026/10/06",
     "userId": 1
   },
   {
@@ -73,13 +73,13 @@
     ],
     "about": "Production-oriented SaaS MVP for managing employees, attendance, leave, and payroll.",
     "githubUrl": null,
-    "liveUrl": null,
+    "liveUrl": "https://mini-payroll.vercel.app/",
     "status": "IN_PROGRESS",
     "type": "MVP",
-    "createdDate": null,
-    "completionDate": null,
-    "createdAt": null,
-    "updatedAt": null,
+    "createdDate": "2026/08/12",
+    "completionDate": "2026/08/13",
+    "createdAt": "2026/10/06",
+    "updatedAt": "2026/10/06",
     "userId": 1
   },
   {
@@ -95,10 +95,10 @@
     "liveUrl": null,
     "status": "IN_PROGRESS",
     "type": "COMPLETE_USECASE",
-    "createdDate": null,
+    "createdDate": "2026/08/21",
     "completionDate": null,
-    "createdAt": null,
-    "updatedAt": null,
+    "createdAt": "2026/10/06",
+    "updatedAt": "2026/10/06",
     "userId": 1
   },
   {
@@ -115,10 +115,10 @@
     "liveUrl": "https://weatherapp-7vmb.onrender.com/",
     "status": "COMPLETED",
     "type": "DEMO",
-    "createdDate": null,
+    "createdDate": "2026/06/01",
     "completionDate": null,
-    "createdAt": null,
-    "updatedAt": null,
+    "createdAt": "2026/10/06",
+    "updatedAt": "2026/10/06",
     "userId": 1
   },
   {
@@ -139,10 +139,10 @@
     "liveUrl": null,
     "status": "COMPLETED",
     "type": "MVP",
-    "createdDate": null,
+    "createdDate": "2026/04/11",
     "completionDate": null,
-    "createdAt": null,
-    "updatedAt": null,
+    "createdAt": "2026/10/06",
+    "updatedAt": "2026/10/06",
     "userId": 1
   },
   {
@@ -159,10 +159,10 @@
     "liveUrl": "https://weatherapp-7vmb.onrender.com/",
     "status": "COMPLETED",
     "type": "DEMO",
-    "createdDate": null,
-    "completionDate": null,
-    "createdAt": null,
-    "updatedAt": null,
+    "createdDate": "2025/10/12",
+    "completionDate": "2025/10/13",
+    "createdAt": "2026/10/06",
+    "updatedAt": "2026/10/06",
     "userId": 1
   },
   {
@@ -182,10 +182,10 @@
     "liveUrl": null,
     "status": "ON_HOLD",
     "type": "MVP",
-    "createdDate": null,
-    "completionDate": null,
-    "createdAt": null,
-    "updatedAt": null,
+    "createdDate": "2026/01/12",
+    "completionDate": "2026/01/27",
+    "createdAt": "2026/10/06",
+    "updatedAt": "2026/10/06",
     "userId": 1
   }
 ]
