@@ -4,8 +4,8 @@ import Header from '../components/layout/Header';
 import Modal from '../components/common/Modal';
 import { preparationApi } from '../api/preparationApi';
 import { mockStore } from '../api/client';
-import { Plus, CheckSquare, Square, Flame, BookOpen, RotateCcw } from 'lucide-react';
-import { PreparationTopic, TopicCategory } from '../types';
+import { Plus, CheckSquare, Square, Flame, BookOpen, RotateCcw, Trash2 } from 'lucide-react';
+import { PreparationTopic, PreparationItem, TopicCategory } from '../types';
 import { AppOutletContext } from '../components/layout/AppLayout';
 
 export default function PreparationPage() {
@@ -13,11 +13,14 @@ export default function PreparationPage() {
   const [topics, setTopics] = useState<PreparationTopic[]>([]);
   const [selectedTopic, setSelectedTopic] = useState<PreparationTopic | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('');
   const [newTopicName, setNewTopicName] = useState('');
   const [newTopicCategory, setNewTopicCategory] = useState<TopicCategory>('JAVA');
   const [newTopicDesc, setNewTopicDesc] = useState('');
+  const [newItemTitle, setNewItemTitle] = useState('');
+  const [newItemType, setNewItemType] = useState('CONCEPT');
 
-  const [items, setItems] = useState([
+  const [items, setItems] = useState<PreparationItem[]>([
     { id: 1, title: "Virtual Threads & Structured Concurrency in Project Loom", type: "CONCEPT", difficulty: 4, completed: true },
     { id: 2, title: "Implement an LRU Cache with Thread-Safety", type: "PROBLEM", difficulty: 3, completed: true },
     { id: 3, title: "Deep dive into Spring Data JPA N+1 problem and EntityGraph", type: "ARTICLE", difficulty: 3, completed: false },
@@ -48,38 +51,117 @@ export default function PreparationPage() {
     };
   }, []);
 
-  const handleToggleItem = (id: number) => {
+  // Fetch real items for the selected topic
+  useEffect(() => {
+    if (!selectedTopic?.id) return;
+    (async () => {
+      try {
+        const res = await preparationApi.getItems({ topicId: selectedTopic.id });
+        if (res && res.content && res.content.length > 0) {
+          setItems(res.content);
+        } else if (Array.isArray(res) && res.length > 0) {
+          setItems(res);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch items for topic:', err);
+      }
+    })();
+  }, [selectedTopic]);
+
+  const handleToggleItem = async (id: number) => {
+    const target = items.find((it) => it.id === id);
+    if (!target) return;
+    const newCompleted = !target.completed;
     setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, completed: !it.completed } : it))
+      prev.map((it) => (it.id === id ? { ...it, completed: newCompleted } : it))
     );
+    try {
+      await preparationApi.updateItem(id, {
+        title: target.title,
+        type: target.type,
+        difficulty: target.difficulty || 3,
+        topicId: selectedTopic?.id,
+        completed: newCompleted,
+      });
+    } catch (err) {
+      console.warn('Update item backend fallback:', err);
+    }
+  };
+
+  const handleAddItem = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newItemTitle.trim() || !selectedTopic) return;
+    const payload = {
+      title: newItemTitle.trim(),
+      type: newItemType,
+      difficulty: 3,
+      topicId: selectedTopic.id,
+      completed: false,
+    };
+    try {
+      const created = await preparationApi.createItem(payload);
+      setItems((prev) => [...prev, created || { id: Date.now(), ...payload }]);
+    } catch (err) {
+      console.warn('Create item backend fallback:', err);
+      setItems((prev) => [...prev, { id: Date.now(), ...payload }]);
+    }
+    setNewItemTitle('');
   };
 
   const handleCreateTopic = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newTopic: PreparationTopic = {
-      id: Date.now(),
+    const payload = {
       name: newTopicName,
       category: newTopicCategory,
       description: newTopicDesc,
-      itemCount: 4,
-      progress: 0,
     };
     try {
-      await preparationApi.createTopic(newTopic);
+      const created = await preparationApi.createTopic(payload);
+      const newTopic: PreparationTopic = {
+        ...(created || payload),
+        id: created?.id || Date.now(),
+        itemCount: 0,
+        progress: 0,
+      };
+      setTopics((prev) => [...prev, newTopic]);
     } catch (err) {
-      console.warn('Backend offline, saving topic in-memory:', err);
+      console.warn('Backend topic creation fallback:', err);
+      setTopics((prev) => [...prev, { id: Date.now(), ...payload, itemCount: 0, progress: 0 }]);
     }
-    setTopics((prev) => [...prev, newTopic]);
     setNewTopicName('');
     setNewTopicDesc('');
     setIsModalOpen(false);
   };
+
+  const handleDeleteTopic = async (e: React.MouseEvent, id: number) => {
+    e.stopPropagation();
+    if (!window.confirm('Delete this preparation topic?')) return;
+    try {
+      await preparationApi.deleteTopic(id);
+    } catch (err) {
+      console.warn('Delete topic fallback:', err);
+    }
+    setTopics((prev) => prev.filter((t) => t.id !== id));
+    if (selectedTopic?.id === id) setSelectedTopic(null);
+  };
+
+  const filteredTopics = topics.filter((t) => {
+    if (!searchFilter.trim()) return true;
+    const term = searchFilter.toLowerCase();
+    return (
+      (t.name && t.name.toLowerCase().includes(term)) ||
+      (t.category && t.category.toLowerCase().includes(term)) ||
+      (t.description && t.description.toLowerCase().includes(term))
+    );
+  });
 
   return (
     <div className="animate-fade-in">
       <Header
         greeting="Preparation Roadmap 📚"
         placeholder="Filter topics..."
+        searchValue={searchFilter}
+        onSearchChange={setSearchFilter}
         onToggleMobileMenu={toggleMobileMenu}
         actionButton={
           <button 
@@ -95,7 +177,7 @@ export default function PreparationPage() {
 
       {/* Topic Grid */}
       <div className="topic-cards-grid">
-        {topics.map((topic) => (
+        {filteredTopics.map((topic) => (
           <div
             key={topic.id}
             className="topic-card-item"
@@ -105,9 +187,19 @@ export default function PreparationPage() {
               <span className="tag-pill topic-category-tag">
                 {topic.category}
               </span>
-              <div className="topic-status-success">
-                <Flame size={14} color="#00AC4F" />
-                <span>{topic.progress || 75}% Mastered</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="topic-status-success">
+                  <Flame size={14} color="#00AC4F" />
+                  <span>{topic.progress || 75}% Mastered</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={(e) => handleDeleteTopic(e, topic.id)}
+                  className="table-action-icon-btn"
+                  title="Delete Topic"
+                >
+                  <Trash2 size={15} color="#DF0404" />
+                </button>
               </div>
             </div>
 
@@ -125,7 +217,7 @@ export default function PreparationPage() {
             <div className="topic-card-footer">
               <span className="topic-stat-label">
                 <BookOpen size={14} color="#9197B3" />
-                {topic.itemCount || 12} Items
+                {topic.itemCount || items.length || 4} Items
               </span>
               <span className="topic-stat-action">
                 <RotateCcw size={13} color="#5932EA" />
@@ -170,6 +262,33 @@ export default function PreparationPage() {
               </div>
             ))}
           </div>
+
+          {/* Quick Add Item Form */}
+          <form onSubmit={handleAddItem} style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+            <input
+              type="text"
+              placeholder="Add new study item or question..."
+              value={newItemTitle}
+              onChange={(e) => setNewItemTitle(e.target.value)}
+              className="modal-input-field"
+              style={{ flex: 1 }}
+              required
+            />
+            <select
+              value={newItemType}
+              onChange={(e) => setNewItemType(e.target.value)}
+              className="modal-select-field"
+              style={{ width: '130px' }}
+            >
+              <option value="CONCEPT">Concept</option>
+              <option value="PROBLEM">Problem</option>
+              <option value="ARTICLE">Article</option>
+              <option value="ASSIGNMENT">Task</option>
+            </select>
+            <button type="submit" className="action-primary-btn" style={{ padding: '0 14px' }}>
+              Add
+            </button>
+          </form>
         </Modal>
       )}
 

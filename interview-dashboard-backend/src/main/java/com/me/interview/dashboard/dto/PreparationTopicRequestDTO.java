@@ -1,5 +1,7 @@
 package com.me.interview.dashboard.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.me.interview.dashboard.enumeration.TopicCategory;
 import lombok.Data;
 
@@ -11,5 +13,16 @@ public class PreparationTopicRequestDTO {
     private String description;
     private TopicCategory category;
     private Long parentId;
-    private List<PreparationTopicRequestDTO> subTopics;
+
+    @JsonAlias({"subTopics", "children"})
+    @JsonProperty("children")
+    private List<PreparationTopicRequestDTO> children;
+
+    public List<PreparationTopicRequestDTO> getSubTopics() {
+        return children;
+    }
+
+    public void setSubTopics(List<PreparationTopicRequestDTO> subTopics) {
+        this.children = subTopics;
+    }
 }

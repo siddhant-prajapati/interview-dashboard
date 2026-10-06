@@ -7,9 +7,13 @@ import com.me.interview.dashboard.dto.ApplicationStatusHistoryResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface ApplicationStatusHistoryService {
 
     ApplicationStatusHistoryResponseDTO createApplicationStatusHistory(ApplicationStatusHistoryRequestDTO requestDTO);
+
+    List<ApplicationStatusHistoryResponseDTO> createApplicationStatusHistoriesBulk(List<ApplicationStatusHistoryRequestDTO> requestDTOs);
 
     ApplicationStatusHistoryResponseDTO getApplicationStatusHistoryById(Long id);
 

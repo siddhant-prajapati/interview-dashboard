@@ -82,7 +82,7 @@ export default function ApplicationsPage() {
       label: 'Company',
       render: (row) => (
         <div>
-          <span className="table-cell-company">{row.company?.name || 'Company'}</span>
+          <span className="table-cell-company">{row.companyName || row.company?.name || 'Company'}</span>
           <div className="table-cell-subtitle">{row.company?.location || 'Remote'}</div>
         </div>
       ),

@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/application-status-histories")
 @RequiredArgsConstructor
@@ -38,6 +40,18 @@ public class ApplicationStatusHistoryController {
             @RequestBody ApplicationStatusHistoryRequestDTO requestDTO) {
         ApplicationStatusHistoryResponseDTO createdHistory = applicationStatusHistoryService.createApplicationStatusHistory(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdHistory);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(summary = "Bulk create Status History Records", description = "Logs multiple status change records in bulk for job applications.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Status histories successfully created"),
+            @ApiResponse(responseCode = "400", description = "Invalid input provided")
+    })
+    public ResponseEntity<List<ApplicationStatusHistoryResponseDTO>> createApplicationStatusHistoriesBulk(
+            @RequestBody List<ApplicationStatusHistoryRequestDTO> requestDTOs) {
+        List<ApplicationStatusHistoryResponseDTO> createdHistories = applicationStatusHistoryService.createApplicationStatusHistoriesBulk(requestDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdHistories);
     }
 
     @GetMapping("/{id}")

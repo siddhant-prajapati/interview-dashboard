@@ -18,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
@@ -35,6 +37,17 @@ public class ProjectController {
     })
     public ResponseEntity<ProjectResponseDTO> createProject(@RequestBody ProjectRequestDTO requestDTO) {
         ProjectResponseDTO response = projectService.createProject(requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(summary = "Bulk create Projects", description = "Creates multiple projects in bulk and links them to users and technologies.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Projects created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload provided")
+    })
+    public ResponseEntity<List<ProjectResponseDTO>> createProjectsBulk(@RequestBody List<ProjectRequestDTO> requestDTOs) {
+        List<ProjectResponseDTO> response = projectService.createProjectsBulk(requestDTOs);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

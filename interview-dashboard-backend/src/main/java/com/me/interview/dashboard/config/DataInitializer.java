@@ -33,6 +33,7 @@ public class DataInitializer implements CommandLineRunner {
     private final TechnologyRepository technologyRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final PlatformRepository platformRepository;
     private final ResumeRepository resumeRepository;
     private final JobApplicationRepository jobApplicationRepository;
     private final PreparationTopicRepository topicRepository;
@@ -50,6 +51,7 @@ public class DataInitializer implements CommandLineRunner {
         try {
             seedTechnologies();
             seedUsers();
+            seedPlatforms();
             seedCompanies();
             seedResumes();
             seedPreparationTopicsAndItems();
@@ -80,6 +82,38 @@ public class DataInitializer implements CommandLineRunner {
             users.forEach(u -> u.setCreatedAt(now));
             userRepository.saveAll(users);
             log.info("Successfully seeded {} users from users.json", users.size());
+        });
+    }
+
+    private void seedPlatforms() {
+        if (platformRepository.count() > 0) {
+            return;
+        }
+        loadFromResource("data/platforms.json", new TypeReference<List<PlatformSeedDTO>>() {}, dtos -> {
+            User firstUser = userRepository.findAll().stream().findFirst().orElse(null);
+            for (PlatformSeedDTO dto : dtos) {
+                User user = dto.getUserId() != null
+                        ? userRepository.findById(dto.getUserId()).orElse(firstUser)
+                        : firstUser;
+                if (user != null) {
+                    Integer count = null;
+                    if (dto.getJobPostCount() != null && !dto.getJobPostCount().isBlank()) {
+                        try {
+                            count = Integer.parseInt(dto.getJobPostCount().trim());
+                        } catch (Exception ignored) {
+                        }
+                    }
+                    Platform p = Platform.builder()
+                            .name(dto.getName())
+                            .accountLink(dto.getAccountLink())
+                            .lastUpdatedDate(LocalDateTime.now())
+                            .jobPostCount(count)
+                            .user(user)
+                            .build();
+                    platformRepository.save(p);
+                }
+            }
+            log.info("Successfully seeded platforms from platforms.json");
         });
     }
 
@@ -114,11 +148,19 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void seedPreparationTopicsAndItems() {
-        if (topicRepository.count() == 0) {
-            loadFromResource("data/preparation_topics.json", new TypeReference<List<PreparationTopic>>() {}, topics -> {
-                topicRepository.saveAll(topics);
-                log.info("Successfully seeded {} preparation topics from preparation_topics.json", topics.size());
-            });
+        if (topicRepository.count() < 10) {
+            if (topicRepository.count() > 0 && itemRepository.count() == 0) {
+                topicRepository.deleteAll();
+            }
+            if (topicRepository.count() == 0) {
+                loadFromResource("data/preparation_topics.json", new TypeReference<List<PreparationTopic>>() {}, topics -> {
+                    int totalSeeded = 0;
+                    for (PreparationTopic topic : topics) {
+                        totalSeeded += seedTopicRecursive(topic, null);
+                    }
+                    log.info("Successfully seeded {} preparation topics hierarchically from preparation_topics.json", totalSeeded);
+                });
+            }
         }
 
         if (itemRepository.count() == 0) {
@@ -147,6 +189,26 @@ public class DataInitializer implements CommandLineRunner {
                 log.info("Successfully seeded {} preparation items from preparation_items.json", items.size());
             });
         }
+    }
+
+    private int seedTopicRecursive(PreparationTopic topic, PreparationTopic parent) {
+        topic.setParent(parent);
+        List<PreparationTopic> children = topic.getChildren();
+        topic.setChildren(new ArrayList<>());
+        PreparationTopic savedTopic = topicRepository.save(topic);
+        int count = 1;
+        if (children != null && !children.isEmpty()) {
+            List<PreparationTopic> savedChildren = new ArrayList<>();
+            for (PreparationTopic child : children) {
+                if (child.getCategory() == null && savedTopic.getCategory() != null) {
+                    child.setCategory(savedTopic.getCategory());
+                }
+                count += seedTopicRecursive(child, savedTopic);
+                savedChildren.add(child);
+            }
+            savedTopic.setChildren(savedChildren);
+        }
+        return count;
     }
 
     private void seedQuestions() {
@@ -196,11 +258,28 @@ public class DataInitializer implements CommandLineRunner {
                 LocalDate postDate = LocalDate.now().minusDays(dto.getPostingDateDaysAgo() != null ? dto.getPostingDateDaysAgo() : 7);
                 LocalDate applyDate = LocalDate.now().minusDays(dto.getApplyDateDaysAgo() != null ? dto.getApplyDateDaysAgo() : 3);
 
+                Platform platform = null;
+                if (dto.getPlatform() != null && !dto.getPlatform().trim().isEmpty()) {
+                    String platformName = dto.getPlatform().trim();
+                    platform = platformRepository.findFirstByNameIgnoreCase(platformName)
+                            .orElseGet(() -> {
+                                User firstUser = userRepository.findAll().stream().findFirst().orElse(null);
+                                if (firstUser != null) {
+                                    return platformRepository.save(Platform.builder()
+                                            .name(platformName)
+                                            .user(firstUser)
+                                            .lastUpdatedDate(LocalDateTime.now())
+                                            .build());
+                                }
+                                return null;
+                            });
+                }
+
                 JobApplication app = JobApplication.builder()
                         .company(company)
                         .resume(resume)
                         .role(dto.getRole())
-                        .platform(dto.getPlatform())
+                        .platform(platform)
                         .jobType(dto.getJobType() != null ? dto.getJobType() : JobType.REMOTE)
                         .expectedSalary(dto.getExpectedSalary())
                         .experience(dto.getExperience())
@@ -339,5 +418,14 @@ public class DataInitializer implements CommandLineRunner {
         private Integer hourOfDay;
         private Integer minuteOfDay;
         private String notes;
+    }
+
+    @Data
+    public static class PlatformSeedDTO {
+        private String name;
+        private String accountLink;
+        private String lastUpdatedDate;
+        private String jobPostCount;
+        private Long userId;
     }
 }

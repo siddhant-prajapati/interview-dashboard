@@ -24,8 +24,9 @@ public class JobApplication {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "platform")
-    private String platform;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "platform_id")
+    private Platform platform;
 
     @Column(name = "posting_date")
     private LocalDate postingDate;

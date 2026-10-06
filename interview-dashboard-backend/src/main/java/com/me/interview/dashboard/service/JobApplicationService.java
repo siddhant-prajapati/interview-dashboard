@@ -10,9 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 
+import java.util.List;
+
 public interface JobApplicationService {
 
     JobApplicationResponseDTO createJobApplication(JobApplicationRequestDTO requestDTO);
+
+    List<JobApplicationResponseDTO> createJobApplicationsBulk(List<JobApplicationRequestDTO> requestDTOs);
 
     JobApplicationResponseDTO getJobApplicationById(Long id);
 

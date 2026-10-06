@@ -22,4 +22,6 @@ public interface PreparationItemMapper {
     @Mapping(target = "topic", ignore = true)
     @Mapping(target = "completedAt", ignore = true)
     void updateEntityFromDto(PreparationItemRequestDTO dto, @MappingTarget PreparationItem entity);
+
+    java.util.List<PreparationItemResponseDTO> toDtoList(java.util.List<PreparationItem> entities);
 }

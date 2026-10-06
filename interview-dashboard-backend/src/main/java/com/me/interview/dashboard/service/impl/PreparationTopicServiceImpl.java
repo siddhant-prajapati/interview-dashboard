@@ -39,10 +39,7 @@ public class PreparationTopicServiceImpl implements PreparationTopicService {
         PreparationTopic parent = resolveParentTopic(requestDTO.getParentId());
 
         try {
-            PreparationTopic topic = preparationTopicMapper.toEntity(requestDTO);
-            topic.setParent(parent);
-
-            PreparationTopic savedTopic = preparationTopicRepository.save(topic);
+            PreparationTopic savedTopic = saveTopicRecursive(requestDTO, parent);
             logger.info("Successfully created Preparation Topic with ID: " + savedTopic.getId());
             return preparationTopicMapper.toDto(savedTopic);
         } catch (Exception e) {
@@ -54,14 +51,23 @@ public class PreparationTopicServiceImpl implements PreparationTopicService {
     @Override
     @Transactional
     public List<PreparationTopicResponseDTO> createTopicsBulk(List<PreparationTopicRequestDTO> requestDTOs) {
-        logger.info("Attempting bulk hierarchical creation of Preparation Topics. Total Root Nodes: " + requestDTOs.size());
+        logger.info("Attempting bulk hierarchical creation of Preparation Topics. Total Root Nodes: " + (requestDTOs != null ? requestDTOs.size() : 0));
+
+        if (requestDTOs == null || requestDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
 
         try {
             List<PreparationTopic> savedRootTopics = new ArrayList<>();
 
             for (PreparationTopicRequestDTO rootDto : requestDTOs) {
-                // Pass null as the parent for the root level items
-                PreparationTopic savedRoot = saveTopicRecursive(rootDto, null);
+                // Resolve parent for this topic if parentId is present, reset to null per iteration
+                PreparationTopic parentPreparationTopic = null;
+                if (rootDto.getParentId() != null) {
+                    parentPreparationTopic = preparationTopicRepository.findById(rootDto.getParentId())
+                            .orElseThrow(() -> new ResourceNotFoundException("PreparationTopic", "id", rootDto.getParentId()));
+                }
+                PreparationTopic savedRoot = saveTopicRecursive(rootDto, parentPreparationTopic);
                 savedRootTopics.add(savedRoot);
             }
 
@@ -81,25 +87,26 @@ public class PreparationTopicServiceImpl implements PreparationTopicService {
         PreparationTopic topic = new PreparationTopic();
         topic.setName(dto.getName());
         topic.setDescription(dto.getDescription());
-        topic.setCategory(dto.getCategory());
+        topic.setCategory(dto.getCategory() != null ? dto.getCategory() : (parent != null ? parent.getCategory() : null));
 
-        // 2. Assign the parent (will be null for root nodes)
+        // 2. Assign the parent (will be null for root nodes, or resolved parent when parentId is present)
         topic.setParent(parent);
 
         // 3. Save to database to generate the ID
         PreparationTopic savedTopic = preparationTopicRepository.save(topic);
 
-        // 4. If this topic has sub-topics, process them recursively
-        if (dto.getSubTopics() != null && !dto.getSubTopics().isEmpty()) {
+        // 4. If this topic has sub-topics / children, process them recursively
+        List<PreparationTopicRequestDTO> childDtos = dto.getChildren() != null ? dto.getChildren() : dto.getSubTopics();
+        if (childDtos != null && !childDtos.isEmpty()) {
             List<PreparationTopic> savedChildren = new ArrayList<>();
 
-            for (PreparationTopicRequestDTO subDto : dto.getSubTopics()) {
+            for (PreparationTopicRequestDTO subDto : childDtos) {
                 // The newly saved topic becomes the parent for the next level down
                 savedChildren.add(saveTopicRecursive(subDto, savedTopic));
             }
 
             // Attach the saved children back to the parent entity
-            savedTopic.setChildren(savedChildren);
+            savedTopic.setSubTopics(savedChildren);
         }
 
         return savedTopic;

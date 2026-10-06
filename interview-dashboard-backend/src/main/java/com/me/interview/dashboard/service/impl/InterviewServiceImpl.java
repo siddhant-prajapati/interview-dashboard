@@ -83,14 +83,23 @@ public class InterviewServiceImpl implements InterviewService {
     @Override
     @Transactional
     public List<InterviewResponseDTO> createInterviewsBulk(List<InterviewRequestDTO> requestDTOs) {
-        logger.info("Attempting bulk creation of " + requestDTOs.size() + " interviews with nested questions and technologies");
+        logger.info("Attempting bulk creation of " + (requestDTOs != null ? requestDTOs.size() : 0) + " interviews with nested questions and technologies");
+
+        if (requestDTOs == null || requestDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
 
         List<Interview> savedInterviews = new ArrayList<>();
 
         for (InterviewRequestDTO dto : requestDTOs) {
-            // 1. Fetch the Job Application
-            JobApplication jobApplication = jobApplicationRepository.findById(dto.getJobApplicationId())
-                    .orElseThrow(() -> new ResourceNotFoundException("JobApplication", "id", dto.getJobApplicationId()));
+            // 1. Fetch the Job Application if parent/foreign ID is present
+            JobApplication jobApplication = null;
+            if (dto.getJobApplicationId() != null) {
+                jobApplication = jobApplicationRepository.findById(dto.getJobApplicationId())
+                        .orElseThrow(() -> new ResourceNotFoundException("JobApplication", "id", dto.getJobApplicationId()));
+            } else {
+                throw new com.me.interview.dashboard.exception.InvalidDataException("JobApplication ID is required for Interview");
+            }
 
             // 2. Initialize the Interview entity
             Interview interview = new Interview();
@@ -107,9 +116,11 @@ public class InterviewServiceImpl implements InterviewService {
                     Question question = new Question();
                     question.setQuestion(qDto.getQuestion());
                     question.setListedDate(LocalDate.now());
-                    Technology technology = technologyRepository.findById(qDto.getTechnologyId())
-                            .orElseThrow(() -> new ResourceNotFoundException("Technology not found"));
-                    question.setTechnology(technology);
+                    if (qDto.getTechnologyId() != null) {
+                        Technology technology = technologyRepository.findById(qDto.getTechnologyId())
+                                .orElseThrow(() -> new ResourceNotFoundException("Technology", "id", qDto.getTechnologyId()));
+                        question.setTechnology(technology);
+                    }
                     questions.add(question);
                 }
                 interview.setQuestions(questions); // CascadeType.ALL should be on this relationship in the Interview entity

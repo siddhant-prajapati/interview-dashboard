@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/questions")
 @RequiredArgsConstructor
@@ -38,6 +40,18 @@ public class QuestionController {
             @RequestBody QuestionRequestDTO requestDTO) {
         QuestionResponseDTO createdQuestion = questionService.createQuestion(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
+    }
+
+    @PostMapping("/bulk")
+    @Operation(summary = "Bulk create Questions", description = "Creates multiple questions in bulk and links them to their referenced technologies.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Questions created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid payload provided")
+    })
+    public ResponseEntity<List<QuestionResponseDTO>> createQuestionsBulk(
+            @RequestBody List<QuestionRequestDTO> requestDTOs) {
+        List<QuestionResponseDTO> createdQuestions = questionService.createQuestionsBulk(requestDTOs);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestions);
     }
 
     @GetMapping("/{id}")

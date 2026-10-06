@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Data
 public class JobApplicationFilterDTO {
     private String platform;
+    private Long platformId;
     private String role;
     private ApplicationStatus status;
     private JobType jobType;

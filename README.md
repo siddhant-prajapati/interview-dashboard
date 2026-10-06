@@ -250,7 +250,7 @@ erDiagram
         bigint id PK
         bigint company_id FK
         bigint resume_id FK
-        varchar platform
+        bigint platform_id FK
         date posting_date
         text about
         varchar role
@@ -365,6 +365,7 @@ erDiagram
     COMPANIES ||--o{ COMPANY_ALLOWED_JOB_TYPES : "allowed_work_types"
     COMPANIES ||--o{ JOB_APPLICATIONS : "hires_for"
     RESUMES ||--o{ JOB_APPLICATIONS : "attached_to"
+    PLATFORMS ||--o{ JOB_APPLICATIONS : "sourced_from"
     JOB_APPLICATIONS ||--o{ APPLICATION_STATUS_HISTORY : "status_log"
     JOB_APPLICATIONS ||--o{ INTERVIEWS : "schedules"
     JOB_APPLICATIONS }|--|{ TECHNOLOGIES : "job_application_technology"

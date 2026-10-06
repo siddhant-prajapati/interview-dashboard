@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserTopicProgressMapper {
 
@@ -23,4 +25,6 @@ public interface UserTopicProgressMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "topic", ignore = true)
     void updateEntityFromDto(UserTopicProgressRequestDTO dto, @MappingTarget UserTopicProgress entity);
+
+    List<UserTopicProgressResponseDTO> toDtoList(java.util.List<UserTopicProgress> entities);
 }

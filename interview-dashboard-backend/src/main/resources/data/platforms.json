@@ -1,44 +1,44 @@
 [
     {
-        "name" : "Naukari.com",
-        "accountLink" : "",
-        "lastUpdatedDate" : "",
-        "jobPostCount" : "",
-        "userId" : 1
+        "name": "Naukari.com",
+        "accountLink": "https://www.naukri.com/mnjuser/homepage",
+        "lastUpdatedDate": "2026-09-30",
+        "jobPostCount": "1",
+        "userId": 1
     },
     {
-        "name" : "Unstop",
-        "accountLink" : "",
-        "lastUpdatedDate" : "",
-        "jobPostCount" : "",
-        "userId" : 1
+        "name": "Unstop",
+        "accountLink": "https://unstop.com/u/siddhpra69395",
+        "lastUpdatedDate": "2026-09-30",
+        "jobPostCount": "2",
+        "userId": 1
     },
     {
-        "name" : "Instahyre.com",
-        "accountLink" : "",
-        "lastUpdatedDate" : "",
-        "jobPostCount" : "",
-        "userId" : 1
+        "name": "Instahyre.com",
+        "accountLink": "https://www.instahyre.com/candidate/profile/",
+        "lastUpdatedDate": "",
+        "jobPostCount": "",
+        "userId": 1
     },
     {
-        "name" : "Cutshort",
-        "accountLink" : "",
-        "lastUpdatedDate" : "",
-        "jobPostCount" : "",
-        "userId" : 1
+        "name": "Cutshort",
+        "accountLink": "https://cutshort.io/profile/candidate-dashboard",
+        "lastUpdatedDate": "",
+        "jobPostCount": "",
+        "userId": 1
     },
     {
-        "name" : "Wellfound",
-        "accountLink" : "",
-        "lastUpdatedDate" : "",
-        "jobPostCount" : "",
-        "userId" : 1
+        "name": "Wellfound",
+        "accountLink": "https://wellfound.com/jobs/home",
+        "lastUpdatedDate": "",
+        "jobPostCount": "",
+        "userId": 1
     },
     {
-        "name" : "FoundIt",
-        "accountLink" : "",
-        "lastUpdatedDate" : "",
-        "jobPostCount" : "",
-        "userId" : 1
+        "name": "FoundIt",
+        "accountLink": "https://www.foundit.in/seeker/profile",
+        "lastUpdatedDate": "",
+        "jobPostCount": "",
+        "userId": 1
     }
 ]

@@ -3,6 +3,7 @@ package com.me.interview.dashboard.service.impl;
 import com.me.interview.dashboard.dto.PlatformFilterDTO;
 import com.me.interview.dashboard.dto.PlatformRequestDTO;
 import com.me.interview.dashboard.dto.PlatformResponseDTO;
+import com.me.interview.dashboard.exception.InvalidDataException;
 import com.me.interview.dashboard.exception.ResourceNotFoundException;
 import com.me.interview.dashboard.mapper.PlatformMapper;
 import com.me.interview.dashboard.model.Platform;
@@ -69,8 +70,13 @@ public class PlatformServiceImpl implements PlatformService {
         try {
             List<Platform> platforms = new ArrayList<>();
             for (PlatformRequestDTO dto : requestDTOs) {
-                User user = userRepository.findById(dto.getUserId())
-                        .orElseThrow(() -> new ResourceNotFoundException("User", "id", dto.getUserId()));
+                User user = null;
+                if (dto.getUserId() != null) {
+                    user = userRepository.findById(dto.getUserId())
+                            .orElseThrow(() -> new ResourceNotFoundException("User", "id", dto.getUserId()));
+                } else {
+                    throw new InvalidDataException("User ID is required for Platform");
+                }
 
                 Platform platform = platformMapper.toEntity(dto);
                 platform.setUser(user);

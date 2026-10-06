@@ -22,6 +22,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserTopicProgressServiceImpl implements UserTopicProgressService {
@@ -58,6 +61,49 @@ public class UserTopicProgressServiceImpl implements UserTopicProgressService {
             return progressMapper.toDto(savedProgress);
         } catch (Exception e) {
             logger.error("Failed to create UserTopicProgress: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<UserTopicProgressResponseDTO> createProgressBulk(List<UserTopicProgressRequestDTO> requestDTOs) {
+        logger.info("Attempting bulk creation of UserTopicProgress records. Total: " + (requestDTOs != null ? requestDTOs.size() : 0));
+
+        if (requestDTOs == null || requestDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        try {
+            List<UserTopicProgress> progressList = new ArrayList<>();
+            for (UserTopicProgressRequestDTO dto : requestDTOs) {
+                User user = null;
+                if (dto.getUserId() != null) {
+                    user = userRepository.findById(dto.getUserId())
+                            .orElseThrow(() -> new ResourceNotFoundException("User", "id", dto.getUserId()));
+                } else {
+                    throw new InvalidDataException("User ID is required for UserTopicProgress");
+                }
+
+                PreparationTopic topic = null;
+                if (dto.getTopicId() != null) {
+                    topic = topicRepository.findById(dto.getTopicId())
+                            .orElseThrow(() -> new ResourceNotFoundException("PreparationTopic", "id", dto.getTopicId()));
+                } else {
+                    throw new InvalidDataException("Topic ID is required for UserTopicProgress");
+                }
+
+                UserTopicProgress progress = progressMapper.toEntity(dto);
+                progress.setUser(user);
+                progress.setTopic(topic);
+                progressList.add(progress);
+            }
+
+            List<UserTopicProgress> savedList = progressRepository.saveAll(progressList);
+            logger.info("Successfully created " + savedList.size() + " UserTopicProgress records in bulk");
+            return progressMapper.toDtoList(savedList);
+        } catch (Exception e) {
+            logger.error("Failed to bulk create UserTopicProgress: " + e.getMessage());
             throw e;
         }
     }

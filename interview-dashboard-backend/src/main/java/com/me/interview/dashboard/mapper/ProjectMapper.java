@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", uses = {TechnologyMapper.class})
 public interface ProjectMapper {
 
@@ -26,4 +28,6 @@ public interface ProjectMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     void updateEntityFromDto(ProjectRequestDTO dto, @MappingTarget Project entity);
+
+    List<ProjectResponseDTO> toDtoList(java.util.List<Project> entities);
 }

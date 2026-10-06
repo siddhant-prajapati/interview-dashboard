@@ -20,6 +20,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ApplicationStatusHistoryServiceImpl implements ApplicationStatusHistoryService {
@@ -46,6 +50,35 @@ public class ApplicationStatusHistoryServiceImpl implements ApplicationStatusHis
             return applicationStatusHistoryMapper.toDto(savedHistory);
         } catch (Exception e) {
             logger.error("Failed to create Status History: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<ApplicationStatusHistoryResponseDTO> createApplicationStatusHistoriesBulk(List<ApplicationStatusHistoryRequestDTO> requestDTOs) {
+        logger.info("Attempting bulk creation of Status History records. Total: " + (requestDTOs != null ? requestDTOs.size() : 0));
+
+        if (requestDTOs == null || requestDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        try {
+            List<ApplicationStatusHistory> histories = new ArrayList<>();
+            for (ApplicationStatusHistoryRequestDTO dto : requestDTOs) {
+                ApplicationStatusHistory history = applicationStatusHistoryMapper.toEntity(dto);
+                resolveRelationships(history, dto);
+                if (history.getChangedAt() == null) {
+                    history.setChangedAt(LocalDateTime.now());
+                }
+                histories.add(history);
+            }
+
+            List<ApplicationStatusHistory> savedHistories = applicationStatusHistoryRepository.saveAll(histories);
+            logger.info("Successfully created " + savedHistories.size() + " Status History records in bulk");
+            return applicationStatusHistoryMapper.toDtoList(savedHistories);
+        } catch (Exception e) {
+            logger.error("Failed to bulk create Status History records: " + e.getMessage());
             throw e;
         }
     }

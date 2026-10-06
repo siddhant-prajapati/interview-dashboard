@@ -20,4 +20,6 @@ public interface ApplicationStatusHistoryMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "jobApplication", ignore = true)
     void updateEntityFromDto(ApplicationStatusHistoryRequestDTO dto, @MappingTarget ApplicationStatusHistory entity);
+
+    java.util.List<ApplicationStatusHistoryResponseDTO> toDtoList(java.util.List<ApplicationStatusHistory> entities);
 }

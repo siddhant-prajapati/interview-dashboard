@@ -6,6 +6,7 @@ import com.me.interview.dashboard.dto.ProjectResponseDTO;
 import com.me.interview.dashboard.model.Project;
 import com.me.interview.dashboard.model.Technology;
 import com.me.interview.dashboard.model.User;
+import com.me.interview.dashboard.exception.InvalidDataException;
 import com.me.interview.dashboard.exception.ResourceNotFoundException;
 import com.me.interview.dashboard.mapper.ProjectMapper;
 import com.me.interview.dashboard.repository.ProjectRepository;
@@ -57,6 +58,46 @@ public class ProjectServiceImpl implements ProjectService {
             return projectMapper.toDto(savedProject);
         } catch (Exception e) {
             logger.error("Failed to create Project: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    @Override
+    @Transactional
+    public List<ProjectResponseDTO> createProjectsBulk(List<ProjectRequestDTO> requestDTOs) {
+        logger.info("Attempting bulk creation of Projects. Total: " + (requestDTOs != null ? requestDTOs.size() : 0));
+
+        if (requestDTOs == null || requestDTOs.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        try {
+            List<Project> projects = new ArrayList<>();
+            for (ProjectRequestDTO dto : requestDTOs) {
+                User user = null;
+                if (dto.getUserId() != null) {
+                    user = userRepository.findById(dto.getUserId())
+                            .orElseThrow(() -> new ResourceNotFoundException("User", "id", dto.getUserId()));
+                } else {
+                    throw new InvalidDataException("User ID is required for Project");
+                }
+
+                List<Technology> technologies = resolveTechnologies(dto.getTechnologyIds());
+
+                Project project = projectMapper.toEntity(dto);
+                project.setUser(user);
+                project.setTechnologies(technologies);
+                if (project.getCreatedAt() == null) {
+                    project.setCreatedAt(LocalDateTime.now());
+                }
+                projects.add(project);
+            }
+
+            List<Project> savedProjects = projectRepository.saveAll(projects);
+            logger.info("Successfully created " + savedProjects.size() + " Projects in bulk");
+            return projectMapper.toDtoList(savedProjects);
+        } catch (Exception e) {
+            logger.error("Failed to bulk create Projects: " + e.getMessage());
             throw e;
         }
     }

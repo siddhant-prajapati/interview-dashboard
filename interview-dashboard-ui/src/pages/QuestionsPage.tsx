@@ -4,31 +4,45 @@ import Header from '../components/layout/Header';
 import DataTable, { Column } from '../components/common/DataTable';
 import Modal from '../components/common/Modal';
 import { questionsApi } from '../api/questionsApi';
+import { technologiesApi } from '../api/technologiesApi';
 import { mockStore } from '../api/client';
-import { Plus, Tag } from 'lucide-react';
-import { Question } from '../types';
+import { Plus, Tag, Trash2 } from 'lucide-react';
+import { Question, Technology } from '../types';
 import { AppOutletContext } from '../components/layout/AppLayout';
 
 export default function QuestionsPage() {
   const { toggleMobileMenu } = useOutletContext<AppOutletContext>();
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newQuestionText, setNewQuestionText] = useState('');
-  const [newTechnologyName, setNewTechnologyName] = useState('Java 21');
+  const [selectedTechId, setSelectedTechId] = useState<number>(1);
   const [searchFilter, setSearchFilter] = useState('');
 
   useEffect(() => {
     let isMounted = true;
     (async () => {
       try {
-        const res = await questionsApi.getAll();
+        const [qRes, tRes] = await Promise.allSettled([
+          questionsApi.getAll(),
+          technologiesApi.getAll({ page: 0, size: 100 }),
+        ]);
+
         if (!isMounted) return;
-        if (res && res.content) {
-          setQuestions(res.content);
-        } else if (Array.isArray(res)) {
-          setQuestions(res);
+
+        if (qRes.status === 'fulfilled' && qRes.value) {
+          const list = qRes.value.content || (Array.isArray(qRes.value) ? qRes.value : []);
+          setQuestions(list);
         } else {
           setQuestions(mockStore.questions);
+        }
+
+        if (tRes.status === 'fulfilled' && tRes.value) {
+          const tList = tRes.value.content || (Array.isArray(tRes.value) ? tRes.value : []);
+          setTechnologies(tList);
+          if (tList.length > 0 && tList[0].id) {
+            setSelectedTechId(tList[0].id);
+          }
         }
       } catch {
         if (isMounted) {
@@ -43,27 +57,56 @@ export default function QuestionsPage() {
 
   const handleAddQuestion = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newQ: Question = {
-      id: Date.now(),
+    const tech = technologies.find((t) => t.id === selectedTechId);
+    const payload = {
       question: newQuestionText,
-      technologyName: newTechnologyName,
+      technologyId: selectedTechId || 1,
       listedDate: new Date().toISOString().split('T')[0],
     };
+
     try {
-      await questionsApi.create(newQ);
+      const created = await questionsApi.create(payload);
+      const newQ: Question = {
+        ...(created || payload),
+        id: created?.id || Date.now(),
+        question: newQuestionText,
+        technologyName: tech?.name || 'General',
+        listedDate: payload.listedDate,
+      };
+      setQuestions((prev) => [newQ, ...prev]);
     } catch (err) {
       console.warn('Backend offline, saving question in-memory:', err);
+      const fallbackQ: Question = {
+        id: Date.now(),
+        question: newQuestionText,
+        technologyName: tech?.name || 'General',
+        listedDate: payload.listedDate,
+      };
+      setQuestions((prev) => [fallbackQ, ...prev]);
     }
-    setQuestions((prev) => [newQ, ...prev]);
+
     setNewQuestionText('');
     setIsModalOpen(false);
+  };
+
+  const handleDelete = async (e: React.MouseEvent, id?: number) => {
+    e.stopPropagation();
+    if (!id) return;
+    if (!window.confirm('Delete this question from question bank?')) return;
+    try {
+      await questionsApi.delete(id);
+    } catch (err) {
+      console.warn('Backend delete fallback:', err);
+    }
+    setQuestions((prev) => prev.filter((q) => q.id !== id));
   };
 
   const filteredQuestions = questions.filter((q) => {
     if (!searchFilter.trim()) return true;
     const term = searchFilter.toLowerCase();
     const questionText = (q.question || '').toLowerCase();
-    const techName = (q.technologyName || q.technology?.name || '').toLowerCase();
+    const techObj = technologies.find((t) => t.id === (q as any).technologyId);
+    const techName = (q.technologyName || q.technology?.name || techObj?.name || '').toLowerCase();
     return questionText.includes(term) || techName.includes(term);
   });
 
@@ -80,17 +123,37 @@ export default function QuestionsPage() {
     {
       key: 'technologyName',
       label: 'Technology Domain',
-      render: (row) => (
-        <span className="tech-pill-tag">
-          <Tag size={12} />
-          {row.technologyName || row.technology?.name || 'General'}
-        </span>
-      ),
+      render: (row) => {
+        const techObj = technologies.find((t) => t.id === (row as any).technologyId);
+        const name = row.technologyName || row.technology?.name || techObj?.name || 'General';
+        return (
+          <span className="tech-pill-tag">
+            <Tag size={12} />
+            {name}
+          </span>
+        );
+      },
     },
     {
       key: 'listedDate',
       label: 'Date Listed',
       render: (row) => row.listedDate || 'Recent',
+    },
+    {
+      key: 'actions',
+      label: '',
+      render: (row) => (
+        <div className="table-action-btn-group">
+          <button
+            type="button"
+            onClick={(e) => handleDelete(e, row.id)}
+            className="table-action-icon-btn"
+            title="Delete Question"
+          >
+            <Trash2 size={16} color="#DF0404" />
+          </button>
+        </div>
+      ),
     },
   ];
 
@@ -139,18 +202,23 @@ export default function QuestionsPage() {
           <div className="modal-form-group">
             <label className="modal-form-label">Associated Technology / Topic</label>
             <select
-              value={newTechnologyName}
-              onChange={(e) => setNewTechnologyName(e.target.value)}
+              value={selectedTechId}
+              onChange={(e) => setSelectedTechId(Number(e.target.value))}
               className="modal-select-field"
             >
-              <option value="Java 21">Java 21</option>
-              <option value="Spring Boot">Spring Boot</option>
-              <option value="MySQL">MySQL</option>
-              <option value="Kafka">Kafka</option>
-              <option value="Docker">Docker</option>
-              <option value="AWS">AWS</option>
-              <option value="System Design">System Design</option>
-              <option value="React">React</option>
+              {technologies.length === 0 ? (
+                <>
+                  <option value={1}>Java 21</option>
+                  <option value={2}>Spring Boot</option>
+                  <option value={3}>MySQL</option>
+                </>
+              ) : (
+                technologies.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name} ({t.type || 'TECH'})
+                  </option>
+                ))
+              )}
             </select>
           </div>
 

@@ -5,42 +5,61 @@ import DataTable, { Column } from '../components/common/DataTable';
 import StatusBadge from '../components/common/StatusBadge';
 import Modal from '../components/common/Modal';
 import { interviewsApi } from '../api/interviewsApi';
+import { jobApplicationsApi } from '../api/jobApplicationsApi';
 import { mockStore } from '../api/client';
-import { Plus, Calendar, MessageSquare, AlertTriangle } from 'lucide-react';
-import { Interview, Technology } from '../types';
+import { Plus, Calendar, MessageSquare, AlertTriangle, Trash2 } from 'lucide-react';
+import { Interview, JobApplication, Technology } from '../types';
 import { AppOutletContext } from '../components/layout/AppLayout';
 
 export default function InterviewsPage() {
   const { toggleMobileMenu } = useOutletContext<AppOutletContext>();
   const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [applications, setApplications] = useState<JobApplication[]>([]);
   const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('');
   const [formData, setFormData] = useState({
+    jobApplicationId: 0,
     stage: 'TECHNICAL',
     status: 'SCHEDULED',
-    interviewDate: '2026-09-25T15:00',
-    companyName: 'Microsoft',
-    role: 'Senior Java Backend',
-    notes: 'Focus on System Design and JPA performance optimization.',
+    interviewDate: new Date(Date.now() + 86400000 * 2).toISOString().slice(0, 16),
+    companyName: '',
+    role: '',
+    notes: 'Focus on System Design and core concepts.',
   });
 
   useEffect(() => {
     let isMounted = true;
     (async () => {
       try {
-        const res = await interviewsApi.getAll();
+        const [intRes, appRes] = await Promise.allSettled([
+          interviewsApi.getAll(),
+          jobApplicationsApi.getAll({ page: 0, size: 50 }),
+        ]);
+
         if (!isMounted) return;
-        if (res && res.content) {
-          setInterviews(res.content);
-        } else if (Array.isArray(res)) {
-          setInterviews(res);
+
+        if (intRes.status === 'fulfilled' && intRes.value) {
+          const list = intRes.value.content || (Array.isArray(intRes.value) ? intRes.value : []);
+          setInterviews(list);
         } else {
           setInterviews(mockStore.interviews);
         }
-      } catch {
-        if (isMounted) {
-          setInterviews(mockStore.interviews);
+
+        if (appRes.status === 'fulfilled' && appRes.value) {
+          const appList = appRes.value.content || (Array.isArray(appRes.value) ? appRes.value : []);
+          setApplications(appList);
+          if (appList.length > 0 && formData.jobApplicationId === 0) {
+            setFormData((prev) => ({
+              ...prev,
+              jobApplicationId: appList[0].id,
+              companyName: appList[0].companyName || appList[0].company?.name || '',
+              role: appList[0].role || '',
+            }));
+          }
         }
+      } catch (err) {
+        console.warn('Interviews fetch fallback:', err);
       }
     })();
     return () => {
@@ -50,36 +69,77 @@ export default function InterviewsPage() {
 
   const handleScheduleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newInterview: Interview = {
-      id: Date.now(),
+    const targetApp = applications.find((a) => a.id === Number(formData.jobApplicationId));
+    const payload = {
+      jobApplicationId: formData.jobApplicationId ? Number(formData.jobApplicationId) : (applications[0]?.id || 1),
       interviewDate: formData.interviewDate,
       stage: formData.stage,
       status: formData.status,
-      companyName: formData.companyName,
-      role: formData.role,
       notes: formData.notes,
-      questions: [],
-      requiredImprovements: [],
     };
+
     try {
-      await interviewsApi.create(newInterview);
-    } catch (err) {
-      console.warn('Backend offline, saving to memory:', err);
+      const created = await interviewsApi.create(payload);
+      const enriched: Interview = {
+        ...(created || payload),
+        id: created?.id || Date.now(),
+        companyName: targetApp ? (targetApp.companyName || targetApp.company?.name) : formData.companyName,
+        role: targetApp ? targetApp.role : formData.role,
+        questions: [],
+        requiredImprovements: [],
+      };
+      setInterviews((prev) => [enriched, ...prev]);
+    } catch (err: any) {
+      console.warn('Schedule interview error:', err);
+      const fallbackInterview: Interview = {
+        id: Date.now(),
+        ...payload,
+        companyName: targetApp ? (targetApp.companyName || targetApp.company?.name) : formData.companyName,
+        role: targetApp ? targetApp.role : formData.role,
+        questions: [],
+        requiredImprovements: [],
+      };
+      setInterviews((prev) => [fallbackInterview, ...prev]);
     }
-    setInterviews((prev) => [newInterview, ...prev]);
     setIsScheduleOpen(false);
   };
+
+  const handleDelete = async (e: React.MouseEvent, id?: number) => {
+    e.stopPropagation();
+    if (!id) return;
+    if (!window.confirm('Delete this scheduled interview record?')) return;
+    try {
+      await interviewsApi.delete(id);
+    } catch (err) {
+      console.warn('Delete interview fallback:', err);
+    }
+    setInterviews((prev) => prev.filter((i) => i.id !== id));
+  };
+
+  const filteredInterviews = interviews.filter((item) => {
+    if (!searchFilter.trim()) return true;
+    const term = searchFilter.toLowerCase();
+    const app = applications.find((a) => a.id === item.jobApplicationId);
+    const co = (app?.companyName || app?.company?.name || item.companyName || '').toLowerCase();
+    const role = (app?.role || item.role || '').toLowerCase();
+    return co.includes(term) || role.includes(term);
+  });
 
   const columns: Column<Interview>[] = [
     {
       key: 'companyName',
       label: 'Company & Role',
-      render: (row) => (
-        <div>
-          <div className="table-cell-title">{row.companyName || 'Enterprise'}</div>
-          <div className="table-cell-subtitle">{row.role || 'Software Engineer'}</div>
-        </div>
-      ),
+      render: (row) => {
+        const app = applications.find((a) => a.id === row.jobApplicationId);
+        const coName = app?.companyName || app?.company?.name || row.companyName || 'Enterprise';
+        const roleName = app?.role || row.role || 'Software Engineer';
+        return (
+          <div>
+            <div className="table-cell-title">{coName}</div>
+            <div className="table-cell-subtitle">{roleName}</div>
+          </div>
+        );
+      },
     },
     {
       key: 'stage',
@@ -115,6 +175,22 @@ export default function InterviewsPage() {
       label: 'Round Status',
       render: (row) => <StatusBadge status={row.status} />,
     },
+    {
+      key: 'actions',
+      label: '',
+      render: (row) => (
+        <div className="table-action-btn-group">
+          <button
+            type="button"
+            onClick={(e) => handleDelete(e, row.id)}
+            className="table-action-icon-btn"
+            title="Delete Interview"
+          >
+            <Trash2 size={16} color="#DF0404" />
+          </button>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -122,6 +198,8 @@ export default function InterviewsPage() {
       <Header
         greeting="Interview Schedules 🎙️"
         placeholder="Search interview rounds..."
+        searchValue={searchFilter}
+        onSearchChange={setSearchFilter}
         onToggleMobileMenu={toggleMobileMenu}
         actionButton={
           <button 
@@ -139,8 +217,8 @@ export default function InterviewsPage() {
         title="Interviews & Debriefs"
         subtitle="Review feedback, questions asked, and skill gaps"
         columns={columns}
-        data={interviews}
-        totalEntries={interviews.length}
+        data={filteredInterviews}
+        totalEntries={filteredInterviews.length}
         onRowClick={(row) => setSelectedInterview(row)}
       />
 
@@ -152,25 +230,56 @@ export default function InterviewsPage() {
       >
         <form onSubmit={handleScheduleSubmit} className="modal-form">
           <div className="modal-form-group">
-            <label className="modal-form-label">Company</label>
-            <input
-              type="text"
-              value={formData.companyName}
-              onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-              className="modal-input-field"
+            <label className="modal-form-label">Target Job Application</label>
+            <select
+              value={formData.jobApplicationId}
+              onChange={(e) => {
+                const appId = Number(e.target.value);
+                const app = applications.find((a) => a.id === appId);
+                setFormData({
+                  ...formData,
+                  jobApplicationId: appId,
+                  companyName: app ? (app.companyName || app.company?.name || '') : formData.companyName,
+                  role: app ? app.role : formData.role,
+                });
+              }}
+              className="modal-select-field"
               required
-            />
+            >
+              {applications.length === 0 ? (
+                <option value={0}>No job applications registered yet</option>
+              ) : (
+                applications.map((app) => (
+                  <option key={app.id} value={app.id}>
+                    {app.role} at {app.companyName || app.company?.name || 'Company'} ({app.status})
+                  </option>
+                ))
+              )}
+            </select>
           </div>
 
-          <div className="modal-form-group">
-            <label className="modal-form-label">Role</label>
-            <input
-              type="text"
-              value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              className="modal-input-field"
-              required
-            />
+          <div className="modal-form-row">
+            <div className="modal-form-group">
+              <label className="modal-form-label">Company Name</label>
+              <input
+                type="text"
+                value={formData.companyName}
+                onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                className="modal-input-field"
+                required
+              />
+            </div>
+
+            <div className="modal-form-group">
+              <label className="modal-form-label">Role</label>
+              <input
+                type="text"
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                className="modal-input-field"
+                required
+              />
+            </div>
           </div>
 
           <div className="modal-form-row">

@@ -3,7 +3,10 @@
     "name": "Microsoft",
     "technologyTest": true,
     "workOn": "Cloud & AI Platforms",
-    "allowedJobType": ["REMOTE", "HYBRID"],
+    "allowedJobType": [
+      "REMOTE",
+      "HYBRID"
+    ],
     "contactNumber": "(225) 555-0118",
     "email": "careers@microsoft.com",
     "location": "Redmond, WA"
@@ -12,7 +15,10 @@
     "name": "Google",
     "technologyTest": true,
     "workOn": "Search & Distributed Infrastructure",
-    "allowedJobType": ["HYBRID", "ON_SITE"],
+    "allowedJobType": [
+      "HYBRID",
+      "ON_SITE"
+    ],
     "contactNumber": "(650) 253-0000",
     "email": "jobs@google.com",
     "location": "Mountain View, CA"
@@ -21,7 +27,9 @@
     "name": "Amazon",
     "technologyTest": true,
     "workOn": "AWS Distributed Cloud Services",
-    "allowedJobType": ["HYBRID"],
+    "allowedJobType": [
+      "HYBRID"
+    ],
     "contactNumber": "(206) 266-1000",
     "email": "aws-recruiting@amazon.com",
     "location": "Seattle, WA"
@@ -30,7 +38,9 @@
     "name": "Adobe",
     "technologyTest": false,
     "workOn": "Creative Cloud Enterprise Services",
-    "allowedJobType": ["REMOTE"],
+    "allowedJobType": [
+      "REMOTE"
+    ],
     "contactNumber": "(408) 536-6000",
     "email": "careers@adobe.com",
     "location": "San Jose, CA"
@@ -39,7 +49,53 @@
     "name": "SmartBear",
     "technologyTest": false,
     "workOn": "Software development and Quality Tools",
-    "allowedJobType": ["REMOTE"],
+    "allowedJobType": [
+      "REMOTE"
+    ],
+    "contactNumber": "(408) 536-6000",
+    "email": "careers@adobe.com",
+    "location": "San Jose, CA"
+  },
+  {
+    "name": "Aum Solution",
+    "technologyTest": false,
+    "workOn": "Software development and AI Tools",
+    "allowedJobType": [
+      "REMOTE"
+    ],
+    "contactNumber": "(408) 536-6000",
+    "email": "careers@adobe.com",
+    "location": "San Jose, CA"
+  },
+  {
+    "name": "Paypal",
+    "technologyTest": false,
+    "workOn": "Payment gateway, apps and website",
+    "allowedJobType": [
+      "REMOTE"
+    ],
+    "contactNumber": "(408) 536-6000",
+    "email": "careers@adobe.com",
+    "location": "San Jose, CA"
+  },
+  {
+    "name": "Madvit",
+    "technologyTest": false,
+    "workOn": "Fintech and accounting projects",
+    "allowedJobType": [
+      "REMOTE"
+    ],
+    "contactNumber": "(408) 536-6000",
+    "email": "careers@adobe.com",
+    "location": "San Jose, CA"
+  },
+  {
+    "name": "Kevit Technologies",
+    "technologyTest": false,
+    "workOn": "Software development and Chat Bots",
+    "allowedJobType": [
+      "REMOTE"
+    ],
     "contactNumber": "(408) 536-6000",
     "email": "careers@adobe.com",
     "location": "San Jose, CA"

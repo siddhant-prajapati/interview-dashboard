@@ -32,6 +32,19 @@ export const preparationApi = {
     });
   },
 
+  async updateItem(id: number, data: any): Promise<PreparationItem> {
+    return apiRequest<PreparationItem>(`/preparation-items/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async deleteItem(id: number): Promise<void> {
+    return apiRequest<void>(`/preparation-items/${id}`, {
+      method: 'DELETE',
+    });
+  },
+
   async getUserProgress(params: Record<string, any> = {}): Promise<any> {
     const query = new URLSearchParams(params).toString();
     return apiRequest(`/user-topic-progress${query ? `?${query}` : ''}`);
