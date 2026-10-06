@@ -1,5 +1,6 @@
 import React from 'react';
 import { Search, Menu } from 'lucide-react';
+import { useUser } from '../../context/UserContext';
 
 interface HeaderProps {
   greeting?: string;
@@ -11,13 +12,21 @@ interface HeaderProps {
 }
 
 export default function Header({ 
-  greeting = "Hello Evano 👋,", 
+  greeting: greetingProp, 
   searchValue = "", 
   onSearchChange,
   placeholder = "Search",
   actionButton,
   onToggleMobileMenu,
 }: HeaderProps) {
+  const { currentUser } = useUser();
+
+  const greeting = greetingProp || (
+    currentUser?.name 
+      ? `Hello ${currentUser.name.split(' ')[0]} 👋,` 
+      : `Hello ${currentUser?.username || 'there'} 👋,`
+  );
+
   return (
     <header className="header-bar">
       <div className="header-left">

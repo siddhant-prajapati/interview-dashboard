@@ -5,6 +5,8 @@
 @import './styles/statusBadge.css';
 @import './styles/modal.css';
 @import './styles/pages.css';
+@import './styles/profile.css';
+@import './styles/platformsBar.css';
 
 /* Design System inspired by Reference Dashboard */
 :root {

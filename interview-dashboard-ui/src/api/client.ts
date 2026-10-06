@@ -1,8 +1,24 @@
-import { JobApplication, Company, Interview, PreparationTopic, Technology, Question, StatMetrics } from '../types';
+import { JobApplication, Company, Interview, PreparationTopic, Technology, Question, StatMetrics, User } from '../types';
 
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 
 export const mockStore = {
+  user: {
+    id: 1,
+    username: 'siddhant',
+    name: 'Siddhant Prajapati',
+    email: 'sidkp.official@gmail.com',
+    experience: 2.7,
+    roles: ['Java Developer', 'Full Stack Developer'],
+    portfolioLink: 'https://siddhant-portfolio-k3vf.onrender.com/',
+    githubLink: 'https://github.com/siddhant-prajapati',
+    linkedInLink: 'https://www.linkedin.com/in/siddhant-prajapati-79680b233',
+    leetcodeLink: '',
+    hackerrankLink: '',
+    createdAt: '2026-10-06T21:55:14',
+    companies: [],
+  } as User,
+
   stats: {
     totalApplications: 5423,
     totalApplicationsTrend: '+16% this month',
@@ -594,6 +610,26 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
       size: 20,
       number: 0
     } as T;
+  }
+
+  if (cleanEndpoint.startsWith('/users')) {
+    if (method === 'PUT') {
+      const payload = JSON.parse((options.body as string) || '{}');
+      mockStore.user = { ...mockStore.user, ...payload };
+      return mockStore.user as T;
+    }
+    if (cleanEndpoint === '/users/1' || cleanEndpoint.match(/^\/users\/\d+$/)) {
+      return mockStore.user as T;
+    }
+    if (method === 'GET') {
+      return {
+        content: [mockStore.user],
+        totalElements: 1,
+        totalPages: 1,
+        size: 10,
+        number: 0
+      } as T;
+    }
   }
 
   return { content: [] } as T;

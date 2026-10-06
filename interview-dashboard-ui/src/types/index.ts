@@ -172,3 +172,33 @@ export interface PlatformFilter {
   userId?: number;
 }
 
+export interface User {
+  id: number;
+  username: string;
+  email?: string;
+  name?: string;
+  experience?: number;
+  roles?: string[];
+  portfolioLink?: string;
+  githubLink?: string;
+  hackerrankLink?: string;
+  leetcodeLink?: string;
+  linkedInLink?: string;
+  createdAt?: string;
+  companies?: Company[];
+}
+
+export interface UserUpdateRequest {
+  username?: string;
+  email?: string;
+  name?: string;
+  experience?: number;
+  roles?: string[];
+  portfolioLink?: string;
+  githubLink?: string;
+  hackerrankLink?: string;
+  leetcodeLink?: string;
+  linkedInLink?: string;
+  companyIds?: number[];
+}
+
