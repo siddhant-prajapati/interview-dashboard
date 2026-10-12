@@ -145,6 +145,32 @@
   box-shadow: 0 4px 14px rgba(89, 50, 234, 0.3);
 }
 
+.modal-checkbox-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 6px 0;
+}
+
+.modal-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  user-select: none;
+}
+
+.modal-checkbox-input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
 @media (max-width: 640px) {
   .modal-form-row {
     flex-direction: column;

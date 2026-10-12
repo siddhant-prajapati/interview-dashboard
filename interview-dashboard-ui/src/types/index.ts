@@ -158,19 +158,43 @@ export interface PageResponse<T> {
   number?: number;
 }
 
+export const DEFAULT_USER_ID = 1;
+
 export interface Platform {
   id?: number;
   name: string;
   accountLink?: string;
   lastUpdatedDate?: string;
   jobPostCount?: number;
-  userId: number;
+  userId?: number;
 }
 
 export interface PlatformFilter {
   name?: string;
   userId?: number;
 }
+
+export interface JobApplicationRequestDTO {
+  platform?: Partial<Platform>;
+  postingDate?: string;
+  about?: string;
+  role: string;
+  experience?: number;
+  expectedSalary?: string;
+  jobType?: JobType;
+  applyDate?: string;
+  status?: ApplicationStatus;
+  followUpCount?: number;
+  portfolioShared?: boolean;
+  linkedInProfileShared?: boolean;
+  jobUrl?: string;
+  companyId?: number;
+  resumeId?: number;
+  platformId?: number;
+  technologyIds?: number[];
+}
+
+export interface JobApplicationResponseDTO extends JobApplication {}
 
 export interface User {
   id: number;

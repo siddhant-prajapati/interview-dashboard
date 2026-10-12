@@ -537,13 +537,17 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
     } as T;
   }
 
-  if (cleanEndpoint === '/job-applications/composite' && method === 'POST') {
+  if ((cleanEndpoint === '/job-applications/composite' || cleanEndpoint === '/job-applications') && method === 'POST') {
     const payload = JSON.parse((options.body as string) || '{}');
+    const platformData = typeof payload.platform === 'object' && payload.platform !== null
+      ? payload.platform
+      : { name: payload.platform || "LinkedIn", userId: 1 };
+
     const newApp: JobApplication = {
       id: Date.now(),
-      candidateName: payload.candidateName || "Jane Cooper",
       role: payload.role || "Senior Software Engineer",
-      platform: payload.platform || "LinkedIn",
+      platform: platformData,
+      platformName: platformData.name,
       postingDate: payload.postingDate || new Date().toISOString().split('T')[0],
       applyDate: payload.applyDate || new Date().toISOString().split('T')[0],
       status: payload.status || "APPLIED",
@@ -553,9 +557,12 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
       portfolioShared: payload.portfolioShared ?? true,
       linkedInProfileShared: payload.linkedInProfileShared ?? true,
       jobUrl: payload.jobUrl || "",
-      company: payload.company || { name: "New Enterprise Co", location: "Global" },
+      about: payload.about || "",
+      followUpCount: payload.followUpCount || 0,
+      company: payload.company || { name: payload.companyName || "Enterprise Co", location: payload.location || "Remote" },
+      companyName: payload.company?.name || payload.companyName || "Enterprise Co",
       resume: payload.resume || { resumeName: "Primary_Resume.pdf" },
-      technologies: payload.technologys || [{ name: "Java 21" }],
+      technologies: payload.technologys || payload.technologies || [{ name: "Java 21" }],
       isActive: true
     };
     mockStore.jobApplications.unshift(newApp);

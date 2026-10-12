@@ -56,26 +56,32 @@ export default function ApplicationsPage() {
     if (activeTab !== 'ALL' && app.status !== activeTab) return false;
     if (!searchFilter) return true;
     const term = searchFilter.toLowerCase();
+    const platformStr: string = typeof app.platform === 'object' && app.platform ? app.platform.name : (app.platform as string || '');
     return (
       (app.role && app.role.toLowerCase().includes(term)) ||
-      (app.candidateName && app.candidateName.toLowerCase().includes(term)) ||
       (app.company?.name && app.company.name.toLowerCase().includes(term)) ||
-      (app.platform && app.platform.toLowerCase().includes(term))
+      (app.companyName && app.companyName.toLowerCase().includes(term)) ||
+      (platformStr && platformStr.toLowerCase().includes(term))
     );
   });
 
   const columns: Column<JobApplication>[] = [
     {
       key: 'role',
-      label: 'Target Role & Candidate',
-      render: (row) => (
-        <div>
-          <div className="table-cell-title">{row.role}</div>
-          <div className="table-cell-subtitle">
-            {row.candidateName || 'Candidate'} • {row.platform || 'Direct'}
+      label: 'Target Role',
+      render: (row) => {
+        const platformName: string = typeof row.platform === 'object' && row.platform
+          ? row.platform.name
+          : (row.platform as string || row.platformName || 'Direct');
+        return (
+          <div>
+            <div className="table-cell-title">{row.role}</div>
+            <div className="table-cell-subtitle">
+              Platform: {platformName}
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: 'company.name',
