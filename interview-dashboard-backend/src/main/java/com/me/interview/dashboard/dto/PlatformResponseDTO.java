@@ -1,15 +1,10 @@
 package com.me.interview.dashboard.dto;
 
 import lombok.Data;
-
-import java.time.LocalDateTime;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class PlatformResponseDTO {
+@EqualsAndHashCode(callSuper = true)
+public class PlatformResponseDTO extends PlatformRequestDTO {
     private Long id;
-    private String name;
-    private String accountLink;
-    private LocalDateTime lastUpdatedDate;
-    private Integer jobPostCount;
-    private Long userId;
 }

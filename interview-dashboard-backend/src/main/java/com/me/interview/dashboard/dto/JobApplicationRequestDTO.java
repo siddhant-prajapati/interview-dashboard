@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 public class JobApplicationRequestDTO {
-    private String platform;
+    private PlatformRequestDTO platform;
     private LocalDate postingDate;
     private String about;
     private String role;

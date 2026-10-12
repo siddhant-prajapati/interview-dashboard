@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class JobApplicationResponseDTO {
     private Long id;
-    private String platform;
+    private PlatformRequestDTO platform;
     private LocalDate postingDate;
     private String about;
     private String role;

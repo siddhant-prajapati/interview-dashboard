@@ -15,6 +15,9 @@ public interface PlatformMapper {
     @Mapping(source = "user.id", target = "userId")
     PlatformResponseDTO toDto(Platform entity);
 
+    @Mapping(source = "user.id", target = "userId")
+    PlatformRequestDTO toRequestDto(Platform entity);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     Platform toEntity(PlatformRequestDTO dto);

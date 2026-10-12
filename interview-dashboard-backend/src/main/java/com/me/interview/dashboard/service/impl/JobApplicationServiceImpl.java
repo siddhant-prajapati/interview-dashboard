@@ -186,13 +186,17 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             Platform platform = platformRepository.findById(dto.getPlatformId())
                     .orElseThrow(() -> new ResourceNotFoundException("Platform", "id", dto.getPlatformId()));
             entity.setPlatform(platform);
-        } else if (dto.getPlatform() != null && !dto.getPlatform().trim().isEmpty()) {
-            String platformName = dto.getPlatform().trim();
+        } else if (dto.getPlatform() != null && dto.getPlatform().getName() != null && !dto.getPlatform().getName().trim().isEmpty()) {
+            String platformName = dto.getPlatform().getName().trim();
             Platform platform = platformRepository.findFirstByNameIgnoreCase(platformName)
                     .orElseGet(() -> {
-                        User user = userRepository.findAll().stream().findFirst().orElse(null);
+                        Long targetUserId = (dto.getPlatform().getUserId() != null) ? dto.getPlatform().getUserId() : 1L;
+                        User user = userRepository.findById(targetUserId)
+                                .orElseGet(() -> userRepository.findAll().stream().findFirst().orElse(null));
                         return platformRepository.save(Platform.builder()
                                 .name(platformName)
+                                .accountLink(dto.getPlatform().getAccountLink())
+                                .jobPostCount(dto.getPlatform().getJobPostCount())
                                 .user(user)
                                 .lastUpdatedDate(LocalDateTime.now())
                                 .build());
