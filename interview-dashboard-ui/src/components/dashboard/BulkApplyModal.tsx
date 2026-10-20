@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  X, Zap, ExternalLink, Sparkles, FileText, Send,
+  X, Zap, ExternalLink, Sparkles, FileText, Send, Mail,
   Briefcase, Building2, Link, Calendar, DollarSign,
   ChevronDown, CheckSquare, Square, Info
 } from 'lucide-react';
@@ -8,6 +8,7 @@ import { jobApplicationsApi } from '../../api/jobApplicationsApi';
 import { platformsApi } from '../../api/platformsApi';
 import { aiApi } from '../../api/aiApi';
 import { DEFAULT_USER_ID, JobType, ApplicationStatus, Platform } from '../../types';
+import SendRecruiterEmailModal from './SendRecruiterEmailModal';
 
 
 interface BulkApplyModalProps {
@@ -61,10 +62,12 @@ export default function BulkApplyModal({ isOpen, onClose, onSuccess }: BulkApply
   const [aiSummary, setAiSummary]     = useState<string | null>(null);
   const [userPlatforms, setUserPlatforms] = useState<Platform[]>([]);
   const [platformsLoading, setPlatformsLoading] = useState(false);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
 
   const [form, setForm] = useState({
     role:                  '',
     companyName:           '',
+    hrEmail:               '',
     location:              'India',
     platformId:            '',
     jobType:               'REMOTE' as JobType,
@@ -122,10 +125,15 @@ export default function BulkApplyModal({ isOpen, onClose, onSuccess }: BulkApply
     try {
       const parsed = await aiApi.parseJobDescription(jdText);
 
+      // Regex fallback to guarantee any career/recruiter email mentioned in JD is captured
+      const emailMatch = jdText.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+      const extractedEmail = parsed.hrEmail || (emailMatch ? emailMatch[0] : '');
+
       setForm(prev => ({
         ...prev,
         role:           parsed.role          || prev.role,
         companyName:    parsed.companyName   || prev.companyName,
+        hrEmail:        extractedEmail       || prev.hrEmail,
         location:       parsed.location      || prev.location,
         technologies:   parsed.technologies  || prev.technologies,
         expectedSalary: parsed.expectedSalary || prev.expectedSalary,
@@ -152,13 +160,15 @@ export default function BulkApplyModal({ isOpen, onClose, onSuccess }: BulkApply
     setError(null);
     try {
       const selectedPlatform = userPlatforms.find(p => String(p.id) === form.platformId);
-      const platformPayload = selectedPlatform
-        ? { name: selectedPlatform.name, accountLink: selectedPlatform.accountLink || undefined, userId: DEFAULT_USER_ID }
-        : { name: 'Other', userId: DEFAULT_USER_ID };
+      const platformId = selectedPlatform?.id ? Number(selectedPlatform.id) : undefined;
+      const platformNested = !platformId
+        ? { name: 'Other', userId: DEFAULT_USER_ID }
+        : undefined;
 
       const payload = {
         role:                  form.role.trim(),
-        platform:              platformPayload,
+        platformId:            platformId,
+        platformNested:        platformNested,
         jobType:               form.jobType,
         experience:            parseFloat(form.experience) || 0,
         expectedSalary:        form.expectedSalary.trim(),
@@ -175,6 +185,7 @@ export default function BulkApplyModal({ isOpen, onClose, onSuccess }: BulkApply
           location:       form.location.trim() || 'Remote',
           allowedJobType: [form.jobType],
           technologyTest: true,
+          email:          form.hrEmail.trim() || undefined,
         },
         resume: {
           resumeName:   'Primary_Resume.pdf',
@@ -287,6 +298,16 @@ export default function BulkApplyModal({ isOpen, onClose, onSuccess }: BulkApply
 
               <button
                 type="button"
+                className="bulk-email-btn"
+                onClick={() => setEmailModalOpen(true)}
+                title="Compose and send outreach email to HR/Career contact"
+              >
+                <Mail size={13} />
+                Send Email
+              </button>
+
+              <button
+                type="button"
                 className="bulk-create-btn"
                 onClick={handleCreate}
                 disabled={submitting}
@@ -347,6 +368,47 @@ export default function BulkApplyModal({ isOpen, onClose, onSuccess }: BulkApply
                 <div className="bulk-form-group">
                   <label className="bulk-form-label">Location</label>
                   <input className="bulk-form-input" type="text" name="location" value={form.location} onChange={handleChange} placeholder="Remote / India" />
+                </div>
+              </div>
+
+              {/* HR / Career Email + Job Listing URL */}
+              <div className="bulk-form-row">
+                <div className="bulk-form-group" style={{ flex: 1.15 }}>
+                  <label className="bulk-form-label">
+                    <Mail size={10} /> HR or Career Email
+                    {form.hrEmail && <span className="bulk-label-tag">Recruiter Contact</span>}
+                  </label>
+                  <div className="bulk-input-with-action">
+                    <input
+                      className="bulk-form-input"
+                      type="email"
+                      name="hrEmail"
+                      value={form.hrEmail}
+                      onChange={handleChange}
+                      placeholder="e.g. careers@company.com or hr@..."
+                    />
+                    {form.hrEmail && (
+                      <button
+                        type="button"
+                        className="bulk-inline-mail-btn"
+                        onClick={() => setEmailModalOpen(true)}
+                        title="Send email to this HR / Career address"
+                      >
+                        <Send size={11} /> Send
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div className="bulk-form-group" style={{ flex: 0.85 }}>
+                  <label className="bulk-form-label"><Link size={10} /> Job Listing URL</label>
+                  <input
+                    className="bulk-form-input"
+                    type="url"
+                    name="jobUrl"
+                    value={form.jobUrl}
+                    onChange={handleChange}
+                    placeholder="https://linkedin.com/jobs/view/..."
+                  />
                 </div>
               </div>
 
@@ -418,12 +480,6 @@ export default function BulkApplyModal({ isOpen, onClose, onSuccess }: BulkApply
                 </div>
               </div>
 
-              {/* Job URL */}
-              <div className="bulk-form-group">
-                <label className="bulk-form-label"><Link size={10} /> Job Listing URL</label>
-                <input className="bulk-form-input" type="url" name="jobUrl" value={form.jobUrl} onChange={handleChange} placeholder="https://linkedin.com/jobs/view/..." />
-              </div>
-
               {/* Technologies */}
               <div className="bulk-form-group">
                 <label className="bulk-form-label">Technologies (comma-separated)</label>
@@ -464,6 +520,26 @@ export default function BulkApplyModal({ isOpen, onClose, onSuccess }: BulkApply
           </div>{/* /bulk-right-panel */}
         </div>{/* /bulk-panel-body */}
       </div>{/* /bulk-panel-drawer */}
+
+      {/* ── Recruiter Outreach Email Composer ── */}
+      <SendRecruiterEmailModal
+        isOpen={emailModalOpen}
+        onClose={() => setEmailModalOpen(false)}
+        recipientEmail={form.hrEmail}
+        onRecipientEmailChange={(email) => setForm(p => ({ ...p, hrEmail: email }))}
+        role={form.role}
+        companyName={form.companyName}
+        technologies={form.technologies}
+        experience={form.experience}
+        jdText={jdText}
+        jobUrl={form.jobUrl}
+        onEmailSent={() => {
+          setForm(p => ({
+            ...p,
+            followUpCount: String((parseInt(p.followUpCount, 10) || 0) + 1),
+          }));
+        }}
+      />
     </div>
   );
 }

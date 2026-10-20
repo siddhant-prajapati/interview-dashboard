@@ -85,20 +85,18 @@ export default function NewApplicationModal({ isOpen, onClose, onSuccess }: NewA
         (p) => String(p.id) === formData.platformId
       );
 
-      const platformPayload = selectedPlatform
+      const platformId = selectedPlatform?.id ? Number(selectedPlatform.id) : undefined;
+      const platformNested = !platformId
         ? {
-            name: selectedPlatform.name,
-            accountLink: selectedPlatform.accountLink || undefined,
-            userId: DEFAULT_USER_ID,
-          }
-        : {
             name: 'Other',
             userId: DEFAULT_USER_ID,
-          };
+          }
+        : undefined;
 
       const payload = {
         role: formData.role.trim(),
-        platform: platformPayload,
+        platformId: platformId,
+        platformNested: platformNested,
         jobType: formData.jobType,
         experience: parseFloat(formData.experience) || 0,
         expectedSalary: formData.expectedSalary.trim(),

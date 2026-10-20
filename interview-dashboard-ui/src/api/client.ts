@@ -415,11 +415,15 @@ export const mockStore = {
   ] as JobApplication[],
 
   companies: [
-    { id: 1, name: "Microsoft", location: "United States", email: "careers@microsoft.com", contactNumber: "(225) 555-0118", technologyTest: true, workOn: "Cloud & AI Platforms", allowedJobType: ["REMOTE", "HYBRID"] },
-    { id: 2, name: "Yahoo", location: "Kiribati", email: "jobs@yahoo.com", contactNumber: "(205) 555-0100", technologyTest: true, workOn: "Media & Ad Tech", allowedJobType: ["HYBRID", "ON_SITE"] },
-    { id: 3, name: "Adobe", location: "Israel", email: "talent@adobe.com", contactNumber: "(302) 555-0107", technologyTest: false, workOn: "Creative Cloud Services", allowedJobType: ["ON_SITE"] },
-    { id: 4, name: "Tesla", location: "United States", email: "recruit@tesla.com", contactNumber: "(252) 555-0126", technologyTest: true, workOn: "Autonomous Telemetry", allowedJobType: ["REMOTE"] },
-    { id: 5, name: "Google", location: "United States", email: "jobs@google.com", contactNumber: "(629) 555-0129", technologyTest: true, workOn: "Cloud Systems", allowedJobType: ["HYBRID", "REMOTE"] }
+    { id: 1, name: "Microsoft", location: "Redmond, WA", email: "careers@microsoft.com", contactNumber: "(225) 555-0118", technologyTest: true, workOn: "Cloud & AI Platforms", allowedJobType: ["REMOTE", "HYBRID"] },
+    { id: 2, name: "Google", location: "Mountain View, CA", email: "jobs@google.com", contactNumber: "(650) 253-0000", technologyTest: true, workOn: "Search & Distributed Infrastructure", allowedJobType: ["HYBRID", "ON_SITE"] },
+    { id: 3, name: "Amazon", location: "Seattle, WA", email: "aws-recruiting@amazon.com", contactNumber: "(206) 266-1000", technologyTest: true, workOn: "AWS Distributed Cloud Services", allowedJobType: ["HYBRID"] },
+    { id: 4, name: "Adobe", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Creative Cloud Enterprise Services", allowedJobType: ["REMOTE"] },
+    { id: 5, name: "SmartBear", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Software development and Quality Tools", allowedJobType: ["REMOTE"] },
+    { id: 6, name: "Aum Solution", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Software development and AI Tools", allowedJobType: ["REMOTE"] },
+    { id: 7, name: "Paypal", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Payment gateway, apps and website", allowedJobType: ["REMOTE"] },
+    { id: 8, name: "Madvit", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Fintech and accounting projects", allowedJobType: ["REMOTE"] },
+    { id: 9, name: "Kevit Technologies", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Software development and Chat Bots", allowedJobType: ["REMOTE"] }
   ] as Company[],
 
   interviews: [
@@ -541,13 +545,14 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
     const payload = JSON.parse((options.body as string) || '{}');
     const platformData = typeof payload.platform === 'object' && payload.platform !== null
       ? payload.platform
-      : { name: payload.platform || "LinkedIn", userId: 1 };
+      : payload.platformNested || { id: payload.platformId, name: "LinkedIn", userId: 1 };
 
     const newApp: JobApplication = {
       id: Date.now(),
       role: payload.role || "Senior Software Engineer",
       platform: platformData,
-      platformName: platformData.name,
+      platformId: payload.platformId || platformData.id,
+      platformName: platformData.name || "LinkedIn",
       postingDate: payload.postingDate || new Date().toISOString().split('T')[0],
       applyDate: payload.applyDate || new Date().toISOString().split('T')[0],
       status: payload.status || "APPLIED",
@@ -577,6 +582,47 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
       size: 10,
       number: 0
     } as T;
+  }
+
+  if (cleanEndpoint === '/companies' && method === 'POST') {
+    const payload = JSON.parse((options.body as string) || '{}');
+    const newCompany: Company = {
+      id: Date.now(),
+      name: payload.name || "New Company",
+      workOn: payload.workOn || "",
+      location: payload.location || "",
+      email: payload.email || "",
+      contactNumber: payload.contactNumber || "",
+      technologyTest: payload.technologyTest ?? true,
+      allowedJobType: payload.allowedJobType || ["REMOTE", "HYBRID"],
+    };
+    mockStore.companies.unshift(newCompany);
+    return newCompany as T;
+  }
+
+  if (cleanEndpoint.startsWith('/companies/') && method === 'PUT') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    const payload = JSON.parse((options.body as string) || '{}');
+    const index = mockStore.companies.findIndex(c => c.id === id);
+    if (index !== -1) {
+      mockStore.companies[index] = { ...mockStore.companies[index], ...payload };
+      return mockStore.companies[index] as T;
+    }
+    const updatedCompany: Company = { id, ...payload };
+    mockStore.companies.push(updatedCompany);
+    return updatedCompany as T;
+  }
+
+  if (cleanEndpoint.startsWith('/companies/') && method === 'DELETE') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    mockStore.companies = mockStore.companies.filter(c => c.id !== id);
+    return null as T;
+  }
+
+  if (cleanEndpoint.startsWith('/companies/') && method === 'GET') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    const company = mockStore.companies.find(c => c.id === id);
+    return (company || mockStore.companies[0]) as T;
   }
 
   if (cleanEndpoint === '/interviews' && method === 'GET') {
