@@ -31,6 +31,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     private final UserRepository userRepository;
     private final JobApplicationMapper jobApplicationMapper;
     private final ApplicationStatusHistoryRepository applicationStatusHistoryRepository;
+    private final InterviewRepository interviewRepository;
 
     // Fetch the Singleton Logger instance
     private final CustomLogger logger = CustomLogger.getInstance();
@@ -135,6 +136,11 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         if (!jobApplicationRepository.existsById(id)) {
             logger.warn("Deletion failed: Job Application not found with ID: " + id);
             throw new ResourceNotFoundException("JobApplication", "id", id);
+        }
+        List<Interview> interviews = interviewRepository.findAllByJobApplicationId(id);
+        if (!interviews.isEmpty()) {
+            logger.warn("Deleting all Job Interview of Job Application Id :"+id);
+            interviewRepository.deleteAllByJobApplicationId(id);
         }
 
         try {
@@ -347,18 +353,6 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                                     .build());
                         });
             }
-        }
-        if (dto.getPlatform() != null && !dto.getPlatform().trim().isEmpty()) {
-            String name = dto.getPlatform().trim();
-            return platformRepository.findFirstByNameIgnoreCase(name)
-                    .orElseGet(() -> {
-                        User user = userRepository.findAll().stream().findFirst().orElse(null);
-                        return platformRepository.save(Platform.builder()
-                                .name(name)
-                                .user(user)
-                                .lastUpdatedDate(LocalDateTime.now())
-                                .build());
-                    });
         }
         return null;
     }
