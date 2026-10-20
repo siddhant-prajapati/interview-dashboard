@@ -43,11 +43,4 @@ public class PreparationTopic {
     @JsonProperty("children")
     private List<PreparationTopic> subTopics = new ArrayList<>();
 
-    public List<PreparationTopic> getChildren() {
-        return subTopics;
-    }
-
-    public void setChildren(List<PreparationTopic> children) {
-        this.subTopics = children;
-    }
 }
