@@ -1,5 +1,6 @@
 package com.me.interview.dashboard.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.me.interview.dashboard.enumeration.ApplicationStatus;
 import com.me.interview.dashboard.enumeration.JobType;
@@ -10,7 +11,6 @@ import java.util.List;
 
 @Data
 public class JobApplicationCompositeRequestDTO {
-    private String platform;
     private Long platformId;
     private PlatformNestedDTO platformNested;
     private LocalDate postingDate;
@@ -31,5 +31,6 @@ public class JobApplicationCompositeRequestDTO {
 
     // Handles key name matching the payload
     @JsonProperty("technologys")
+    @JsonAlias({"technologies", "technologys"})
     private List<TechnologyNestedDTO> technologys;
 }

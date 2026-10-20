@@ -50,6 +50,9 @@ public class JdParseResponseDTO {
     /** Comma-separated list of notable benefits mentioned. */
     private String benefits;
 
+    /** HR or Careers email address extracted from the JD. */
+    private String hrEmail;
+
     /** Quick 2–3 sentence summary of the role. */
     private String summary;
 }

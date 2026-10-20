@@ -31,10 +31,14 @@ public class JdParseService {
               "expectedSalary": "salary or empty string",
               "experience": 0.0,
               "jobType": "REMOTE" | "HYBRID" | "ON_SITE",
+              "hrEmail": "recruiter, career, or HR email address if mentioned, else empty string",
               "summary": "1 concise sentence overview of the role"
             }
             Rules: Use null for unknown experience, empty string "" for any other unknown field.
             """;
+
+    private static final java.util.regex.Pattern EMAIL_PATTERN =
+            java.util.regex.Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
 
     /**
      * Parses the given job description text using the LLM and returns a
@@ -77,6 +81,14 @@ public class JdParseService {
         // 3. Sensible defaults if not returned by LLM
         if (result.getJobType() == null || result.getJobType().isBlank()) {
             result.setJobType("REMOTE");
+        }
+
+        // 4. Regex fallback for hrEmail if LLM missed it
+        if (result.getHrEmail() == null || result.getHrEmail().isBlank()) {
+            java.util.regex.Matcher matcher = EMAIL_PATTERN.matcher(jobDescription);
+            if (matcher.find()) {
+                result.setHrEmail(matcher.group());
+            }
         }
 
         return result;
