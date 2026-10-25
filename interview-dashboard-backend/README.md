@@ -596,11 +596,11 @@ The server will start on port **`8080`** by default.
 
 ### 1. Interactive Swagger UI
 Once running, open your web browser and navigate to:
-👉 **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
+👉 **[http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)**
 
 You can view interactive OpenAPI schema definitions and execute API calls directly from the browser.
 
-* OpenAPI Specification JSON: `http://localhost:8080/v3/api-docs`
+* OpenAPI Specification JSON: `http://localhost:8081/v3/api-docs`
 
 ---
 
@@ -608,7 +608,7 @@ You can view interactive OpenAPI schema definitions and execute API calls direct
 
 #### Step 1: Create a User
 ```bash
-curl -X POST "http://localhost:8080/api/users" \
+curl -X POST "http://localhost:8081/api/users" \
      -H "Content-Type: application/json" \
      -d '{
        "username": "johndoe",
@@ -618,7 +618,7 @@ curl -X POST "http://localhost:8080/api/users" \
 
 #### Step 2: Ingest a Composite Job Application
 ```bash
-curl -X POST "http://localhost:8080/api/job-applications/composite" \
+curl -X POST "http://localhost:8081/api/job-applications/composite" \
      -H "Content-Type: application/json" \
      -d '{
        "platform": "LinkedIn",
@@ -656,7 +656,7 @@ curl -X POST "http://localhost:8080/api/job-applications/composite" \
 
 #### Step 3: Fetch Filtered Applications
 ```bash
-curl -X GET "http://localhost:8080/api/job-applications?role=Java&status=APPLIED&page=0&size=10"
+curl -X GET "http://localhost:8081/api/job-applications?role=Java&status=APPLIED&page=0&size=10"
 ```
 
 ---
