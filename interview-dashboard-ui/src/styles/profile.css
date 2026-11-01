@@ -417,33 +417,38 @@
 }
 
 /* Connected Platforms */
+.profile-platforms-fullwidth-card {
+  width: 100%;
+}
+
 .platforms-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
 }
 
 .platform-pill-card {
-  padding: 12px 14px;
-  border-radius: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
   background-color: #FAF8FF;
   border: 1px solid #EDE9FE;
   display: flex;
   align-items: center;
   justify-content: space-between;
   text-decoration: none;
-  transition: transform 0.15s ease;
+  transition: all 0.2s ease;
 }
 
 .platform-pill-card:hover {
   transform: translateY(-2px);
   border-color: #C4B5FD;
+  box-shadow: 0 6px 18px rgba(89, 50, 234, 0.08);
 }
 
 .platform-pill-name {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: #1F2937;
+  color: #111827;
 }
 
 .platform-post-count {
@@ -507,3 +512,289 @@
   display: inline-flex;
   align-items: center;
 }
+
+/* Platform Manager in Profile Modal */
+.profile-platforms-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #F0F0F0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.profile-platforms-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.profile-platforms-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1F2937;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-platforms-subtitle {
+  font-size: 12px;
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+.profile-add-platform-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  background-color: var(--color-primary-light, #EEF2FF);
+  color: var(--color-primary, #5932EA);
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid rgba(89, 50, 234, 0.2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.profile-add-platform-btn:hover {
+  background-color: #E0E7FF;
+  transform: translateY(-1px);
+}
+
+.profile-platform-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: #FAF8FF;
+  border: 1px solid #EDE9FE;
+  transition: all 0.15s ease;
+}
+
+.profile-platform-card:hover {
+  border-color: #C4B5FD;
+  box-shadow: 0 4px 12px rgba(89, 50, 234, 0.06);
+}
+
+.profile-platform-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-platform-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #5932EA 0%, #7B5CFA 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profile-platform-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.profile-platform-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-platform-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.profile-platform-link {
+  font-size: 11.5px;
+  color: #6B7280;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  max-width: 260px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-platform-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.profile-platform-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.platform-action-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.platform-action-icon-btn.edit:hover {
+  background-color: #EFF6FF;
+  border-color: #93C5FD;
+}
+
+.platform-action-icon-btn.delete:hover {
+  background-color: #FEF2F2;
+  border-color: #FCA5A5;
+}
+
+.profile-platform-form-card {
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.profile-platform-count-tag {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background-color: var(--color-primary-light, #EEF2FF);
+  color: var(--color-primary, #5932EA);
+}
+
+/* Interactive Platform Cards in ProfilePage */
+.platform-interactive-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAF8FF 100%);
+  border: 1px solid #EDE8F8;
+  border-radius: 14px;
+}
+
+.platform-interactive-card:hover {
+  border-color: #A78BFA;
+  box-shadow: 0 6px 20px rgba(89, 50, 234, 0.09);
+  transform: translateY(-2px);
+}
+
+.platform-card-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.platform-link-subtext {
+  font-size: 11.5px;
+  color: #6B7280;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.platform-link-subtext:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.platform-card-action-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.platform-action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  background-color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.platform-action-btn.view-btn:hover {
+  background-color: #F3EFFF;
+  border-color: #C4B5FD;
+  transform: scale(1.05);
+}
+
+.platform-action-btn.edit-btn:hover {
+  background-color: #EFF6FF;
+  border-color: #93C5FD;
+  transform: scale(1.05);
+}
+
+.platform-action-btn.delete-btn:hover {
+  background-color: #FEF2F2;
+  border-color: #FCA5A5;
+  transform: scale(1.05);
+}
+
+.platform-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.platform-add-btn-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #7B5CFA 100%);
+  color: #FFFFFF;
+  font-size: 11.5px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(89, 50, 234, 0.2);
+  transition: all 0.15s ease;
+}
+
+.platform-add-btn-header:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
+}
+

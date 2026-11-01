@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Modal from '../common/Modal';
 import { jobApplicationsApi } from '../../api/jobApplicationsApi';
 import { platformsApi } from '../../api/platformsApi';
+import { interviewsApi } from '../../api/interviewsApi';
 import { DEFAULT_USER_ID, JobType, ApplicationStatus, Platform } from '../../types';
+import { CompanyAutocomplete } from '../common/CompanyAutocomplete';
 
 export interface NewApplicationModalProps {
   isOpen: boolean;
@@ -126,6 +128,39 @@ export default function NewApplicationModal({ isOpen, onClose, onSuccess }: NewA
       };
 
       const result = await jobApplicationsApi.createComposite(payload);
+
+      // Check and auto-create interview if initial status is an interview round
+      const stageMap: Record<string, string> = {
+        HR_SCREENING: 'HR',
+        TECHNICAL_ROUND: 'TECHNICAL',
+        MANAGERIAL_ROUND: 'MANAGERIAL',
+        HR_FINAL: 'HR_FINAL',
+      };
+      const targetStage = stageMap[formData.status];
+      if (targetStage && result?.id) {
+        try {
+          const res = await interviewsApi.getAll();
+          const existingList = res?.content || (Array.isArray(res) ? res : []);
+          const exists = existingList.some(
+            (i) => Number(i.jobApplicationId) === Number(result.id) && i.stage === targetStage
+          );
+          if (!exists) {
+            await interviewsApi.create({
+              jobApplicationId: result.id,
+              stage: targetStage,
+              status: 'SCHEDULED',
+              interviewDate: new Date(Date.now() + 86400000 * 2).toISOString(),
+              companyName: formData.companyName.trim(),
+              role: formData.role.trim(),
+              notes: `Auto-scheduled interview for ${targetStage} round (${formData.role.trim()} at ${formData.companyName.trim()})`,
+            });
+            window.dispatchEvent(new Event('interviews-updated'));
+          }
+        } catch (e) {
+          console.warn('Auto interview verification / creation warning:', e);
+        }
+      }
+
       setLoading(false);
       onClose();
       if (onSuccess) onSuccess(result);
@@ -157,13 +192,17 @@ export default function NewApplicationModal({ isOpen, onClose, onSuccess }: NewA
 
           <div className="modal-form-group">
             <label className="modal-form-label">Company Name *</label>
-            <input
-              type="text"
+            <CompanyAutocomplete
               name="companyName"
               value={formData.companyName}
-              onChange={handleChange}
-              className="modal-input-field"
-              placeholder="e.g. Microsoft / Tesla"
+              onChange={(name, company) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  companyName: name,
+                  location: company?.location && prev.location === 'United States' ? company.location : prev.location,
+                }));
+              }}
+              placeholder="e.g. Microsoft, Google, SmartBear..."
               required
             />
           </div>

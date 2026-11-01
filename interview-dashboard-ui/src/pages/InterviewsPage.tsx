@@ -7,15 +7,19 @@ import Modal from '../components/common/Modal';
 import { interviewsApi } from '../api/interviewsApi';
 import { jobApplicationsApi } from '../api/jobApplicationsApi';
 import { mockStore } from '../api/client';
-import { Plus, Calendar, MessageSquare, AlertTriangle, Trash2 } from 'lucide-react';
+import { Plus, Calendar, MessageSquare, AlertTriangle, Trash2, Eye, Edit3 } from 'lucide-react';
 import { Interview, JobApplication, Technology } from '../types';
 import { AppOutletContext } from '../components/layout/AppLayout';
+import { CompanyAutocomplete } from '../components/common/CompanyAutocomplete';
+import ViewInterviewModal from '../components/interviews/ViewInterviewModal';
+import EditInterviewModal from '../components/interviews/EditInterviewModal';
 
 export default function InterviewsPage() {
   const { toggleMobileMenu } = useOutletContext<AppOutletContext>();
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [applications, setApplications] = useState<JobApplication[]>([]);
-  const [selectedInterview, setSelectedInterview] = useState<Interview | null>(null);
+  const [viewingInterview, setViewingInterview] = useState<Interview | null>(null);
+  const [editingInterview, setEditingInterview] = useState<Interview | null>(null);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [searchFilter, setSearchFilter] = useState('');
   const [formData, setFormData] = useState({
@@ -30,7 +34,7 @@ export default function InterviewsPage() {
 
   useEffect(() => {
     let isMounted = true;
-    (async () => {
+    const fetchAllData = async () => {
       try {
         const [intRes, appRes] = await Promise.allSettled([
           interviewsApi.getAll(),
@@ -61,9 +65,18 @@ export default function InterviewsPage() {
       } catch (err) {
         console.warn('Interviews fetch fallback:', err);
       }
-    })();
+    };
+
+    fetchAllData();
+
+    const handleSync = () => {
+      if (isMounted) fetchAllData();
+    };
+    window.addEventListener('interviews-updated', handleSync);
+
     return () => {
       isMounted = false;
+      window.removeEventListener('interviews-updated', handleSync);
     };
   }, []);
 
@@ -177,16 +190,41 @@ export default function InterviewsPage() {
     },
     {
       key: 'actions',
-      label: '',
+      label: 'Actions',
       render: (row) => (
-        <div className="table-action-btn-group">
+        <div className="table-action-btn-group" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setViewingInterview(row);
+            }}
+            className="table-action-icon-btn action-show-btn"
+            title="View Interview Debrief"
+            aria-label="View Interview"
+          >
+            <Eye size={15} color="#5932EA" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingInterview(row);
+            }}
+            className="table-action-icon-btn action-edit-btn"
+            title="Edit Interview Round"
+            aria-label="Edit Interview"
+          >
+            <Edit3 size={15} color="#2563EB" />
+          </button>
           <button
             type="button"
             onClick={(e) => handleDelete(e, row.id)}
-            className="table-action-icon-btn"
+            className="table-action-icon-btn action-delete-btn"
             title="Delete Interview"
+            aria-label="Delete Interview"
           >
-            <Trash2 size={16} color="#DF0404" />
+            <Trash2 size={15} color="#DF0404" />
           </button>
         </div>
       ),
@@ -219,7 +257,7 @@ export default function InterviewsPage() {
         columns={columns}
         data={filteredInterviews}
         totalEntries={filteredInterviews.length}
-        onRowClick={(row) => setSelectedInterview(row)}
+        onRowClick={(row) => setViewingInterview(row)}
       />
 
       {/* Schedule Interview Modal */}
@@ -261,11 +299,29 @@ export default function InterviewsPage() {
           <div className="modal-form-row">
             <div className="modal-form-group">
               <label className="modal-form-label">Company Name</label>
-              <input
-                type="text"
+              <CompanyAutocomplete
                 value={formData.companyName}
-                onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                className="modal-input-field"
+                onChange={(name) => {
+                  const matchingApp = applications.find(
+                    (a) =>
+                      (a.companyName && a.companyName.toLowerCase() === name.toLowerCase()) ||
+                      (a.company?.name && a.company.name.toLowerCase() === name.toLowerCase())
+                  );
+                  if (matchingApp) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      companyName: name,
+                      jobApplicationId: matchingApp.id,
+                      role: matchingApp.role || prev.role,
+                    }));
+                  } else {
+                    setFormData((prev) => ({
+                      ...prev,
+                      companyName: name,
+                    }));
+                  }
+                }}
+                placeholder="e.g. SmartBear, Google, Microsoft..."
                 required
               />
             </div>
@@ -331,84 +387,29 @@ export default function InterviewsPage() {
       </Modal>
 
       {/* View Interview Details & Questions Modal */}
-      {selectedInterview && (
-        <Modal
-          isOpen={Boolean(selectedInterview)}
-          onClose={() => setSelectedInterview(null)}
-          title={`Interview Debrief — ${selectedInterview.companyName || 'Interview'}`}
-        >
-          <div className="debrief-section-group">
-            <div className="debrief-two-col">
-              <div>
-                <span className="debrief-meta-label">
-                  Stage
-                </span>
-                <div className="debrief-meta-value">
-                  <span className="stage-badge-pill">{selectedInterview.stage}</span>
-                </div>
-              </div>
-              <div>
-                <span className="debrief-meta-label">
-                  Status
-                </span>
-                <div className="debrief-meta-value">
-                  <StatusBadge status={selectedInterview.status} />
-                </div>
-              </div>
-            </div>
+      <ViewInterviewModal
+        isOpen={Boolean(viewingInterview)}
+        onClose={() => setViewingInterview(null)}
+        interview={viewingInterview}
+        applications={applications}
+        onEdit={(interview) => {
+          setViewingInterview(null);
+          setEditingInterview(interview);
+        }}
+      />
 
-            <div>
-              <span className="debrief-meta-label">
-                Debrief Notes
-              </span>
-              <p className="debrief-notes-text">
-                {selectedInterview.notes || 'No specific notes entered.'}
-              </p>
-            </div>
-
-            {/* Questions Asked */}
-            <div>
-              <span className="debrief-meta-label">
-                Questions Asked in Round
-              </span>
-              <div className="debrief-questions-list">
-                {(selectedInterview.questions || []).length === 0 ? (
-                  <p className="debrief-empty-text">No questions logged for this round yet.</p>
-                ) : (
-                  selectedInterview.questions?.map((q, idx) => (
-                    <div key={idx} className="interview-question-box">
-                      <MessageSquare size={16} color="#5932EA" />
-                      <span className="debrief-question-item-text">{q.question}</span>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Required Improvements */}
-            <div>
-              <span className="debrief-meta-label">
-                Identified Areas for Improvement
-              </span>
-              <div className="debrief-improvements-wrap">
-                {(selectedInterview.requiredImprovements || []).length === 0 ? (
-                  <p className="debrief-success-empty">No skill gaps identified!</p>
-                ) : (
-                  selectedInterview.requiredImprovements?.map((tech: Technology | string, idx: number) => {
-                    const techName = typeof tech === 'string' ? tech : tech.name;
-                    return (
-                      <span key={idx} className="improvement-badge-pill">
-                        <AlertTriangle size={12} color="#D0004B" />
-                        {techName}
-                      </span>
-                    );
-                  })
-                )}
-              </div>
-            </div>
-          </div>
-        </Modal>
-      )}
+      {/* Edit Interview Modal */}
+      <EditInterviewModal
+        isOpen={Boolean(editingInterview)}
+        onClose={() => setEditingInterview(null)}
+        interview={editingInterview}
+        applications={applications}
+        onSuccess={(updated) => {
+          setInterviews((prev) =>
+            prev.map((i) => (i.id === updated.id ? { ...i, ...updated } : i))
+          );
+        }}
+      />
     </div>
   );
 }

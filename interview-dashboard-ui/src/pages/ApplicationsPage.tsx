@@ -4,9 +4,11 @@ import Header from '../components/layout/Header';
 import DataTable, { Column } from '../components/common/DataTable';
 import StatusBadge from '../components/common/StatusBadge';
 import NewApplicationModal from '../components/applications/NewApplicationModal';
+import ViewApplicationModal from '../components/applications/ViewApplicationModal';
+import EditApplicationModal from '../components/applications/EditApplicationModal';
 import { jobApplicationsApi } from '../api/jobApplicationsApi';
 import { mockStore } from '../api/client';
-import { Plus, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Eye, Edit3 } from 'lucide-react';
 import { JobApplication, Technology } from '../types';
 import { AppOutletContext } from '../components/layout/AppLayout';
 
@@ -15,6 +17,10 @@ export default function ApplicationsPage() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [activeTab, setActiveTab] = useState('ALL');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedViewApp, setSelectedViewApp] = useState<JobApplication | null>(null);
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [selectedEditApp, setSelectedEditApp] = useState<JobApplication | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [searchFilter, setSearchFilter] = useState('');
 
   useEffect(() => {
@@ -40,6 +46,27 @@ export default function ApplicationsPage() {
       isMounted = false;
     };
   }, []);
+
+  const handleOpenView = (e: React.MouseEvent, app: JobApplication) => {
+    e.stopPropagation();
+    setSelectedViewApp(app);
+    setIsViewOpen(true);
+  };
+
+  const handleOpenEdit = (e: React.MouseEvent, app: JobApplication) => {
+    e.stopPropagation();
+    setSelectedEditApp(app);
+    setIsEditOpen(true);
+  };
+
+  const handleEditSuccess = (updatedApp: JobApplication) => {
+    setApplications((prev) =>
+      prev.map((a) => (a.id === updatedApp.id ? updatedApp : a))
+    );
+    if (selectedViewApp?.id === updatedApp.id) {
+      setSelectedViewApp(updatedApp);
+    }
+  };
 
   const handleDelete = async (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
@@ -133,9 +160,27 @@ export default function ApplicationsPage() {
     },
     {
       key: 'actions',
-      label: '',
+      label: 'Actions',
       render: (row) => (
         <div className="table-action-btn-group">
+          <button
+            type="button"
+            onClick={(e) => handleOpenView(e, row)}
+            className="table-action-icon-btn action-view-btn"
+            title="View Application Details"
+            aria-label={`View details for ${row.role}`}
+          >
+            <Eye size={16} color="#5932EA" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => handleOpenEdit(e, row)}
+            className="table-action-icon-btn action-edit-btn"
+            title="Edit Application"
+            aria-label={`Edit ${row.role}`}
+          >
+            <Edit3 size={16} color="#2563EB" />
+          </button>
           {row.jobUrl && (
             <a
               href={row.jobUrl}
@@ -143,6 +188,7 @@ export default function ApplicationsPage() {
               rel="noreferrer"
               className="table-action-icon-btn"
               title="Open Job Listing"
+              onClick={(e) => e.stopPropagation()}
             >
               <ExternalLink size={16} color="#7E7E7E" />
             </a>
@@ -208,12 +254,40 @@ export default function ApplicationsPage() {
         data={filteredData}
         totalEntries={filteredData.length}
         pageSize={8}
+        onRowClick={(row) => {
+          setSelectedViewApp(row);
+          setIsViewOpen(true);
+        }}
       />
 
       <NewApplicationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={(newApp) => setApplications((prev) => [newApp, ...prev])}
+      />
+
+      <ViewApplicationModal
+        isOpen={isViewOpen}
+        onClose={() => {
+          setIsViewOpen(false);
+          setSelectedViewApp(null);
+        }}
+        application={selectedViewApp}
+        onEdit={(app) => {
+          setIsViewOpen(false);
+          setSelectedEditApp(app);
+          setIsEditOpen(true);
+        }}
+      />
+
+      <EditApplicationModal
+        isOpen={isEditOpen}
+        onClose={() => {
+          setIsEditOpen(false);
+          setSelectedEditApp(null);
+        }}
+        application={selectedEditApp}
+        onSuccess={handleEditSuccess}
       />
     </div>
   );

@@ -622,3 +622,246 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Application View Modal Styles */
+.application-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.application-view-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  background: linear-gradient(135deg, #F9FBFF 0%, #F3EFFF 100%);
+  border-radius: 16px;
+  border: 1px solid #ECE8FC;
+}
+
+.application-view-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #5932EA 0%, #7B5CFA 100%);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(89, 50, 234, 0.25);
+  flex-shrink: 0;
+}
+
+.application-view-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.application-view-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.application-view-role {
+  font-size: 19px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.application-view-company-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 14px;
+  color: #4B5563;
+}
+
+.application-view-company-name {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.application-view-dot {
+  color: #9CA3AF;
+}
+
+.application-view-location {
+  color: #6B7280;
+  display: inline-flex;
+  align-items: center;
+}
+
+.application-view-badge-row {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.application-view-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.application-view-card {
+  background: #F9FAFC;
+  border: 1px solid #EEF2F6;
+  border-radius: 12px;
+  padding: 13px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: border-color 0.15s ease;
+}
+
+.application-view-card:hover {
+  border-color: #D8CEFD;
+}
+
+.application-view-card-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #9197B3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.application-view-card-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.application-view-card-value.highlight-val {
+  color: #5932EA;
+}
+
+.application-view-share-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.share-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.share-pill.shared {
+  background-color: #ECFDF5;
+  color: #059669;
+}
+
+.share-pill.not-shared {
+  background-color: #F3F4F6;
+  color: #9CA3AF;
+}
+
+.application-view-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.application-view-section-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #9197B3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tech-badge-pill.large-pill {
+  padding: 5px 12px;
+  font-size: 12.5px;
+}
+
+.application-view-notes-box {
+  background: #F9FAFC;
+  border: 1px solid #EEF2F6;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #374151;
+  white-space: pre-line;
+}
+
+.application-view-url-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+}
+
+.application-view-url-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.application-view-url-text {
+  font-size: 12.5px;
+  color: #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.application-view-url-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 8px;
+  background-color: #EEF2FF;
+  color: #5932EA;
+  text-decoration: none;
+  transition: background-color 0.15s;
+  flex-shrink: 0;
+}
+
+.application-view-url-btn:hover {
+  background-color: #E0E7FF;
+}
+
+/* Action button hover colors in tables */
+.table-action-icon-btn.action-view-btn:hover {
+  background-color: #F3EFFF;
+}
+
+.table-action-icon-btn.action-edit-btn:hover {
+  background-color: #EFF6FF;
+}
+
+@media (max-width: 600px) {
+  .application-view-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

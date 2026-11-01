@@ -17,9 +17,14 @@ import {
   ShieldCheck, 
   Layers, 
   Clock,
-  Edit3
+  Edit3,
+  Plus,
+  Trash2,
+  Eye,
+  AlertCircle
 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '../components/common/BrandIcons';
+import Modal from '../components/common/Modal';
 
 export default function ProfilePage() {
   const { toggleMobileMenu } = useOutletContext<AppOutletContext>();
@@ -46,6 +51,15 @@ export default function ProfilePage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
+  // Platform Modal & Management State
+  const [viewingPlatform, setViewingPlatform] = useState<Platform | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingPlatform, setEditingPlatform] = useState<Platform | null>(null);
+  const [addPlatformForm, setAddPlatformForm] = useState({ name: '', accountLink: '', jobPostCount: '0' });
+  const [editPlatformForm, setEditPlatformForm] = useState({ name: '', accountLink: '', jobPostCount: '0' });
+  const [isSubmittingPlatform, setIsSubmittingPlatform] = useState(false);
+  const [platformFeedback, setPlatformFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   useEffect(() => {
     if (currentUser) {
       setFormData({
@@ -65,22 +79,101 @@ export default function ProfilePage() {
   }, [currentUser]);
 
   // Fetch connected platforms for current user (userId=1)
-  useEffect(() => {
-    let isMounted = true;
+  const loadPlatforms = async () => {
     const userId = currentUser?.id || 1;
-    platformsApi.getByUserId(userId)
-      .then((data) => {
-        if (isMounted && Array.isArray(data)) {
-          setPlatforms(data);
-        }
-      })
-      .catch((err) => {
-        console.warn('Could not load platforms for user:', err);
-      });
-    return () => {
-      isMounted = false;
-    };
+    try {
+      const data = await platformsApi.getByUserId(userId);
+      if (Array.isArray(data)) {
+        setPlatforms(data);
+      }
+    } catch (err) {
+      console.warn('Could not load platforms for user:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadPlatforms();
+    const handlePlatformSync = () => loadPlatforms();
+    window.addEventListener('platforms-updated', handlePlatformSync);
+    return () => window.removeEventListener('platforms-updated', handlePlatformSync);
   }, [currentUser?.id]);
+
+  const handleAddPlatform = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!addPlatformForm.name.trim()) return;
+
+    setIsSubmittingPlatform(true);
+    try {
+      const created = await platformsApi.create({
+        name: addPlatformForm.name.trim(),
+        accountLink: addPlatformForm.accountLink.trim(),
+        jobPostCount: parseInt(addPlatformForm.jobPostCount, 10) || 0,
+        userId: currentUser?.id || 1,
+      });
+
+      const enriched: Platform = {
+        id: created?.id || Date.now(),
+        name: addPlatformForm.name.trim(),
+        accountLink: addPlatformForm.accountLink.trim(),
+        jobPostCount: parseInt(addPlatformForm.jobPostCount, 10) || 0,
+        userId: currentUser?.id || 1,
+      };
+
+      setPlatforms((prev) => [...prev, created || enriched]);
+      setIsAddModalOpen(false);
+      setAddPlatformForm({ name: '', accountLink: '', jobPostCount: '0' });
+      setPlatformFeedback({ type: 'success', text: `Platform "${enriched.name}" added successfully!` });
+      setTimeout(() => setPlatformFeedback(null), 3000);
+      window.dispatchEvent(new Event('platforms-updated'));
+    } catch (err: any) {
+      setPlatformFeedback({ type: 'error', text: err.message || 'Failed to add platform' });
+    } finally {
+      setIsSubmittingPlatform(false);
+    }
+  };
+
+  const handleUpdatePlatform = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingPlatform || !editPlatformForm.name.trim()) return;
+
+    setIsSubmittingPlatform(true);
+    try {
+      const payload = {
+        name: editPlatformForm.name.trim(),
+        accountLink: editPlatformForm.accountLink.trim(),
+        jobPostCount: parseInt(editPlatformForm.jobPostCount, 10) || 0,
+        userId: currentUser?.id || 1,
+      };
+
+      const updated = await platformsApi.update(editingPlatform.id!, payload);
+      setPlatforms((prev) =>
+        prev.map((p) => (p.id === editingPlatform.id ? { ...p, ...payload, ...(updated || {}) } : p))
+      );
+      setEditingPlatform(null);
+      setPlatformFeedback({ type: 'success', text: `Platform "${payload.name}" updated successfully!` });
+      setTimeout(() => setPlatformFeedback(null), 3000);
+      window.dispatchEvent(new Event('platforms-updated'));
+    } catch (err: any) {
+      setPlatformFeedback({ type: 'error', text: err.message || 'Failed to update platform' });
+    } finally {
+      setIsSubmittingPlatform(false);
+    }
+  };
+
+  const handleDeletePlatform = async (id: number, name: string) => {
+    if (!window.confirm(`Are you sure you want to remove platform "${name}"?`)) return;
+
+    try {
+      await platformsApi.delete(id);
+      setPlatforms((prev) => prev.filter((p) => p.id !== id));
+      if (viewingPlatform?.id === id) setViewingPlatform(null);
+      setPlatformFeedback({ type: 'success', text: `Platform "${name}" removed.` });
+      setTimeout(() => setPlatformFeedback(null), 3000);
+      window.dispatchEvent(new Event('platforms-updated'));
+    } catch (err: any) {
+      setPlatformFeedback({ type: 'error', text: err.message || 'Failed to delete platform' });
+    }
+  };
 
   const getInitials = (name?: string, username?: string) => {
     if (name) {
@@ -222,139 +315,98 @@ export default function ProfilePage() {
 
       {/* Main Grid: Overview vs Edit Mode */}
       <div className="profile-grid-layout">
-        {/* Left Column: Accounts & Portfolios + Connected Platforms */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-          {/* External Socials & Links Card */}
-          <div className="profile-section-card">
-            <h3 className="profile-card-title">
-              <span>Portfolios & Links</span>
-            </h3>
-            <p className="profile-card-subtitle">Direct links to candidate profiles and portfolios</p>
+        {/* Left Column: Accounts & Portfolios */}
+        <div className="profile-section-card">
+          <h3 className="profile-card-title">
+            <span>Portfolios & Links</span>
+          </h3>
+          <p className="profile-card-subtitle">Direct links to candidate profiles and portfolios</p>
 
-            <div className="profile-links-list">
-              {currentUser?.portfolioLink ? (
-                <a 
-                  href={currentUser.portfolioLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="profile-link-item"
-                >
-                  <div className="profile-link-left">
-                    <div className="profile-link-icon-box">
-                      <Globe size={18} color="#5932EA" />
-                    </div>
-                    <div>
-                      <div className="profile-link-title">Personal Portfolio</div>
-                      <div className="profile-link-url">{currentUser.portfolioLink}</div>
-                    </div>
+          <div className="profile-links-list">
+            {currentUser?.portfolioLink ? (
+              <a 
+                href={currentUser.portfolioLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="profile-link-item"
+              >
+                <div className="profile-link-left">
+                  <div className="profile-link-icon-box">
+                    <Globe size={18} color="#5932EA" />
                   </div>
-                  <ExternalLink size={16} color="#9CA3AF" />
-                </a>
-              ) : null}
-
-              {currentUser?.githubLink ? (
-                <a 
-                  href={currentUser.githubLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="profile-link-item"
-                >
-                  <div className="profile-link-left">
-                    <div className="profile-link-icon-box">
-                      <GithubIcon size={18} color="#111827" />
-                    </div>
-                    <div>
-                      <div className="profile-link-title">GitHub</div>
-                      <div className="profile-link-url">{currentUser.githubLink}</div>
-                    </div>
+                  <div>
+                    <div className="profile-link-title">Personal Portfolio</div>
+                    <div className="profile-link-url">{currentUser.portfolioLink}</div>
                   </div>
-                  <ExternalLink size={16} color="#9CA3AF" />
-                </a>
-              ) : null}
-
-              {currentUser?.linkedInLink ? (
-                <a 
-                  href={currentUser.linkedInLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="profile-link-item"
-                >
-                  <div className="profile-link-left">
-                    <div className="profile-link-icon-box">
-                      <LinkedinIcon size={18} color="#0A66C2" />
-                    </div>
-                    <div>
-                      <div className="profile-link-title">LinkedIn</div>
-                      <div className="profile-link-url">{currentUser.linkedInLink}</div>
-                    </div>
-                  </div>
-                  <ExternalLink size={16} color="#9CA3AF" />
-                </a>
-              ) : null}
-
-              {currentUser?.leetcodeLink ? (
-                <a 
-                  href={currentUser.leetcodeLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="profile-link-item"
-                >
-                  <div className="profile-link-left">
-                    <div className="profile-link-icon-box">
-                      <Code size={18} color="#FFA116" />
-                    </div>
-                    <div>
-                      <div className="profile-link-title">LeetCode</div>
-                      <div className="profile-link-url">{currentUser.leetcodeLink}</div>
-                    </div>
-                  </div>
-                  <ExternalLink size={16} color="#9CA3AF" />
-                </a>
-              ) : null}
-
-              {!currentUser?.portfolioLink && !currentUser?.githubLink && !currentUser?.linkedInLink && (
-                <div className="profile-link-empty">
-                  No public links configured yet. Use Edit mode to add your GitHub, LinkedIn, or Portfolio.
                 </div>
-              )}
-            </div>
-          </div>
+                <ExternalLink size={16} color="#9CA3AF" />
+              </a>
+            ) : null}
 
-          {/* Connected Job Hunting Platforms */}
-          <div className="profile-section-card">
-            <h3 className="profile-card-title">
-              <span>Connected Job Platforms</span>
-              <span className="tag-pill">{platforms.length} Platforms</span>
-            </h3>
-            <p className="profile-card-subtitle">Job search platforms linked to User #{currentUser?.id || 1}</p>
+            {currentUser?.githubLink ? (
+              <a 
+                href={currentUser.githubLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="profile-link-item"
+              >
+                <div className="profile-link-left">
+                  <div className="profile-link-icon-box">
+                    <GithubIcon size={18} color="#111827" />
+                  </div>
+                  <div>
+                    <div className="profile-link-title">GitHub</div>
+                    <div className="profile-link-url">{currentUser.githubLink}</div>
+                  </div>
+                </div>
+                <ExternalLink size={16} color="#9CA3AF" />
+              </a>
+            ) : null}
 
-            {platforms.length > 0 ? (
-              <div className="platforms-grid">
-                {platforms.map((plat) => (
-                  <a
-                    key={plat.id || plat.name}
-                    href={plat.accountLink || '#'}
-                    target={plat.accountLink ? '_blank' : '_self'}
-                    rel="noopener noreferrer"
-                    className="platform-pill-card"
-                  >
-                    <div>
-                      <div className="platform-pill-name">{plat.name}</div>
-                      {plat.accountLink && (
-                        <div style={{ fontSize: '11px', color: '#6B7280', display: 'flex', alignItems: 'center', gap: '3px', marginTop: '2px' }}>
-                          <span>Open Profile</span>
-                          <ExternalLink size={10} />
-                        </div>
-                      )}
-                    </div>
-                    {plat.jobPostCount != null && plat.jobPostCount > 0 && (
-                      <span className="platform-post-count">{plat.jobPostCount} posts</span>
-                    )}
-                  </a>
-                ))}
+            {currentUser?.linkedInLink ? (
+              <a 
+                href={currentUser.linkedInLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="profile-link-item"
+              >
+                <div className="profile-link-left">
+                  <div className="profile-link-icon-box">
+                    <LinkedinIcon size={18} color="#0A66C2" />
+                  </div>
+                  <div>
+                    <div className="profile-link-title">LinkedIn</div>
+                    <div className="profile-link-url">{currentUser.linkedInLink}</div>
+                  </div>
+                </div>
+                <ExternalLink size={16} color="#9CA3AF" />
+              </a>
+            ) : null}
+
+            {currentUser?.leetcodeLink ? (
+              <a 
+                href={currentUser.leetcodeLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="profile-link-item"
+              >
+                <div className="profile-link-left">
+                  <div className="profile-link-icon-box">
+                    <Code size={18} color="#FFA116" />
+                  </div>
+                  <div>
+                    <div className="profile-link-title">LeetCode</div>
+                    <div className="profile-link-url">{currentUser.leetcodeLink}</div>
+                  </div>
+                </div>
+                <ExternalLink size={16} color="#9CA3AF" />
+              </a>
+            ) : null}
+
+            {!currentUser?.portfolioLink && !currentUser?.githubLink && !currentUser?.linkedInLink && (
+              <div className="profile-link-empty">
+                No public links configured yet. Use Edit mode to add your GitHub, LinkedIn, or Portfolio.
               </div>
-            ) : (
-              <div className="profile-link-empty">No platforms associated with this user yet.</div>
             )}
           </div>
         </div>
@@ -578,6 +630,347 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+
+      {/* Connected Job Hunting Platforms — Full Width Section */}
+      <div className="profile-section-card profile-platforms-fullwidth-card">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+          <div>
+            <h3 className="profile-card-title" style={{ margin: 0 }}>
+              <span>Connected Job Platforms</span>
+              <span className="tag-pill">{platforms.length} Platforms</span>
+            </h3>
+            <p className="profile-card-subtitle" style={{ marginTop: '4px', marginBottom: 0 }}>
+              Job search and application platforms linked to User #{currentUser?.id || 1}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setAddPlatformForm({ name: '', accountLink: '', jobPostCount: '0' });
+              setIsAddModalOpen(true);
+            }}
+            className="platform-add-btn-header"
+          >
+            <Plus size={14} strokeWidth={2.5} />
+            <span>Add Platform</span>
+          </button>
+        </div>
+
+        {platformFeedback && (
+          <div
+            className={`profile-save-status ${platformFeedback.type}`}
+            style={{ padding: '10px 14px', fontSize: '12.5px', marginTop: '14px', marginBottom: '4px' }}
+          >
+            {platformFeedback.type === 'success' ? (
+              <CheckCircle size={15} color="#059669" />
+            ) : (
+              <AlertCircle size={15} color="#991B1B" />
+            )}
+            <span>{platformFeedback.text}</span>
+          </div>
+        )}
+
+        {platforms.length > 0 ? (
+          <div className="platforms-grid" style={{ marginTop: '18px' }}>
+            {platforms.map((plat) => (
+              <div
+                key={plat.id || plat.name}
+                className="platform-pill-card platform-interactive-card"
+              >
+                <div
+                  className="platform-card-main-info"
+                  onClick={() => setViewingPlatform(plat)}
+                  style={{ cursor: 'pointer', flex: 1, minWidth: 0 }}
+                  title="Click to view platform details"
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                    <span className="platform-pill-name">{plat.name}</span>
+                    {plat.jobPostCount != null && plat.jobPostCount > 0 && (
+                      <span className="platform-post-count">{plat.jobPostCount} posts</span>
+                    )}
+                  </div>
+                  {plat.accountLink ? (
+                    <a
+                      href={plat.accountLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="platform-link-subtext"
+                      title={`Open ${plat.name} in new tab`}
+                    >
+                      <span>Open Profile</span>
+                      <ExternalLink size={11} />
+                    </a>
+                  ) : (
+                    <span style={{ fontSize: '11.5px', color: '#9CA3AF' }}>No URL linked</span>
+                  )}
+                </div>
+
+                <div className="platform-card-action-bar">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setViewingPlatform(plat);
+                    }}
+                    className="platform-action-btn view-btn"
+                    title="View Platform Details"
+                    aria-label={`View ${plat.name}`}
+                  >
+                    <Eye size={14} color="#5932EA" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setEditingPlatform(plat);
+                      setEditPlatformForm({
+                        name: plat.name,
+                        accountLink: plat.accountLink || '',
+                        jobPostCount: String(plat.jobPostCount ?? 0),
+                      });
+                    }}
+                    className="platform-action-btn edit-btn"
+                    title="Edit Platform"
+                    aria-label={`Edit ${plat.name}`}
+                  >
+                    <Edit3 size={14} color="#2563EB" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeletePlatform(plat.id!, plat.name);
+                    }}
+                    className="platform-action-btn delete-btn"
+                    title="Remove Platform"
+                    aria-label={`Remove ${plat.name}`}
+                  >
+                    <Trash2 size={14} color="#DF0404" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="profile-link-empty" style={{ marginTop: '16px' }}>
+            No platforms associated with this user yet.
+          </div>
+        )}
+      </div>
+
+      {/* View Platform Details Modal */}
+      <Modal
+        isOpen={!!viewingPlatform}
+        onClose={() => setViewingPlatform(null)}
+        title={`Platform Details — ${viewingPlatform?.name || ''}`}
+      >
+        {viewingPlatform && (
+          <div className="application-view-container">
+            <div className="application-view-hero">
+              <div className="application-view-avatar">
+                <Globe size={24} color="#FFFFFF" />
+              </div>
+              <div className="application-view-header-info">
+                <div className="application-view-title-row">
+                  <h3 className="application-view-role">{viewingPlatform.name}</h3>
+                  <span className="platform-post-count" style={{ fontSize: '12px', padding: '4px 10px' }}>
+                    {viewingPlatform.jobPostCount ?? 0} Applications Logged
+                  </span>
+                </div>
+                <div className="application-view-company-line">
+                  <span>Linked to Candidate Profile #{viewingPlatform.userId || 1}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="application-view-grid">
+              <div className="application-view-card">
+                <span className="application-view-card-label">Platform Name</span>
+                <span className="application-view-card-value">{viewingPlatform.name}</span>
+              </div>
+              <div className="application-view-card">
+                <span className="application-view-card-label">Applications / Posts</span>
+                <span className="application-view-card-value highlight-val">
+                  {viewingPlatform.jobPostCount ?? 0}
+                </span>
+              </div>
+              <div className="application-view-card" style={{ gridColumn: '1 / -1' }}>
+                <span className="application-view-card-label">Account / Portal URL</span>
+                {viewingPlatform.accountLink ? (
+                  <a
+                    href={viewingPlatform.accountLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="company-view-card-link"
+                    style={{ marginTop: '4px' }}
+                  >
+                    <span>{viewingPlatform.accountLink}</span>
+                    <ExternalLink size={13} />
+                  </a>
+                ) : (
+                  <span className="application-view-card-value">—</span>
+                )}
+              </div>
+            </div>
+
+            <div className="modal-footer-actions">
+              <button
+                type="button"
+                onClick={() => setViewingPlatform(null)}
+                className="modal-cancel-btn"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const plat = viewingPlatform;
+                  setViewingPlatform(null);
+                  setEditingPlatform(plat);
+                  setEditPlatformForm({
+                    name: plat.name,
+                    accountLink: plat.accountLink || '',
+                    jobPostCount: String(plat.jobPostCount ?? 0),
+                  });
+                }}
+                className="modal-submit-btn"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Edit3 size={15} />
+                <span>Edit Platform</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Add Platform Modal */}
+      <Modal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        title="Add Job Search Platform"
+      >
+        <form onSubmit={handleAddPlatform} className="modal-form">
+          <div className="modal-form-group">
+            <label className="modal-form-label">Platform Name *</label>
+            <input
+              type="text"
+              required
+              value={addPlatformForm.name}
+              onChange={(e) => setAddPlatformForm({ ...addPlatformForm, name: e.target.value })}
+              className="modal-input-field"
+              placeholder="e.g. LinkedIn, Wellfound, Indeed, Dice"
+              autoFocus
+            />
+          </div>
+
+          <div className="modal-form-group">
+            <label className="modal-form-label">Account / Profile URL</label>
+            <input
+              type="url"
+              value={addPlatformForm.accountLink}
+              onChange={(e) => setAddPlatformForm({ ...addPlatformForm, accountLink: e.target.value })}
+              className="modal-input-field"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div className="modal-form-group">
+            <label className="modal-form-label">Applications / Job Post Count</label>
+            <input
+              type="number"
+              min="0"
+              value={addPlatformForm.jobPostCount}
+              onChange={(e) => setAddPlatformForm({ ...addPlatformForm, jobPostCount: e.target.value })}
+              className="modal-input-field"
+              placeholder="0"
+            />
+          </div>
+
+          <div className="modal-footer-actions">
+            <button
+              type="button"
+              onClick={() => setIsAddModalOpen(false)}
+              className="modal-cancel-btn"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmittingPlatform}
+              className="modal-submit-btn"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Plus size={15} />
+              <span>{isSubmittingPlatform ? 'Adding...' : 'Add Platform'}</span>
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Edit Platform Modal */}
+      <Modal
+        isOpen={!!editingPlatform}
+        onClose={() => setEditingPlatform(null)}
+        title={`Edit Platform — ${editingPlatform?.name || ''}`}
+      >
+        <form onSubmit={handleUpdatePlatform} className="modal-form">
+          <div className="modal-form-group">
+            <label className="modal-form-label">Platform Name *</label>
+            <input
+              type="text"
+              required
+              value={editPlatformForm.name}
+              onChange={(e) => setEditPlatformForm({ ...editPlatformForm, name: e.target.value })}
+              className="modal-input-field"
+              placeholder="e.g. LinkedIn, Wellfound"
+            />
+          </div>
+
+          <div className="modal-form-group">
+            <label className="modal-form-label">Account / Profile URL</label>
+            <input
+              type="url"
+              value={editPlatformForm.accountLink}
+              onChange={(e) => setEditPlatformForm({ ...editPlatformForm, accountLink: e.target.value })}
+              className="modal-input-field"
+              placeholder="https://..."
+            />
+          </div>
+
+          <div className="modal-form-group">
+            <label className="modal-form-label">Applications / Job Post Count</label>
+            <input
+              type="number"
+              min="0"
+              value={editPlatformForm.jobPostCount}
+              onChange={(e) => setEditPlatformForm({ ...editPlatformForm, jobPostCount: e.target.value })}
+              className="modal-input-field"
+              placeholder="0"
+            />
+          </div>
+
+          <div className="modal-footer-actions">
+            <button
+              type="button"
+              onClick={() => setEditingPlatform(null)}
+              className="modal-cancel-btn"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmittingPlatform}
+              className="modal-submit-btn"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            >
+              <Save size={15} />
+              <span>{isSubmittingPlatform ? 'Saving...' : 'Save Changes'}</span>
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

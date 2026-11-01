@@ -6,15 +6,19 @@ import Modal from '../components/common/Modal';
 import { questionsApi } from '../api/questionsApi';
 import { technologiesApi } from '../api/technologiesApi';
 import { mockStore } from '../api/client';
-import { Plus, Tag, Trash2 } from 'lucide-react';
+import { Plus, Tag, Trash2, Eye, Edit3 } from 'lucide-react';
 import { Question, Technology } from '../types';
 import { AppOutletContext } from '../components/layout/AppLayout';
+import ViewQuestionModal from '../components/questions/ViewQuestionModal';
+import EditQuestionModal from '../components/questions/EditQuestionModal';
 
 export default function QuestionsPage() {
   const { toggleMobileMenu } = useOutletContext<AppOutletContext>();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewingQuestion, setViewingQuestion] = useState<Question | null>(null);
+  const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
   const [newQuestionText, setNewQuestionText] = useState('');
   const [selectedTechId, setSelectedTechId] = useState<number>(1);
   const [searchFilter, setSearchFilter] = useState('');
@@ -89,6 +93,12 @@ export default function QuestionsPage() {
     setIsModalOpen(false);
   };
 
+  const handleUpdateQuestionSuccess = (updatedQ: Question) => {
+    setQuestions((prev) =>
+      prev.map((q) => (q.id === updatedQ.id ? updatedQ : q))
+    );
+  };
+
   const handleDelete = async (e: React.MouseEvent, id?: number) => {
     e.stopPropagation();
     if (!id) return;
@@ -143,14 +153,39 @@ export default function QuestionsPage() {
       key: 'actions',
       label: '',
       render: (row) => (
-        <div className="table-action-btn-group">
+        <div className="table-action-btn-group" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setViewingQuestion(row);
+            }}
+            className="table-action-icon-btn action-show-btn"
+            title="View Question"
+            aria-label="View Question"
+          >
+            <Eye size={15} color="#5932EA" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingQuestion(row);
+            }}
+            className="table-action-icon-btn action-edit-btn"
+            title="Edit Question"
+            aria-label="Edit Question"
+          >
+            <Edit3 size={15} color="#2563EB" />
+          </button>
           <button
             type="button"
             onClick={(e) => handleDelete(e, row.id)}
-            className="table-action-icon-btn"
+            className="table-action-icon-btn action-delete-btn"
             title="Delete Question"
+            aria-label="Delete Question"
           >
-            <Trash2 size={16} color="#DF0404" />
+            <Trash2 size={15} color="#DF0404" />
           </button>
         </div>
       ),
@@ -181,6 +216,7 @@ export default function QuestionsPage() {
         totalEntries={filteredQuestions.length}
       />
 
+      {/* Add Question Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -232,6 +268,27 @@ export default function QuestionsPage() {
           </div>
         </form>
       </Modal>
+
+      {/* View Question Modal */}
+      <ViewQuestionModal
+        isOpen={Boolean(viewingQuestion)}
+        onClose={() => setViewingQuestion(null)}
+        question={viewingQuestion}
+        technologies={technologies}
+        onEdit={(q) => {
+          setViewingQuestion(null);
+          setEditingQuestion(q);
+        }}
+      />
+
+      {/* Edit Question Modal */}
+      <EditQuestionModal
+        isOpen={Boolean(editingQuestion)}
+        onClose={() => setEditingQuestion(null)}
+        question={editingQuestion}
+        technologies={technologies}
+        onSuccess={handleUpdateQuestionSuccess}
+      />
     </div>
   );
 }

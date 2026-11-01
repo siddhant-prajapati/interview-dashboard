@@ -18,6 +18,7 @@ interface SendRecruiterEmailModalProps {
   experience: string;
   jdText: string;
   jobUrl?: string;
+  jobApplicationId?: number;
   onEmailSent?: () => void;
 }
 
@@ -32,6 +33,7 @@ export default function SendRecruiterEmailModal({
   experience,
   jdText,
   jobUrl,
+  jobApplicationId,
   onEmailSent,
 }: SendRecruiterEmailModalProps) {
   const { currentUser } = useUser();
@@ -73,6 +75,34 @@ ${candidateName}
 ${candidateEmail}`;
   };
 
+  const autoGenerateEmailPreview = async () => {
+    setIsAiGenerating(true);
+    setStatusMsg(null);
+    try {
+      const generated = await aiApi.generateAlignmentEmail({
+        userId: currentUser?.id,
+        jobApplicationId: jobApplicationId,
+        role: role.trim() || 'Software Engineer',
+        companyName: companyName.trim() || 'Hiring Team',
+        technologies: technologies.trim() || 'Java 21, Spring Boot, MySQL',
+        jdText: jdText || '',
+      });
+
+      if (generated) {
+        if (generated.subject) {
+          setSubject(generated.subject);
+        }
+        if (generated.body) {
+          setBody(generated.body);
+        }
+      }
+    } catch (err: any) {
+      console.warn('AI email preview fallback:', err);
+    } finally {
+      setIsAiGenerating(false);
+    }
+  };
+
   useEffect(() => {
     if (!isOpen) {
       setStatusMsg(null);
@@ -85,6 +115,9 @@ ${candidateEmail}`;
     setSubject(`Application for ${targetRole} - ${candidateName}`);
     setBody(getCleanTemplate());
     setStatusMsg(null);
+
+    // Auto-generate preview on modal open
+    autoGenerateEmailPreview();
   }, [isOpen, recipientEmail, role, companyName, technologies, experience]);
 
   if (!isOpen) return null;
@@ -105,38 +138,7 @@ ${candidateEmail}`;
   };
 
   const handleAiPolish = async () => {
-    setIsAiGenerating(true);
-    setStatusMsg(null);
-    try {
-      const generated = await aiApi.generateColdEmail({
-        role: role.trim() || 'Software Engineer',
-        companyName: companyName.trim() || 'Hiring Team',
-        technologies: technologies.trim() || 'Java 21, Spring Boot, MySQL',
-        candidateName: currentUser?.name || 'Siddhant Prajapati',
-        candidateExperience: parseFloat(experience) || 2.0,
-        portfolioLink: currentUser?.portfolioLink || '',
-        linkedInLink: currentUser?.linkedInLink || '',
-        jobDescription: jdText || '',
-      });
-
-      if (generated && generated.trim()) {
-        const lines = generated.trim().split('\n');
-        if (lines[0].toLowerCase().startsWith('subject:')) {
-          const parsedSubject = lines[0].replace(/^subject:\s*/i, '').trim();
-          setSubject(parsedSubject);
-          setBody(lines.slice(1).join('\n').trim());
-        } else {
-          setBody(generated.trim());
-        }
-      }
-    } catch (err: any) {
-      setStatusMsg({
-        type: 'error',
-        text: 'AI generation failed: ' + (err.message || 'Please check OpenRouter connectivity or try again.'),
-      });
-    } finally {
-      setIsAiGenerating(false);
-    }
+    await autoGenerateEmailPreview();
   };
 
   const handleSendEmail = async () => {
@@ -220,6 +222,14 @@ ${candidateEmail}`;
 
         {/* ── Body ── */}
         <div className="email-modal-body">
+
+          {/* AI Generating Indicator */}
+          {isAiGenerating && (
+            <div className="email-generating-banner">
+              <Sparkles size={14} className="email-sparkle-spin" />
+              <span>Generating tailored alignment email from job description…</span>
+            </div>
+          )}
 
           {/* Feedback status */}
           {statusMsg && (
