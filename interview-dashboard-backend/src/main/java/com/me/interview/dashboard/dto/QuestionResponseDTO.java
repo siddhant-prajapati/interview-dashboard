@@ -13,5 +13,6 @@ public class QuestionResponseDTO {
 
     // Simplified relationship data
     private Long technologyId;
+    private String technologyName;
     private List<Long> interviewIds;
 }

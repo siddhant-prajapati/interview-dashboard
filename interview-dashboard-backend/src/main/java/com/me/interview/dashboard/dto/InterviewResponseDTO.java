@@ -18,6 +18,12 @@ public class InterviewResponseDTO {
 
     // Simplified relationship data
     private Long jobApplicationId;
+    private String companyName;
+    private String role;
     private List<Long> questionIds;
     private List<Long> requiredImprovementIds;
+
+    // Full nested objects for UI debrief and editing
+    private List<QuestionResponseDTO> questions;
+    private List<TechnologyResponseDTO> requiredImprovements;
 }

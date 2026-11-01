@@ -8,6 +8,7 @@ import com.me.interview.dashboard.mapper.ResumeMapper;
 import com.me.interview.dashboard.repository.ResumeRepository;
 import com.me.interview.dashboard.service.ResumeService;
 import com.me.interview.dashboard.specification.ResumeSpecifications;
+import com.me.interview.dashboard.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +42,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional(readOnly = true)
     public ResumeResponseDTO getResumeById(Long id) {
         Resume resume = resumeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resume not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Resume", "id", id));
         return resumeMapper.toDto(resume);
     }
 
@@ -57,7 +58,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional
     public ResumeResponseDTO updateResume(Long id, ResumeRequestDTO requestDTO) {
         Resume existingResume = resumeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Resume not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Resume", "id", id));
 
         resumeMapper.updateEntityFromDto(requestDTO, existingResume);
 
@@ -71,7 +72,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Transactional
     public void deleteResume(Long id) {
         if (!resumeRepository.existsById(id)) {
-            throw new RuntimeException("Resume not found with id: " + id);
+            throw new ResourceNotFoundException("Resume", "id", id);
         }
         resumeRepository.deleteById(id);
     }

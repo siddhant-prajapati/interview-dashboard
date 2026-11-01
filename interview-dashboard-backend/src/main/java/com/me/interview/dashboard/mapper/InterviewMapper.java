@@ -13,10 +13,14 @@ import org.mapstruct.MappingTarget;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {QuestionMapper.class, TechnologyMapper.class})
 public interface InterviewMapper {
 
     @Mapping(source = "jobApplication.id", target = "jobApplicationId")
+    @Mapping(source = "jobApplication.company.name", target = "companyName")
+    @Mapping(source = "jobApplication.role", target = "role")
+    @Mapping(source = "questions", target = "questions")
+    @Mapping(source = "requiredImprovements", target = "requiredImprovements")
     @Mapping(target = "questionIds", expression = "java(mapQuestionsToIds(entity.getQuestions()))")
     @Mapping(target = "requiredImprovementIds", expression = "java(mapTechnologiesToIds(entity.getRequiredImprovements()))")
     InterviewResponseDTO toDto(Interview entity);

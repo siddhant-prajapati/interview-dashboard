@@ -1,5 +1,6 @@
 package com.me.interview.dashboard.repository;
 
+import com.me.interview.dashboard.enumeration.InterviewStage;
 import com.me.interview.dashboard.model.Interview;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -10,6 +11,8 @@ import java.util.List;
 @Repository
 public interface InterviewRepository extends JpaRepository<Interview, Long>, JpaSpecificationExecutor<Interview> {
     List<Interview> findAllByJobApplicationId(Long jobApplicationId);
+
+    boolean existsByJobApplicationIdAndStage(Long jobApplicationId, InterviewStage stage);
 
     void deleteAllByJobApplicationId(Long id);
 }
