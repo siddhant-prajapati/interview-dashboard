@@ -39,6 +39,9 @@ public class UserTopicProgressServiceImpl implements UserTopicProgressService {
     @Override
     @Transactional
     public UserTopicProgressResponseDTO createProgress(UserTopicProgressRequestDTO requestDTO) {
+        if (requestDTO == null || requestDTO.getUserId() == null || requestDTO.getTopicId() == null) {
+            throw new InvalidDataException("User ID and Topic ID are required to create progress record");
+        }
         logger.info("Creating progress record for User ID: " + requestDTO.getUserId() + " and Topic ID: " + requestDTO.getTopicId());
 
         if (progressRepository.findByUserIdAndTopicId(requestDTO.getUserId(), requestDTO.getTopicId()).isPresent()) {
@@ -129,6 +132,10 @@ public class UserTopicProgressServiceImpl implements UserTopicProgressService {
     @Transactional
     public UserTopicProgressResponseDTO updateProgress(Long id, UserTopicProgressRequestDTO requestDTO) {
         logger.info("Attempting to update UserTopicProgress with ID: " + id);
+
+        if (requestDTO == null || requestDTO.getUserId() == null || requestDTO.getTopicId() == null) {
+            throw new InvalidDataException("User ID and Topic ID are required to update progress record");
+        }
 
         UserTopicProgress existingProgress = progressRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("UserTopicProgress", "id", id));

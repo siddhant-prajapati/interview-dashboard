@@ -600,7 +600,7 @@ The server will start on port **`8080`** by default.
 
 ### 1. Interactive Swagger UI
 Once running, open your web browser and navigate to:
-👉 **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
+👉 **[http://localhost:8081/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
 
 You can view interactive OpenAPI schema definitions and execute API calls directly from the browser.
 

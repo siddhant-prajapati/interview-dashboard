@@ -11,12 +11,12 @@ import org.mapstruct.MappingTarget;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {PlatformMapper.class})
 public interface JobApplicationMapper {
 
     @Mapping(source = "company.name", target = "companyName")
     @Mapping(source = "resume.resumeName", target = "resumeName")
-    @Mapping(source = "platform.name", target = "platform")
+    @Mapping(source = "platform", target = "platform")
     @Mapping(source = "platform.name", target = "platformName")
     @Mapping(source = "platform.id", target = "platformId")
     @Mapping(target = "technologies", expression = "java(mapTechnologiesToNames(entity.getTechnologies()))")

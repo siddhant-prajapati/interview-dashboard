@@ -1,6 +1,7 @@
 package com.me.interview.dashboard.service.impl;
 
 import com.me.interview.dashboard.dto.*;
+import com.me.interview.dashboard.enumeration.TechnologyType;
 import com.me.interview.dashboard.exception.ResourceNotFoundException;
 import com.me.interview.dashboard.mapper.QuestionMapper;
 import com.me.interview.dashboard.mapper.TechnologyMapper;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,7 +57,7 @@ public class InterviewServiceImpl implements InterviewService {
     @Transactional(readOnly = true)
     public InterviewResponseDTO getInterviewById(Long id) {
         Interview interview = interviewRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Interview not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Interview", "id", id));
         return interviewMapper.toDto(interview);
     }
 
@@ -71,7 +73,7 @@ public class InterviewServiceImpl implements InterviewService {
     @Transactional
     public InterviewResponseDTO updateInterview(Long id, InterviewRequestDTO requestDTO) {
         Interview existingInterview = interviewRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Interview not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Interview", "id", id));
 
         interviewMapper.updateEntityFromDto(requestDTO, existingInterview);
         resolveRelationships(existingInterview, requestDTO);
@@ -160,35 +162,70 @@ public class InterviewServiceImpl implements InterviewService {
     @Transactional
     public void deleteInterview(Long id) {
         if (!interviewRepository.existsById(id)) {
-            throw new RuntimeException("Interview not found with id: " + id);
+            throw new ResourceNotFoundException("Interview", "id", id);
         }
         interviewRepository.deleteById(id);
     }
 
     private void resolveRelationships(Interview entity, InterviewRequestDTO dto) {
+        if (dto == null) {
+            throw new com.me.interview.dashboard.exception.InvalidDataException("Interview request data cannot be null");
+        }
         // Resolve JobApplication
         if (dto.getJobApplicationId() != null) {
             JobApplication jobApplication = jobApplicationRepository.findById(dto.getJobApplicationId())
-                    .orElseThrow(() -> new RuntimeException("JobApplication not found with id: " + dto.getJobApplicationId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("JobApplication", "id", dto.getJobApplicationId()));
             entity.setJobApplication(jobApplication);
         } else {
-            throw new RuntimeException("JobApplication ID is required to create/update an Interview");
+            throw new com.me.interview.dashboard.exception.InvalidDataException("JobApplication ID is required to create/update an Interview");
         }
 
-        // Resolve Questions
-        if (dto.getQuestionDTOs() != null && !dto.getQuestionDTOs().isEmpty()) {
-            List<Question> questions = dto.getQuestionDTOs().stream().map(questionMapper::toEntity).toList();
-            entity.setQuestions(questions);
+        // Resolve Questions - mutate existing collection to avoid replacing Hibernate persistent collection with unmodifiable list
+        if (entity.getQuestions() == null) {
+            entity.setQuestions(new ArrayList<>());
         } else {
             entity.getQuestions().clear();
         }
 
-        // Resolve Required Improvements (Technologies)
-        if (dto.getRequiredImprovements() != null && !dto.getRequiredImprovements().isEmpty()) {
-            List<Technology> technologies = dto.getRequiredImprovements().stream().map(technologyMapper::toEntity).toList();
-            entity.setRequiredImprovements(technologies);
+        if (dto.getQuestionDTOs() != null && !dto.getQuestionDTOs().isEmpty()) {
+            for (QuestionRequestDTO qDto : dto.getQuestionDTOs()) {
+                Optional<Question> questionOptional = questionRepository.findByQuestion(qDto.getQuestion());
+                if (questionOptional.isEmpty()) {
+                    Question question = questionMapper.toEntity(qDto);
+                    if (question.getListedDate() == null) {
+                        question.setListedDate(LocalDate.now());
+                    }
+                    if (qDto.getTechnologyId() != null) {
+                        technologyRepository.findById(qDto.getTechnologyId())
+                                .ifPresent(question::setTechnology);
+                    }
+                    entity.getQuestions().add(question);
+                }
+            }
+        }
+
+        // Resolve Required Improvements (Technologies) - mutate existing collection and ensure technologies are saved/persisted
+        if (entity.getRequiredImprovements() == null) {
+            entity.setRequiredImprovements(new ArrayList<>());
         } else {
             entity.getRequiredImprovements().clear();
+        }
+
+        if (dto.getRequiredImprovements() != null && !dto.getRequiredImprovements().isEmpty()) {
+            for (TechnologyRequestDTO techDto : dto.getRequiredImprovements()) {
+                if (techDto.getName() != null && !techDto.getName().isBlank()) {
+                    Technology technology = technologyRepository.findByNameIgnoreCase(techDto.getName().trim())
+                            .orElseGet(() -> {
+                                Technology newTech = technologyMapper.toEntity(techDto);
+                                newTech.setName(techDto.getName().trim());
+                                if (newTech.getType() == null) {
+                                    newTech.setType(TechnologyType.LANGUAGE);
+                                }
+                                return technologyRepository.save(newTech);
+                            });
+                    entity.getRequiredImprovements().add(technology);
+                }
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public interface QuestionMapper {
 
     @Mapping(source = "technology.id", target = "technologyId")
+    @Mapping(source = "technology.name", target = "technologyName")
     QuestionResponseDTO toDto(Question entity);
 
     @Mapping(target = "id", ignore = true)

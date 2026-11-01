@@ -9,6 +9,7 @@ import com.me.interview.dashboard.mapper.TechnologyMapper;
 import com.me.interview.dashboard.repository.TechnologyRepository;
 import com.me.interview.dashboard.service.TechnologyService;
 import com.me.interview.dashboard.specification.TechnologySpecifications;
+import com.me.interview.dashboard.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +50,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     @Transactional(readOnly = true)
     public TechnologyResponseDTO getTechnologyById(Long id) {
         Technology technology = technologyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Technology not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Technology", "id", id));
         return technologyMapper.toDto(technology);
     }
 
@@ -65,7 +66,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     @Transactional
     public TechnologyResponseDTO updateTechnology(Long id, TechnologyRequestDTO requestDTO) {
         Technology existingTechnology = technologyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Technology not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Technology", "id", id));
 
         technologyMapper.updateEntityFromDto(requestDTO, existingTechnology);
 
@@ -77,7 +78,7 @@ public class TechnologyServiceImpl implements TechnologyService {
     @Transactional
     public void deleteTechnology(Long id) {
         if (!technologyRepository.existsById(id)) {
-            throw new RuntimeException("Technology not found with id: " + id);
+            throw new ResourceNotFoundException("Technology", "id", id);
         }
         technologyRepository.deleteById(id);
     }

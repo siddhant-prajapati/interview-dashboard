@@ -193,8 +193,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private int seedTopicRecursive(PreparationTopic topic, PreparationTopic parent) {
         topic.setParent(parent);
-        List<PreparationTopic> children = topic.getChildren();
-        topic.setChildren(new ArrayList<>());
+        List<PreparationTopic> children = topic.getSubTopics();
+        topic.setSubTopics(new ArrayList<>());
         PreparationTopic savedTopic = topicRepository.save(topic);
         int count = 1;
         if (children != null && !children.isEmpty()) {
@@ -206,7 +206,7 @@ public class DataInitializer implements CommandLineRunner {
                 count += seedTopicRecursive(child, savedTopic);
                 savedChildren.add(child);
             }
-            savedTopic.setChildren(savedChildren);
+            savedTopic.setSubTopics(savedChildren);
         }
         return count;
     }

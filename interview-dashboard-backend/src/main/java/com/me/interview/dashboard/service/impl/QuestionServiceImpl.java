@@ -74,7 +74,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     public QuestionResponseDTO getQuestionById(Long id) {
         Question question = questionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Question", "id", id));
         return questionMapper.toDto(question);
     }
 
@@ -90,7 +90,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public QuestionResponseDTO updateQuestion(Long id, QuestionRequestDTO requestDTO) {
         Question existingQuestion = questionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Question", "id", id));
 
         questionMapper.updateEntityFromDto(requestDTO, existingQuestion);
         resolveRelationships(existingQuestion, requestDTO);
@@ -103,15 +103,15 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void deleteQuestion(Long id) {
         if (!questionRepository.existsById(id)) {
-            throw new RuntimeException("Question not found with id: " + id);
+            throw new ResourceNotFoundException("Question", "id", id);
         }
         questionRepository.deleteById(id);
     }
 
     private void resolveRelationships(Question entity, QuestionRequestDTO dto) {
-        if (dto.getTechnologyId() != null) {
+        if (dto != null && dto.getTechnologyId() != null) {
             Technology technology = technologyRepository.findById(dto.getTechnologyId())
-                    .orElseThrow(() -> new RuntimeException("Technology not found with id: " + dto.getTechnologyId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Technology", "id", dto.getTechnologyId()));
             entity.setTechnology(technology);
         } else {
             entity.setTechnology(null);

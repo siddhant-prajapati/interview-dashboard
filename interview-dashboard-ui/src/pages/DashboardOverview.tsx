@@ -5,18 +5,29 @@ import StatGroup from '../components/dashboard/StatGroup';
 import DataTable, { Column } from '../components/common/DataTable';
 import StatusBadge from '../components/common/StatusBadge';
 import NewApplicationModal from '../components/applications/NewApplicationModal';
+import PlatformCirclesBar from '../components/dashboard/PlatformCirclesBar';
+import FollowUpModal from '../components/dashboard/FollowUpModal';
+import SetDayModal from '../components/dashboard/SetDayModal';
+import BulkApplyModal from '../components/dashboard/BulkApplyModal';
 import { jobApplicationsApi } from '../api/jobApplicationsApi';
 import { interviewsApi } from '../api/interviewsApi';
 import { mockStore } from '../api/client';
-import { Plus } from 'lucide-react';
+import { Plus, Send, Calendar } from 'lucide-react';
 import { JobApplication, StatMetrics } from '../types';
 import { AppOutletContext } from '../components/layout/AppLayout';
+import { useUser } from '../context/UserContext';
 
 export default function DashboardOverview() {
   const { toggleMobileMenu } = useOutletContext<AppOutletContext>();
+  const { currentUser } = useUser();
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [stats, setStats] = useState<StatMetrics>(mockStore.stats);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Modals state
+  const [isAddJobOpen, setIsAddJobOpen] = useState(false);
+  const [isBulkApplyOpen, setIsBulkApplyOpen] = useState(false);
+  const [isFollowUpOpen, setIsFollowUpOpen] = useState(false);
+  const [isSetDayOpen, setIsSetDayOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -86,7 +97,7 @@ export default function DashboardOverview() {
         <div>
           <div className="table-cell-title">{row.role}</div>
           <div className="table-cell-subtitle">
-            {row.candidateName || 'Candidate'} • {row.platform || 'Direct'}
+            {row.candidateName || currentUser?.name || 'Candidate'} • {typeof row.platform === 'string' ? row.platform : (row.platformName || 'Direct')}
           </div>
         </div>
       )
@@ -123,42 +134,90 @@ export default function DashboardOverview() {
     }
   ];
 
+  const firstName = currentUser?.name ? currentUser.name.split(' ')[0] : (currentUser?.username || 'Candidate');
+
   return (
     <div className="animate-fade-in">
-      {/* Header with hamburger toggle for mobile */}
+      {/* Header bar */}
       <Header
-        greeting="Hello Evano 👋,"
+        greeting={`Hello ${firstName} 👋,`}
         placeholder="Search applications..."
         onToggleMobileMenu={toggleMobileMenu}
         actionButton={
           <button
             type="button"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsAddJobOpen(true)}
             className="action-primary-btn"
           >
             <Plus size={16} color="#FFFFFF" strokeWidth={2.5} />
-            <span>New Application</span>
+            <span>Add Job</span>
           </button>
         }
       />
 
-      {/* Top 3 Stat Cards Row */}
+      {/* 1. Platforms Section with (N) (U) (I) (C) (W) (F) (L) and Bulk Apply / Add Job buttons */}
+      <PlatformCirclesBar
+        onOpenAddJob={() => setIsAddJobOpen(true)}
+        onOpenBulkApply={() => setIsBulkApplyOpen(true)}
+      />
+
+      {/* 2. Middle Action Bar: [Send Follow Up] and [Set Day] */}
+      <div className="middle-actions-bar">
+        <button
+          type="button"
+          onClick={() => setIsFollowUpOpen(true)}
+          className="action-pill-btn action-pill-follow-up"
+          title="Review and dispatch follow up communications to recruiters"
+        >
+          <Send size={18} />
+          <span>Send Follow Up</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setIsSetDayOpen(true)}
+          className="action-pill-btn action-pill-set-day"
+          title="Configure daily application goals and focus deadlines"
+        >
+          <Calendar size={18} />
+          <span>Set Day</span>
+        </button>
+      </div>
+
+      {/* Top 3 Stat KPI Cards Row */}
       <StatGroup stats={stats} />
 
-      {/* Main Job Application Data Table */}
+      {/* 3. Job Application Data Table */}
       <DataTable
-        title="All Applications"
+        title="Job Application"
         subtitle="Active Pipeline & Interview Stages"
         columns={columns}
         data={applications}
         pageSize={8}
       />
 
-      {/* Application Creation Modal */}
+      {/* Modals */}
       <NewApplicationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddJobOpen}
+        onClose={() => setIsAddJobOpen(false)}
         onSuccess={handleApplicationCreated}
+      />
+
+      <BulkApplyModal
+        isOpen={isBulkApplyOpen}
+        onClose={() => setIsBulkApplyOpen(false)}
+      />
+
+      <FollowUpModal
+        isOpen={isFollowUpOpen}
+        onClose={() => setIsFollowUpOpen(false)}
+        applications={applications}
+      />
+
+      <SetDayModal
+        isOpen={isSetDayOpen}
+        onClose={() => setIsSetDayOpen(false)}
+        applicationsCountToday={applications.length}
       />
     </div>
   );

@@ -9,6 +9,7 @@ import com.me.interview.dashboard.mapper.CompanyMapper;
 import com.me.interview.dashboard.repository.CompanyRepository;
 import com.me.interview.dashboard.service.CompanyService;
 import com.me.interview.dashboard.specification.CompanySpecifications;
+import com.me.interview.dashboard.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional(readOnly = true)
     public CompanyResponseDTO getCompanyById(Long id) {
         Company company = companyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Company not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
         return companyMapper.toDto(company);
     }
 
@@ -51,7 +52,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional
     public CompanyResponseDTO updateCompany(Long id, CompanyRequestDTO requestDTO) {
         Company existingCompany = companyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Company not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Company", "id", id));
 
         companyMapper.updateEntityFromDto(requestDTO, existingCompany);
 
@@ -63,7 +64,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional
     public void deleteCompany(Long id) {
         if (!companyRepository.existsById(id)) {
-            throw new RuntimeException("Company not found with id: " + id);
+            throw new ResourceNotFoundException("Company", "id", id);
         }
         companyRepository.deleteById(id);
     }

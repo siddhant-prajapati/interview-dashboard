@@ -1,8 +1,24 @@
-import { JobApplication, Company, Interview, PreparationTopic, Technology, Question, StatMetrics } from '../types';
+import { JobApplication, Company, Interview, PreparationTopic, Technology, Question, StatMetrics, User, Platform } from '../types';
 
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 
 export const mockStore = {
+  user: {
+    id: 1,
+    username: 'siddhant',
+    name: 'Siddhant Prajapati',
+    email: 'sidkp.official@gmail.com',
+    experience: 2.7,
+    roles: ['Java Developer', 'Full Stack Developer'],
+    portfolioLink: 'https://siddhant-portfolio-k3vf.onrender.com/',
+    githubLink: 'https://github.com/siddhant-prajapati',
+    linkedInLink: 'https://www.linkedin.com/in/siddhant-prajapati-79680b233',
+    leetcodeLink: '',
+    hackerrankLink: '',
+    createdAt: '2026-10-06T21:55:14',
+    companies: [],
+  } as User,
+
   stats: {
     totalApplications: 5423,
     totalApplicationsTrend: '+16% this month',
@@ -399,11 +415,15 @@ export const mockStore = {
   ] as JobApplication[],
 
   companies: [
-    { id: 1, name: "Microsoft", location: "United States", email: "careers@microsoft.com", contactNumber: "(225) 555-0118", technologyTest: true, workOn: "Cloud & AI Platforms", allowedJobType: ["REMOTE", "HYBRID"] },
-    { id: 2, name: "Yahoo", location: "Kiribati", email: "jobs@yahoo.com", contactNumber: "(205) 555-0100", technologyTest: true, workOn: "Media & Ad Tech", allowedJobType: ["HYBRID", "ON_SITE"] },
-    { id: 3, name: "Adobe", location: "Israel", email: "talent@adobe.com", contactNumber: "(302) 555-0107", technologyTest: false, workOn: "Creative Cloud Services", allowedJobType: ["ON_SITE"] },
-    { id: 4, name: "Tesla", location: "United States", email: "recruit@tesla.com", contactNumber: "(252) 555-0126", technologyTest: true, workOn: "Autonomous Telemetry", allowedJobType: ["REMOTE"] },
-    { id: 5, name: "Google", location: "United States", email: "jobs@google.com", contactNumber: "(629) 555-0129", technologyTest: true, workOn: "Cloud Systems", allowedJobType: ["HYBRID", "REMOTE"] }
+    { id: 1, name: "Microsoft", location: "Redmond, WA", email: "careers@microsoft.com", contactNumber: "(225) 555-0118", technologyTest: true, workOn: "Cloud & AI Platforms", allowedJobType: ["REMOTE", "HYBRID"] },
+    { id: 2, name: "Google", location: "Mountain View, CA", email: "jobs@google.com", contactNumber: "(650) 253-0000", technologyTest: true, workOn: "Search & Distributed Infrastructure", allowedJobType: ["HYBRID", "ON_SITE"] },
+    { id: 3, name: "Amazon", location: "Seattle, WA", email: "aws-recruiting@amazon.com", contactNumber: "(206) 266-1000", technologyTest: true, workOn: "AWS Distributed Cloud Services", allowedJobType: ["HYBRID"] },
+    { id: 4, name: "Adobe", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Creative Cloud Enterprise Services", allowedJobType: ["REMOTE"] },
+    { id: 5, name: "SmartBear", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Software development and Quality Tools", allowedJobType: ["REMOTE"] },
+    { id: 6, name: "Aum Solution", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Software development and AI Tools", allowedJobType: ["REMOTE"] },
+    { id: 7, name: "Paypal", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Payment gateway, apps and website", allowedJobType: ["REMOTE"] },
+    { id: 8, name: "Madvit", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Fintech and accounting projects", allowedJobType: ["REMOTE"] },
+    { id: 9, name: "Kevit Technologies", location: "San Jose, CA", email: "careers@adobe.com", contactNumber: "(408) 536-6000", technologyTest: false, workOn: "Software development and Chat Bots", allowedJobType: ["REMOTE"] }
   ] as Company[],
 
   interviews: [
@@ -466,7 +486,17 @@ export const mockStore = {
     { id: 3, question: "What is the difference between @Mock and @MockBean in Spring Boot testing?", technologyName: "Spring Boot", listedDate: "2026-09-15" },
     { id: 4, question: "How do you guarantee exactly-once processing in Apache Kafka?", technologyName: "Kafka", listedDate: "2026-09-16" },
     { id: 5, question: "Explain the two-phase commit protocol and its alternatives (Saga pattern).", technologyName: "System Design", listedDate: "2026-09-17" }
-  ] as Question[]
+  ] as Question[],
+
+  platforms: [
+    { id: 1, name: "Naukari.com", accountLink: "https://www.naukri.com/mnjuser/homepage", jobPostCount: 1, userId: 1 },
+    { id: 2, name: "Unstop", accountLink: "https://unstop.com/u/siddhpra69395", jobPostCount: 2, userId: 1 },
+    { id: 3, name: "Instahyre.com", accountLink: "https://www.instahyre.com/candidate/profile/", jobPostCount: 0, userId: 1 },
+    { id: 4, name: "Cutshort", accountLink: "https://cutshort.io/profile/candidate-dashboard", jobPostCount: 0, userId: 1 },
+    { id: 5, name: "Wellfound", accountLink: "https://wellfound.com/jobs/home", jobPostCount: 0, userId: 1 },
+    { id: 6, name: "FoundIt", accountLink: "https://www.foundit.in/seeker/profile", jobPostCount: 0, userId: 1 },
+    { id: 7, name: "LinkedIn", accountLink: "https://www.linkedin.com/in/siddhan", jobPostCount: 15, userId: 1 }
+  ] as Platform[]
 };
 
 export async function apiRequest<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -507,6 +537,38 @@ export async function apiRequest<T = any>(endpoint: string, options: RequestInit
   }
 }
 
+function autoCreateInterviewIfEligible(app: JobApplication) {
+  const stageMap: Record<string, string> = {
+    HR_SCREENING: 'HR',
+    TECHNICAL_ROUND: 'TECHNICAL',
+    MANAGERIAL_ROUND: 'MANAGERIAL',
+    HR_FINAL: 'HR_FINAL',
+  };
+  const targetStage = stageMap[app.status];
+  if (targetStage) {
+    const exists = mockStore.interviews.some(
+      (i) => Number(i.jobApplicationId) === Number(app.id) && i.stage === targetStage
+    );
+    if (!exists) {
+      const coName = app.companyName || app.company?.name || 'Company';
+      const autoInterview: Interview = {
+        id: Date.now(),
+        jobApplicationId: app.id,
+        stage: targetStage as any,
+        status: 'SCHEDULED',
+        interviewDate: new Date(Date.now() + 86400000 * 2).toISOString(),
+        companyName: coName,
+        role: app.role || 'Role',
+        notes: `Auto-scheduled interview for ${targetStage} round (${app.role} at ${coName})`,
+        questions: [],
+        requiredImprovements: [],
+      };
+      mockStore.interviews.unshift(autoInterview);
+      window.dispatchEvent(new Event('interviews-updated'));
+    }
+  }
+}
+
 function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
   const method = (options.method || 'GET').toUpperCase();
   const cleanEndpoint = endpoint.split('?')[0];
@@ -521,13 +583,18 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
     } as T;
   }
 
-  if (cleanEndpoint === '/job-applications/composite' && method === 'POST') {
+  if ((cleanEndpoint === '/job-applications/composite' || cleanEndpoint === '/job-applications') && method === 'POST') {
     const payload = JSON.parse((options.body as string) || '{}');
+    const platformData = typeof payload.platform === 'object' && payload.platform !== null
+      ? payload.platform
+      : payload.platformNested || { id: payload.platformId, name: "LinkedIn", userId: 1 };
+
     const newApp: JobApplication = {
       id: Date.now(),
-      candidateName: payload.candidateName || "Jane Cooper",
       role: payload.role || "Senior Software Engineer",
-      platform: payload.platform || "LinkedIn",
+      platform: platformData,
+      platformId: payload.platformId || platformData.id,
+      platformName: platformData.name || "LinkedIn",
       postingDate: payload.postingDate || new Date().toISOString().split('T')[0],
       applyDate: payload.applyDate || new Date().toISOString().split('T')[0],
       status: payload.status || "APPLIED",
@@ -537,23 +604,106 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
       portfolioShared: payload.portfolioShared ?? true,
       linkedInProfileShared: payload.linkedInProfileShared ?? true,
       jobUrl: payload.jobUrl || "",
-      company: payload.company || { name: "New Enterprise Co", location: "Global" },
+      about: payload.about || "",
+      followUpCount: payload.followUpCount || 0,
+      company: payload.company || { name: payload.companyName || "Enterprise Co", location: payload.location || "Remote" },
+      companyName: payload.company?.name || payload.companyName || "Enterprise Co",
       resume: payload.resume || { resumeName: "Primary_Resume.pdf" },
-      technologies: payload.technologys || [{ name: "Java 21" }],
+      technologies: payload.technologys || payload.technologies || [{ name: "Java 21" }],
       isActive: true
     };
     mockStore.jobApplications.unshift(newApp);
+    autoCreateInterviewIfEligible(newApp);
     return newApp as T;
   }
 
+  if (cleanEndpoint.startsWith('/job-applications/') && method === 'PUT') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    const payload = JSON.parse((options.body as string) || '{}');
+    const index = mockStore.jobApplications.findIndex(a => a.id === id);
+    if (index !== -1) {
+      const existing = mockStore.jobApplications[index];
+      const platformData = typeof payload.platform === 'object' && payload.platform !== null
+        ? payload.platform
+        : payload.platformNested || (payload.platformId ? { id: payload.platformId, name: payload.platformName || "Platform" } : existing.platform);
+
+      const updated: JobApplication = {
+        ...existing,
+        ...payload,
+        id,
+        platform: platformData,
+        platformName: platformData?.name || payload.platformName || existing.platformName,
+        company: payload.company || (payload.companyName ? { ...(existing.company || {}), name: payload.companyName, location: payload.location || existing.company?.location } : existing.company),
+        companyName: payload.companyName || payload.company?.name || existing.companyName,
+        technologies: payload.technologies || payload.technologys || existing.technologies,
+      };
+      mockStore.jobApplications[index] = updated;
+      autoCreateInterviewIfEligible(updated);
+      return updated as T;
+    }
+    return payload as T;
+  }
+
+  if (cleanEndpoint.startsWith('/job-applications/') && method === 'DELETE') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    mockStore.jobApplications = mockStore.jobApplications.filter(a => a.id !== id);
+    return null as T;
+  }
+
   if (cleanEndpoint === '/companies' && method === 'GET') {
+    const searchParams = new URLSearchParams(endpoint.includes('?') ? endpoint.split('?')[1] : '');
+    const nameQuery = searchParams.get('name')?.toLowerCase().trim();
+    const filtered = nameQuery
+      ? mockStore.companies.filter(c => c.name?.toLowerCase().includes(nameQuery))
+      : mockStore.companies;
     return {
-      content: mockStore.companies,
-      totalElements: mockStore.companies.length,
-      totalPages: Math.max(1, Math.ceil(mockStore.companies.length / 10)),
-      size: 10,
+      content: filtered,
+      totalElements: filtered.length,
+      totalPages: Math.max(1, Math.ceil(filtered.length / 10)),
+      size: filtered.length,
       number: 0
     } as T;
+  }
+
+  if (cleanEndpoint === '/companies' && method === 'POST') {
+    const payload = JSON.parse((options.body as string) || '{}');
+    const newCompany: Company = {
+      id: Date.now(),
+      name: payload.name || "New Company",
+      workOn: payload.workOn || "",
+      location: payload.location || "",
+      email: payload.email || "",
+      contactNumber: payload.contactNumber || "",
+      technologyTest: payload.technologyTest ?? true,
+      allowedJobType: payload.allowedJobType || ["REMOTE", "HYBRID"],
+    };
+    mockStore.companies.unshift(newCompany);
+    return newCompany as T;
+  }
+
+  if (cleanEndpoint.startsWith('/companies/') && method === 'PUT') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    const payload = JSON.parse((options.body as string) || '{}');
+    const index = mockStore.companies.findIndex(c => c.id === id);
+    if (index !== -1) {
+      mockStore.companies[index] = { ...mockStore.companies[index], ...payload };
+      return mockStore.companies[index] as T;
+    }
+    const updatedCompany: Company = { id, ...payload };
+    mockStore.companies.push(updatedCompany);
+    return updatedCompany as T;
+  }
+
+  if (cleanEndpoint.startsWith('/companies/') && method === 'DELETE') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    mockStore.companies = mockStore.companies.filter(c => c.id !== id);
+    return null as T;
+  }
+
+  if (cleanEndpoint.startsWith('/companies/') && method === 'GET') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    const company = mockStore.companies.find(c => c.id === id);
+    return (company || mockStore.companies[0]) as T;
   }
 
   if (cleanEndpoint === '/interviews' && method === 'GET') {
@@ -564,6 +714,54 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
       size: 10,
       number: 0
     } as T;
+  }
+
+  if (cleanEndpoint === '/interviews' && method === 'POST') {
+    const payload = JSON.parse((options.body as string) || '{}');
+    const targetApp = mockStore.jobApplications.find(a => a.id === Number(payload.jobApplicationId));
+    const newInterview: Interview = {
+      id: Date.now(),
+      jobApplicationId: Number(payload.jobApplicationId) || (targetApp ? targetApp.id : 1),
+      stage: payload.stage || 'TECHNICAL',
+      status: payload.status || 'SCHEDULED',
+      interviewDate: payload.interviewDate || new Date(Date.now() + 86400000 * 2).toISOString(),
+      companyName: payload.companyName || (targetApp ? (targetApp.companyName || targetApp.company?.name) : 'Company'),
+      role: payload.role || (targetApp ? targetApp.role : 'Role'),
+      notes: payload.notes || '',
+      questions: payload.questions || [],
+      requiredImprovements: payload.requiredImprovements || [],
+    };
+    mockStore.interviews.unshift(newInterview);
+    window.dispatchEvent(new Event('interviews-updated'));
+    return newInterview as T;
+  }
+
+  if (cleanEndpoint.startsWith('/interviews/') && method === 'PUT') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    const payload = JSON.parse((options.body as string) || '{}');
+    const index = mockStore.interviews.findIndex(i => i.id === id);
+    if (index !== -1) {
+      const existing = mockStore.interviews[index];
+      const targetApp = payload.jobApplicationId ? mockStore.jobApplications.find(a => a.id === Number(payload.jobApplicationId)) : null;
+      const updated: Interview = {
+        ...existing,
+        ...payload,
+        id,
+        companyName: payload.companyName || (targetApp ? (targetApp.companyName || targetApp.company?.name) : existing.companyName),
+        role: payload.role || (targetApp ? targetApp.role : existing.role),
+      };
+      mockStore.interviews[index] = updated;
+      window.dispatchEvent(new Event('interviews-updated'));
+      return updated as T;
+    }
+    return payload as T;
+  }
+
+  if (cleanEndpoint.startsWith('/interviews/') && method === 'DELETE') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    mockStore.interviews = mockStore.interviews.filter(i => i.id !== id);
+    window.dispatchEvent(new Event('interviews-updated'));
+    return null as T;
   }
 
   if (cleanEndpoint === '/preparation-topics' && method === 'GET') {
@@ -594,6 +792,99 @@ function handleMockFallback<T>(endpoint: string, options: RequestInit): T {
       size: 20,
       number: 0
     } as T;
+  }
+
+  if (cleanEndpoint === '/questions' && method === 'POST') {
+    const payload = JSON.parse((options.body as string) || '{}');
+    const newQ: Question = {
+      id: Date.now(),
+      question: payload.question || '',
+      technologyId: payload.technologyId,
+      listedDate: payload.listedDate || new Date().toISOString().split('T')[0],
+    };
+    mockStore.questions.unshift(newQ);
+    return newQ as T;
+  }
+
+  if (cleanEndpoint.startsWith('/questions/') && method === 'PUT') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    const payload = JSON.parse((options.body as string) || '{}');
+    const index = mockStore.questions.findIndex((q) => q.id === id);
+    if (index !== -1) {
+      mockStore.questions[index] = { ...mockStore.questions[index], ...payload };
+      return mockStore.questions[index] as T;
+    }
+    return payload as T;
+  }
+
+  if (cleanEndpoint.startsWith('/questions/') && method === 'DELETE') {
+    const id = parseInt(cleanEndpoint.split('/')[2], 10);
+    mockStore.questions = mockStore.questions.filter((q) => q.id !== id);
+    return null as T;
+  }
+
+  if (cleanEndpoint.startsWith('/users')) {
+    if (method === 'PUT') {
+      const payload = JSON.parse((options.body as string) || '{}');
+      mockStore.user = { ...mockStore.user, ...payload };
+      return mockStore.user as T;
+    }
+    if (cleanEndpoint === '/users/1' || cleanEndpoint.match(/^\/users\/\d+$/)) {
+      return mockStore.user as T;
+    }
+    if (method === 'GET') {
+      return {
+        content: [mockStore.user],
+        totalElements: 1,
+        totalPages: 1,
+        size: 10,
+        number: 0
+      } as T;
+    }
+  }
+
+  if (cleanEndpoint.startsWith('/platforms')) {
+    if (cleanEndpoint.startsWith('/platforms/user/') && method === 'GET') {
+      const uid = parseInt(cleanEndpoint.split('/')[3], 10);
+      return mockStore.platforms.filter((p) => !p.userId || p.userId === uid) as T;
+    }
+    if (cleanEndpoint === '/platforms' && method === 'GET') {
+      return {
+        content: mockStore.platforms,
+        totalElements: mockStore.platforms.length,
+        totalPages: Math.max(1, Math.ceil(mockStore.platforms.length / 10)),
+        size: 20,
+        number: 0,
+      } as T;
+    }
+    if (cleanEndpoint === '/platforms' && method === 'POST') {
+      const payload = JSON.parse((options.body as string) || '{}');
+      const newPlatform: Platform = {
+        id: Date.now(),
+        name: payload.name || 'Custom Platform',
+        accountLink: payload.accountLink || '',
+        jobPostCount: Number(payload.jobPostCount) || 0,
+        userId: payload.userId || 1,
+        lastUpdatedDate: new Date().toISOString(),
+      };
+      mockStore.platforms.push(newPlatform);
+      return newPlatform as T;
+    }
+    if (cleanEndpoint.startsWith('/platforms/') && method === 'PUT') {
+      const id = parseInt(cleanEndpoint.split('/')[2], 10);
+      const payload = JSON.parse((options.body as string) || '{}');
+      const index = mockStore.platforms.findIndex((p) => p.id === id);
+      if (index !== -1) {
+        mockStore.platforms[index] = { ...mockStore.platforms[index], ...payload };
+        return mockStore.platforms[index] as T;
+      }
+      return payload as T;
+    }
+    if (cleanEndpoint.startsWith('/platforms/') && method === 'DELETE') {
+      const id = parseInt(cleanEndpoint.split('/')[2], 10);
+      mockStore.platforms = mockStore.platforms.filter((p) => p.id !== id);
+      return null as T;
+    }
   }
 
   return { content: [] } as T;

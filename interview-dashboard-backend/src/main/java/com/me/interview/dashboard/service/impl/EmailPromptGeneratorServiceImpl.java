@@ -58,9 +58,10 @@ public class EmailPromptGeneratorServiceImpl implements EmailPromptGeneratorServ
         String companyName = (jobApplication.getCompany() != null && jobApplication.getCompany().getName() != null)
                 ? jobApplication.getCompany().getName()
                 : "Unknown Company";
-        String description = (jobApplication.getAbout() != null && !jobApplication.getAbout().isBlank())
+        String rawDesc = (jobApplication.getAbout() != null && !jobApplication.getAbout().isBlank())
                 ? jobApplication.getAbout()
                 : "No description provided.";
+        String description = rawDesc.length() > 2500 ? rawDesc.substring(0, 2500) : rawDesc;
         String technologies = (jobApplication.getTechnologies() != null && !jobApplication.getTechnologies().isEmpty())
                 ? jobApplication.getTechnologies().stream().map(Technology::getName).collect(Collectors.joining(", "))
                 : "Not specified";
@@ -83,8 +84,12 @@ public class EmailPromptGeneratorServiceImpl implements EmailPromptGeneratorServ
                 %s
                 
                 ### Your Task:
-                Please generate a structured email response addressed to the candidate that covers the following:
+                Please generate a structured email response addressed to the candidate.
                 
+                IMPORTANT:
+                Start with a Subject line at the very top starting with 'Subject: ' (e.g. Subject: Skill Alignment Analysis - Role at Company).
+                
+                Then provide:
                 1. **Skill Alignment Analysis**: 
                    - Compare the candidate's current skills against the job description.
                    - Highlight strong matches (where the candidate excels).

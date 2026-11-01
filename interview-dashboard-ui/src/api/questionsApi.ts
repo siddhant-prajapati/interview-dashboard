@@ -7,9 +7,20 @@ export const questionsApi = {
     return apiRequest<PageResponse<Question>>(`/questions${query ? `?${query}` : ''}`);
   },
 
+  async getById(id: number): Promise<Question> {
+    return apiRequest<Question>(`/questions/${id}`);
+  },
+
   async create(data: any): Promise<Question> {
     return apiRequest<Question>('/questions', {
       method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
+  async update(id: number, data: any): Promise<Question> {
+    return apiRequest<Question>(`/questions/${id}`, {
+      method: 'PUT',
       body: JSON.stringify(data),
     });
   },

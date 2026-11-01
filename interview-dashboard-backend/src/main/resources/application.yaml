@@ -16,7 +16,7 @@ spring:
       # Use 'update' to keep existing data, or 'create' to wipe and rebuild tables on startup
       ddl-auto: update
 
-    show-sql: true
+    show-sql: false
 
     properties:
       hibernate:

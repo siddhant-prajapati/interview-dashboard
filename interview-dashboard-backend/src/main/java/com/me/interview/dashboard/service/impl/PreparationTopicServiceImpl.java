@@ -34,6 +34,9 @@ public class PreparationTopicServiceImpl implements PreparationTopicService {
     @Override
     @Transactional
     public PreparationTopicResponseDTO createTopic(PreparationTopicRequestDTO requestDTO) {
+        if (requestDTO == null) {
+            throw new InvalidDataException("Preparation topic request data cannot be null");
+        }
         logger.info("Attempting to create Preparation Topic: " + requestDTO.getName());
 
         PreparationTopic parent = resolveParentTopic(requestDTO.getParentId());
