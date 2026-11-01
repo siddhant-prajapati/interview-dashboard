@@ -1,7 +1,10 @@
 package com.me.interview.dashboard.service.impl;
 
 import com.me.interview.dashboard.dto.*;
+import com.me.interview.dashboard.enumeration.InterviewStage;
+import com.me.interview.dashboard.enumeration.InterviewStatus;
 import com.me.interview.dashboard.model.*;
+import com.me.interview.dashboard.exception.InvalidDataException;
 import com.me.interview.dashboard.exception.ResourceNotFoundException;
 import com.me.interview.dashboard.mapper.JobApplicationMapper;
 import com.me.interview.dashboard.repository.*;
@@ -39,6 +42,9 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     @Override
     @Transactional
     public JobApplicationResponseDTO createJobApplication(JobApplicationRequestDTO requestDTO) {
+        if (requestDTO == null) {
+            throw new InvalidDataException("Job application request data cannot be null");
+        }
         logger.info("Attempting to create a new Job Application for role: " + requestDTO.getRole());
 
         try {
@@ -46,6 +52,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             resolveRelationships(jobApplication, requestDTO);
 
             JobApplication savedApplication = jobApplicationRepository.save(jobApplication);
+            checkAndCreateInterviewForStatus(savedApplication);
 
             logger.info("Successfully created Job Application with ID: " + savedApplication.getId());
             return jobApplicationMapper.toDto(savedApplication);
@@ -74,6 +81,9 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             }
 
             List<JobApplication> savedApplications = jobApplicationRepository.saveAll(applications);
+            for (JobApplication app : savedApplications) {
+                checkAndCreateInterviewForStatus(app);
+            }
             logger.info("Successfully created " + savedApplications.size() + " Job Applications in bulk");
             return jobApplicationMapper.toDtoList(savedApplications);
         } catch (Exception e) {
@@ -119,6 +129,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
             resolveRelationships(existingApplication, requestDTO);
 
             JobApplication updatedApplication = jobApplicationRepository.save(existingApplication);
+            checkAndCreateInterviewForStatus(updatedApplication);
 
             logger.info("Successfully updated Job Application with ID: " + id);
             return jobApplicationMapper.toDto(updatedApplication);
@@ -165,6 +176,10 @@ public class JobApplicationServiceImpl implements JobApplicationService {
      * Helper method to map IDs from the RequestDTO to actual Entity references.
      */
     private void resolveRelationships(JobApplication entity, JobApplicationRequestDTO dto) {
+        if (entity == null || dto == null) {
+            return;
+        }
+
         if (dto.getCompanyId() != null) {
             Company company = companyRepository.findById(dto.getCompanyId())
                     .orElseThrow(() -> new ResourceNotFoundException("Company", "id", dto.getCompanyId()));
@@ -181,11 +196,11 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
         if (dto.getTechnologyIds() != null && !dto.getTechnologyIds().isEmpty()) {
             List<Technology> technologies = technologyRepository.findAllById(dto.getTechnologyIds());
-            // Optionally, you could check if all IDs were found:
-            // if (technologies.size() != dto.getTechnologyIds().size()) { throw new ResourceNotFoundException(...) }
             entity.setTechnologies(technologies);
-        } else {
+        } else if (entity.getTechnologies() != null) {
             entity.getTechnologies().clear();
+        } else {
+            entity.setTechnologies(new ArrayList<>());
         }
 
         if (dto.getPlatformId() != null) {
@@ -216,6 +231,9 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     @Override
     @Transactional
     public JobApplicationResponseDTO createCompositeJobApplication(JobApplicationCompositeRequestDTO dto) {
+        if (dto == null) {
+            throw new InvalidDataException("Job application composite request data cannot be null");
+        }
         logger.info("Processing composite Job Application creation for role: " + dto.getRole());
 
         // 1. Resolve or Create Company
@@ -251,6 +269,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .build();
 
         JobApplication savedApplication = jobApplicationRepository.save(jobApplication);
+        checkAndCreateInterviewForStatus(savedApplication);
         logger.info("Saved composite Job Application with ID: " + savedApplication.getId());
 
         // 6. Automatically create the initial ApplicationStatusHistory record
@@ -265,6 +284,51 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         logger.info("Generated initial status history entry for application ID: " + savedApplication.getId());
 
         return jobApplicationMapper.toDto(savedApplication);
+    }
+
+    /**
+     * Checks if the job application status represents an active interview round
+     * (HR_SCREENING, TECHNICAL_ROUND, MANAGERIAL_ROUND, HR_FINAL). If an interview
+     * for that specific stage does not already exist, it creates a new scheduled interview.
+     */
+    private void checkAndCreateInterviewForStatus(JobApplication jobApplication) {
+        if (jobApplication == null || jobApplication.getId() == null || jobApplication.getStatus() == null) {
+            return;
+        }
+
+        InterviewStage targetStage = switch (jobApplication.getStatus()) {
+            case HR_SCREENING -> InterviewStage.HR;
+            case TECHNICAL_ROUND -> InterviewStage.TECHNICAL;
+            case MANAGERIAL_ROUND -> InterviewStage.MANAGERIAL;
+            case HR_FINAL -> InterviewStage.HR_FINAL;
+            default -> null;
+        };
+
+        if (targetStage != null) {
+            boolean exists = interviewRepository.existsByJobApplicationIdAndStage(jobApplication.getId(), targetStage);
+            if (!exists) {
+                logger.info("No existing " + targetStage + " interview found for Job Application ID " +
+                        jobApplication.getId() + ". Automatically scheduling new interview.");
+
+                String companyName = (jobApplication.getCompany() != null && jobApplication.getCompany().getName() != null)
+                        ? jobApplication.getCompany().getName()
+                        : "Company";
+                String roleName = jobApplication.getRole() != null ? jobApplication.getRole() : "Role";
+
+                Interview newInterview = Interview.builder()
+                        .jobApplication(jobApplication)
+                        .stage(targetStage)
+                        .status(InterviewStatus.SCHEDULED)
+                        .interviewDate(LocalDateTime.now().plusDays(2))
+                        .notes("Auto-scheduled interview for " + targetStage + " round (" + roleName + " at " + companyName + ")")
+                        .build();
+
+                interviewRepository.save(newInterview);
+                logger.info("Successfully created " + targetStage + " interview for Job Application ID: " + jobApplication.getId());
+            } else {
+                logger.info("Interview for stage " + targetStage + " already exists for Job Application ID: " + jobApplication.getId());
+            }
+        }
     }
 
     private Company resolveCompany(CompanyNestedDTO dto) {

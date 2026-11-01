@@ -38,6 +38,9 @@ public class PlatformServiceImpl implements PlatformService {
     @Override
     @Transactional
     public PlatformResponseDTO createPlatform(PlatformRequestDTO requestDTO) {
+        if (requestDTO == null || requestDTO.getUserId() == null) {
+            throw new InvalidDataException("Platform request data and User ID must not be null");
+        }
         logger.info("Attempting to create a new Platform: " + requestDTO.getName());
 
         User user = userRepository.findById(requestDTO.getUserId())
@@ -115,6 +118,9 @@ public class PlatformServiceImpl implements PlatformService {
     @Override
     @Transactional(readOnly = true)
     public List<PlatformResponseDTO> getPlatformsByUserId(Long userId) {
+        if (userId == null) {
+            throw new InvalidDataException("User ID must not be null");
+        }
         logger.info("Fetching Platforms for User ID: " + userId);
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException("User", "id", userId);
@@ -127,6 +133,10 @@ public class PlatformServiceImpl implements PlatformService {
     @Transactional
     public PlatformResponseDTO updatePlatform(Long id, PlatformRequestDTO requestDTO) {
         logger.info("Attempting to update Platform with ID: " + id);
+
+        if (requestDTO == null) {
+            throw new InvalidDataException("Platform update request data cannot be null");
+        }
 
         Platform existingPlatform = platformRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Platform", "id", id));

@@ -7,6 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 /**
  * Calls the OpenRouter LLM with an optimized, lightweight prompt to extract
  * key structured fields from a Job Description.
@@ -18,6 +22,8 @@ public class JdParseService {
 
     private final OpenRouterService openRouterService;
     private final ObjectMapper objectMapper;
+    @Qualifier("aiTaskExecutor")
+    private final Executor aiTaskExecutor;
 
     // Ultra-compact prompt: No wasteful echoing of verbatim descriptions or perks
     private static final String SYSTEM_PROMPT = """
@@ -92,5 +98,15 @@ public class JdParseService {
         }
 
         return result;
+    }
+
+    /**
+     * Parses the given job description asynchronously in the background.
+     *
+     * @param jobDescription raw JD text
+     * @return CompletableFuture with populated DTO
+     */
+    public CompletableFuture<JdParseResponseDTO> parseAsync(String jobDescription) {
+        return CompletableFuture.supplyAsync(() -> parse(jobDescription), aiTaskExecutor);
     }
 }

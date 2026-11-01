@@ -17,6 +17,9 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public SendEmailResponseDTO sendEmail(SendEmailRequestDTO request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Email request payload cannot be null.");
+        }
         if (request.getTo() == null || request.getTo().trim().isEmpty()) {
             throw new IllegalArgumentException("Recipient email address ('to') is required.");
         }
